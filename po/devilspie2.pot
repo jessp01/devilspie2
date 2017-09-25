@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: devilspie2 0.42\n"
-"Report-Msgid-Bugs-To: gusnan@openmailbox.org\n"
+"Report-Msgid-Bugs-To: andreas@ronnquist.net\n"
 "POT-Creation-Date: 2017-01-04 15:35+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"

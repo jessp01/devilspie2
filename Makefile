@@ -20,6 +20,9 @@
 ifndef CC
 	CC=gcc
 endif
+ifndef PKG_CONFIG
+	PKG_CONFIG=pkg-config
+endif
 SRC=src
 OBJ=obj
 BIN=bin
@@ -59,9 +62,9 @@ else
 	PKG_WNCK=libwnck-3.0
 endif
 
-LIB_CFLAGS=$(shell pkg-config --cflags --silence-errors $(PKG_GTK) $(PKG_WNCK) lua5.1 || pkg-config --cflags $(PKG_GTK) $(PKG_WNCK) lua)
+LIB_CFLAGS=$(shell $(PKG_CONFIG) --cflags --silence-errors $(PKG_GTK) $(PKG_WNCK) lua5.1 || $(PKG_CONFIG) --cflags $(PKG_GTK) $(PKG_WNCK) lua)
 STD_LDFLAGS=
-LIBS=-lX11 -lXinerama $(shell pkg-config --libs --silence-errors $(PKG_GTK) $(PKG_WNCK) lua5.1 || pkg-config --libs $(PKG_GTK) $(PKG_WNCK) lua)
+LIBS=-lX11 -lXinerama $(shell $(PKG_CONFIG) --libs --silence-errors $(PKG_GTK) $(PKG_WNCK) lua5.1 || $(PKG_CONFIG) --libs $(PKG_GTK) $(PKG_WNCK) lua)
 
 LOCAL_CFLAGS=$(STD_CFLAGS) $(DEPRECATED) $(CFLAGS) $(LIB_CFLAGS)
 LOCAL_LDFLAGS=$(STD_CFLAGS) $(LDFLAGS) $(STD_LDFLAGS)

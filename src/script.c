@@ -153,6 +153,9 @@ register_cfunctions(lua_State *lua)
 
 	lua_register(lua, "get_window_class", c_get_window_class);
 
+	lua_register(lua, "set_window_property", c_set_window_property);
+	lua_register(lua, "delete_window_property", c_del_window_property);
+
 	lua_register(lua, "set_viewport", c_set_viewport);
 
 	lua_register(lua, "center", c_center);

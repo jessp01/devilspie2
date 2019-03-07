@@ -101,6 +101,9 @@ int c_get_window_xid(lua_State *lua);
 
 int c_get_window_class(lua_State *lua);
 
+int c_set_window_property(lua_State *lua);
+int c_del_window_property(lua_State *lua);
+
 int c_set_viewport(lua_State *lua);
 
 int c_center(lua_State *lua);

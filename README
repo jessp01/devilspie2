@@ -238,6 +238,19 @@ set_window_position2(xpos, ypos)
    (Available from version 0.21)
 
 
+set_window_property(property, value)
+
+   Set a property of a window to a string or a cardinal (32-bit integer or
+   boolean).
+   (Available from version 0.??)
+
+
+delete_window_property(property)
+
+   Remove a property from a window.
+   (Available from version 0.??)
+
+
 set_window_size (xsize, ysize)
 
    Sets the size of a window - takes xsize and ysize as parameters.

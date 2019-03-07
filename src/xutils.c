@@ -305,6 +305,45 @@ char* my_wnck_get_string_property_latin1(Window xwindow, Atom atom)
 /**
  *
  */
+void my_wnck_set_string_property_latin1(Window xwindow, Atom atom, const gchar *const string)
+{
+	const unsigned char *const str = (const unsigned char *)string;
+
+	devilspie2_error_trap_push();
+	XChangeProperty (gdk_x11_get_default_xdisplay (),
+	                 xwindow, atom, XA_STRING, 8,
+	                 PropModeReplace, str, strlen(string));
+	devilspie2_error_trap_pop ();
+}
+
+
+/**
+ *
+ */
+void my_wnck_set_cardinal_property(Window xwindow, Atom atom, int32_t value)
+{
+	devilspie2_error_trap_push();
+	XChangeProperty (gdk_x11_get_default_xdisplay (),
+	                 xwindow, atom, XA_CARDINAL, 32,
+	                 PropModeReplace, (unsigned char *)&value, 1);
+	devilspie2_error_trap_pop ();
+}
+
+
+/**
+ *
+ */
+void my_wnck_delete_property(Window xwindow, Atom atom)
+{
+	devilspie2_error_trap_push();
+	XDeleteProperty (gdk_x11_get_default_xdisplay (), xwindow, atom);
+	devilspie2_error_trap_pop ();
+}
+
+
+/**
+ *
+ */
 gboolean
 my_wnck_get_cardinal_list (Window xwindow, Atom atom,
                            gulong **cardinals, int *len)

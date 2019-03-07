@@ -56,3 +56,6 @@ Nicola Fontana <ntd (at) entidi (dot) it>
 - Italian translation
 - Spelling fixes
 - Allow reading of XA_WINDOW properties
+
+Darren Salt <Darren Salt <devspam (at) moreofthesa (dot) me (dot) uk>
+- Add support for setting and deleting window properties

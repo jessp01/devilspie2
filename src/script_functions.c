@@ -1435,6 +1435,82 @@ int c_get_window_property(lua_State *lua)
 /**
  *
  */
+int c_set_window_property(lua_State *lua)
+{
+	int top = lua_gettop(lua);
+
+	if (top != 2) {
+		luaL_error(lua, "set_window_property: %s", two_indata_expected_error);
+		return 0;
+	}
+
+	WnckWindow *window = get_current_window();
+
+	int type = lua_type(lua, 1);
+
+	if (type != LUA_TSTRING) {
+		luaL_error(lua, "set_window_property: %s", string_expected_as_indata_error);
+		return 0;
+	}
+
+	const gchar *property = lua_tostring(lua, 1);
+
+	type = lua_type(lua, 2);
+
+	switch (type) {
+	case LUA_TSTRING:
+		my_wnck_set_string_property_latin1(wnck_window_get_xid(window), my_wnck_atom_get(property),
+		                                   lua_tostring(lua, 2));
+		break;
+
+	case LUA_TNUMBER:
+		my_wnck_set_cardinal_property(wnck_window_get_xid(window), my_wnck_atom_get(property),
+		                              (int32_t) lua_tonumber(lua, 2));
+		break;
+
+	case LUA_TBOOLEAN:
+		my_wnck_set_cardinal_property(wnck_window_get_xid(window), my_wnck_atom_get(property),
+		                              (int32_t) lua_toboolean(lua, 2));
+		break;
+
+	default:
+		luaL_error(lua, "set_window_property: %s", two_indata_expected_error); /* FIXME: incorrect error msg */
+	}
+
+	return 0;
+}
+
+
+/**
+ *
+ */
+int c_del_window_property(lua_State *lua)
+{
+	int top = lua_gettop(lua);
+
+	if (top != 1) {
+		luaL_error(lua, "set_window_property: %s", one_indata_expected_error);
+		return 0;
+	}
+
+	WnckWindow *window = get_current_window();
+
+	int type = lua_type(lua, 1);
+
+	if (type != LUA_TSTRING) {
+		luaL_error(lua, "set_window_property: %s", string_expected_as_indata_error);
+		return 0;
+	}
+
+	const gchar *property = lua_tostring(lua, 1);
+
+	my_wnck_delete_property(wnck_window_get_xid(window), my_wnck_atom_get(property));
+
+	return 0;
+}
+/**
+ *
+ */
 int c_get_window_role(lua_State *lua)
 {
 	int top = lua_gettop(lua);

@@ -68,7 +68,7 @@ gchar *config_filename = NULL;
 /**
  *
  */
-static void load_list_of_scripts(WnckScreen *screen, WnckWindow *window,
+static void load_list_of_scripts(WnckScreen *screen G_GNUC_UNUSED, WnckWindow *window,
                                  GSList *file_list)
 {
 	GSList *temp_file_list = file_list;
@@ -247,9 +247,9 @@ void print_script_lists()
 /**
  *
  */
-void folder_changed_callback(GFileMonitor *mon,
+void folder_changed_callback(GFileMonitor *mon G_GNUC_UNUSED,
                              GFile *first_file,
-                             GFile *second_file,
+                             GFile *second_file G_GNUC_UNUSED,
                              GFileMonitorEvent event,
                              gpointer user_data)
 {

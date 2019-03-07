@@ -2132,7 +2132,7 @@ static void on_geometry_changed(WnckWindow *window, struct lua_callback *callbac
 	set_current_window(old_window);
 }
 
-static void on_geometry_changed_disconnect(gpointer data, GClosure *closure)
+static void on_geometry_changed_disconnect(gpointer data, GClosure *closure G_GNUC_UNUSED)
 {
 	g_free(data);
 }

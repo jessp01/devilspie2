@@ -264,7 +264,7 @@ char* my_wnck_get_string_property_latin1(Window xwindow, Atom atom)
 				XFree (prop_name);
 			}
 		} else {
-			int i;
+			gulong i;
 			char** prop_names;
 
 			prop_names = g_new (char *, nitems + 1);

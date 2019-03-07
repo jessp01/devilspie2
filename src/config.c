@@ -39,7 +39,7 @@
  *
  */
 GSList *event_lists[W_NUM_EVENTS] = { NULL, NULL, NULL, NULL };
-const char *event_names[W_NUM_EVENTS] = {
+const char *const event_names[W_NUM_EVENTS] = {
 	"window_open",
 	"window_close",
 	"window_focus",

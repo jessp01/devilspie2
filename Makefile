@@ -24,6 +24,10 @@ SRC=src
 OBJ=obj
 BIN=bin
 
+ifndef LUA
+	LUA=lua5.1
+endif
+
 ifdef DEBUG
 	STD_CFLAGS=-Wall -g3 -ggdb -D_DEBUG
 else
@@ -59,9 +63,9 @@ else
 	PKG_WNCK=libwnck-3.0
 endif
 
-LIB_CFLAGS=$(shell pkg-config --cflags --silence-errors $(PKG_GTK) $(PKG_WNCK) lua5.1 || pkg-config --cflags $(PKG_GTK) $(PKG_WNCK) lua)
+LIB_CFLAGS=$(shell pkg-config --cflags --silence-errors $(PKG_GTK) $(PKG_WNCK) $(LUA) || pkg-config --cflags $(PKG_GTK) $(PKG_WNCK) lua)
 STD_LDFLAGS=
-LIBS=-lX11 $(shell pkg-config --libs --silence-errors $(PKG_GTK) $(PKG_WNCK) lua5.1 || pkg-config --libs $(PKG_GTK) $(PKG_WNCK) lua)
+LIBS=-lX11 $(shell pkg-config --libs --silence-errors $(PKG_GTK) $(PKG_WNCK) $(LUA) || pkg-config --libs $(PKG_GTK) $(PKG_WNCK) lua)
 
 LOCAL_CFLAGS=$(STD_CFLAGS) $(DEPRECATED) $(CFLAGS) $(LIB_CFLAGS)
 LOCAL_LDFLAGS=$(STD_CFLAGS) $(LDFLAGS) $(STD_LDFLAGS)

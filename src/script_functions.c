@@ -24,6 +24,9 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
+// FIXME: retrieve screen position via wnck
+#include <X11/extensions/Xinerama.h>
+
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 
@@ -1777,15 +1780,17 @@ int c_set_viewport(lua_State *lua)
  */
 int c_center(lua_State *lua)
 {
+	Display *dpy = gdk_x11_get_default_xdisplay();
 	int top = lua_gettop(lua);
 
-	int workspace_width, workspace_height, window_width, window_height;
-	int xoffset, yoffset;
+	GdkRectangle desktop_r, window_r;
+
 	WnckScreen *screen;
 	WnckWorkspace *workspace;
 
-	if (top != 0) {
-		luaL_error(lua, "center: %s", no_indata_expected_error);
+	if (top > 1) {
+		// no input, or one input
+		luaL_error(lua, "center: %s", one_indata_expected_error);
 		return 0;
 	}
 
@@ -1796,32 +1801,105 @@ int c_center(lua_State *lua)
 		return 1;
 	}
 
-	wnck_window_get_geometry(window, NULL, NULL, &window_width, &window_height);
+	wnck_window_get_geometry(window, &window_r.x, &window_r.y, &window_r.width, &window_r.height);
 
 	screen = wnck_window_get_screen(window);
 
-	workspace = wnck_screen_get_active_workspace(screen);
+	if (top == 1) {
+		int type = lua_type(lua, 1);
+		if (type != LUA_TNUMBER) {
+			luaL_error(lua, "center: %s", number_expected_as_indata_error);
+			return 0;
+		}
 
-	if (workspace == NULL) {
-		workspace = wnck_screen_get_workspace(screen,0);
+		// Specified monitor no.:
+		//      0 = current monitor
+		//   1..n = monitor 0..(n-1)
+		int monitor_no = lua_tonumber(lua, 1) - 1;
+
+		// FIXME: retrieve monitor position via wnck
+		// For now, use Xinerama directly
+		int count;
+		XineramaScreenInfo *monitors = NULL;
+
+		if (XineramaIsActive(dpy))
+			monitors = XineramaQueryScreens(dpy, &count);
+
+		if (!monitors)
+			goto handle_as_single_monitor;
+
+		if (monitor_no < -1 || monitor_no >= count)
+			monitor_no = 0; // FIXME: primary monitor; show warning?
+
+		if (monitor_no == -1) {
+			// find which monitor the window's centre is on
+			GdkPoint centre = { window_r.x + window_r.width / 2, window_r.y + window_r.height / 2 };
+
+			for (int i = 0; i < count; ++i) {
+				if (centre.x >= monitors[i].x_org &&
+				    centre.x <  monitors[i].x_org + monitors[i].width &&
+				    centre.y >= monitors[i].y_org &&
+				    centre.y <  monitors[i].y_org + monitors[i].height) {
+					monitor_no = i;
+					break;
+				}
+			}
+
+			// if that fails, try intersection of rectangles
+			// just use the first matching
+			// FIXME?: should find whichever shows most of the window (if tied, closest to window centre)
+			if (monitor_no < 0) {
+				window_r.x -= window_r.width / 2;
+				window_r.y -= window_r.height / 2;
+
+				for (int i = 0; i < count; ++i) {
+					GdkRectangle r = {
+						monitors[i].x_org, monitors[i].y_org,
+						monitors[i].x_org + monitors[i].width,
+						monitors[i].y_org + monitors[i].height
+					};
+					if (gdk_rectangle_intersect(&window_r, &r, NULL)) {
+						monitor_no = i;
+						break;
+					}
+				}
+			}
+
+			// and if that too fails, use the default
+			if (monitor_no < 0)
+				monitor_no = 0; // FIXME: primary monitor
+		}
+
+		desktop_r.x = monitors[monitor_no].x_org;
+		desktop_r.y = monitors[monitor_no].y_org;
+		desktop_r.width = monitors[monitor_no].width;
+		desktop_r.height = monitors[monitor_no].height;
+	} else {
+handle_as_single_monitor:
+		workspace = wnck_screen_get_active_workspace(screen);
+
+		if (workspace == NULL) {
+			workspace = wnck_screen_get_workspace(screen,0);
+		}
+
+		if (workspace == NULL) {
+			g_printerr(_("Could not get workspace"));
+			lua_pushboolean(lua, FALSE);
+			return 1;
+		}
+
+		desktop_r.x = 0;
+		desktop_r.y = 0;
+		desktop_r.width = wnck_workspace_get_width(workspace);
+		desktop_r.height = wnck_workspace_get_height(workspace);
 	}
 
-	if (workspace == NULL) {
-		g_printerr(_("Could not get workspace"));
-		lua_pushboolean(lua, FALSE);
-		return 1;
-	}
-
-	workspace_width = wnck_workspace_get_width(workspace);
-	workspace_height = wnck_workspace_get_height(workspace);
-
-	xoffset = (workspace_width - window_width) / 2;
-	yoffset = (workspace_height - window_height) / 2;
+	window_r.x = desktop_r.x + (desktop_r.width - window_r.width) / 2;
+	window_r.y = desktop_r.y + (desktop_r.height - window_r.height) / 2;
 
 	devilspie2_error_trap_push();
-	XMoveWindow (gdk_x11_get_default_xdisplay(),
-	             wnck_window_get_xid(window),
-	             xoffset, yoffset);
+	XMoveWindow (dpy, wnck_window_get_xid(window),
+	             window_r.x, window_r.y);
 
 	if (devilspie2_error_trap_pop()) {
 		g_printerr("center: %s", failed_string);

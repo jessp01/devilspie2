@@ -425,6 +425,21 @@ centre()
    (‘centre’ available from version 0.44)
 
 
+center(index)
+centre(index)
+
+   Centres the current window on the specified monitor (counting from 1) on
+   the current workspace.
+
+   If index = 0 then the ‘current’ monitor (with the window's centre point)
+   is used (falling back on then the first monitor showing part of the
+   window then the first monitor).
+
+   If index is out of range then the first monitor is used.
+
+   (Available from version 0.44)
+
+
 set_opacity(value)
 set_window_opacity(value)
 

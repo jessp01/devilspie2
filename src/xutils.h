@@ -56,4 +56,8 @@ void my_window_set_opacity(Window xid, double value);
 
 void set_window_geometry(WnckWindow *window, int x, int y, int w, int h);
 
+int get_monitor_count(void);
+int get_monitor_index_geometry(WnckWindow *window, const GdkRectangle *window_r, /*out*/ GdkRectangle *monitor_r);
+int get_monitor_geometry(int index, /*out*/ GdkRectangle *monitor_r);
+
 #endif /*__HEADER_XUTILS_*/

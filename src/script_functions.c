@@ -24,9 +24,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-// FIXME: retrieve screen position via wnck
-#include <X11/extensions/Xinerama.h>
-
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 
@@ -1780,12 +1777,10 @@ int c_set_viewport(lua_State *lua)
  */
 int c_center(lua_State *lua)
 {
-	Display *dpy = gdk_x11_get_default_xdisplay();
 	int top = lua_gettop(lua);
 
 	GdkRectangle desktop_r, window_r;
 
-	WnckScreen *screen;
 	WnckWorkspace *workspace;
 
 	if (top > 1) {
@@ -1803,8 +1798,6 @@ int c_center(lua_State *lua)
 
 	wnck_window_get_geometry(window, &window_r.x, &window_r.y, &window_r.width, &window_r.height);
 
-	screen = wnck_window_get_screen(window);
-
 	if (top == 1) {
 		int type = lua_type(lua, 1);
 		if (type != LUA_TNUMBER) {
@@ -1817,65 +1810,18 @@ int c_center(lua_State *lua)
 		//   1..n = monitor 0..(n-1)
 		int monitor_no = lua_tonumber(lua, 1) - 1;
 
-		// FIXME: retrieve monitor position via wnck
-		// For now, use Xinerama directly
-		int count;
-		XineramaScreenInfo *monitors = NULL;
-
-		if (XineramaIsActive(dpy))
-			monitors = XineramaQueryScreens(dpy, &count);
-
-		if (!monitors)
-			goto handle_as_single_monitor;
-
-		if (monitor_no < -1 || monitor_no >= count)
+		if (monitor_no < -1 || monitor_no >= get_monitor_count())
 			monitor_no = 0; // FIXME: primary monitor; show warning?
-
-		if (monitor_no == -1) {
-			// find which monitor the window's centre is on
-			GdkPoint centre = { window_r.x + window_r.width / 2, window_r.y + window_r.height / 2 };
-
-			for (int i = 0; i < count; ++i) {
-				if (centre.x >= monitors[i].x_org &&
-				    centre.x <  monitors[i].x_org + monitors[i].width &&
-				    centre.y >= monitors[i].y_org &&
-				    centre.y <  monitors[i].y_org + monitors[i].height) {
-					monitor_no = i;
-					break;
-				}
-			}
-
-			// if that fails, try intersection of rectangles
-			// just use the first matching
-			// FIXME?: should find whichever shows most of the window (if tied, closest to window centre)
-			if (monitor_no < 0) {
-				window_r.x -= window_r.width / 2;
-				window_r.y -= window_r.height / 2;
-
-				for (int i = 0; i < count; ++i) {
-					GdkRectangle r = {
-						monitors[i].x_org, monitors[i].y_org,
-						monitors[i].x_org + monitors[i].width,
-						monitors[i].y_org + monitors[i].height
-					};
-					if (gdk_rectangle_intersect(&window_r, &r, NULL)) {
-						monitor_no = i;
-						break;
-					}
-				}
-			}
-
-			// and if that too fails, use the default
-			if (monitor_no < 0)
-				monitor_no = 0; // FIXME: primary monitor
-		}
-
-		desktop_r.x = monitors[monitor_no].x_org;
-		desktop_r.y = monitors[monitor_no].y_org;
-		desktop_r.width = monitors[monitor_no].width;
-		desktop_r.height = monitors[monitor_no].height;
+		else if (monitor_no == -1) {
+			monitor_no = get_monitor_index_geometry(NULL, &window_r, &desktop_r);
+			if (monitor_no == -1)
+				goto handle_as_single_monitor;
+		} else if (get_monitor_geometry(monitor_no, &desktop_r) < 0)
+			goto handle_as_single_monitor;
 	} else {
-handle_as_single_monitor:
+handle_as_single_monitor:;
+		WnckScreen *screen = wnck_window_get_screen(window);
+
 		workspace = wnck_screen_get_active_workspace(screen);
 
 		if (workspace == NULL) {
@@ -1898,7 +1844,8 @@ handle_as_single_monitor:
 	window_r.y = desktop_r.y + (desktop_r.height - window_r.height) / 2;
 
 	devilspie2_error_trap_push();
-	XMoveWindow (dpy, wnck_window_get_xid(window),
+	XMoveWindow (gdk_x11_get_default_xdisplay(),
+	             wnck_window_get_xid(window),
 	             window_r.x, window_r.y);
 
 	if (devilspie2_error_trap_pop()) {

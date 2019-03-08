@@ -24,6 +24,9 @@
 #include <X11/Xlib.h>
 #include <string.h>
 
+// FIXME: retrieve screen position via wnck
+#include <X11/extensions/Xinerama.h>
+
 #define WNCK_I_KNOW_THIS_IS_UNSTABLE
 #include <libwnck/libwnck.h>
 
@@ -530,4 +533,130 @@ void set_window_geometry(WnckWindow *window, int x, int y, int w, int h)
 		                         x, y, w, h);
 	}
 
+}
+
+
+/**
+ *
+ */
+int get_monitor_count(void)
+{
+	// FIXME: retrieve monitor count via wnck
+	// For now, use Xinerama directly
+	Display *dpy = gdk_x11_get_default_xdisplay();
+
+	if (!XineramaIsActive(dpy))
+		return 0;
+
+	// Normally, we'd use the return value, but we only want the number of entries
+	int monitor_count = 0;
+	XineramaQueryScreens(dpy, &monitor_count);
+
+	return monitor_count;
+}
+
+
+/**
+ *
+ */
+int get_monitor_index_geometry(WnckWindow *window, const GdkRectangle *window_r_in, GdkRectangle *monitor_r)
+{
+	// monitor_r is always filled in unless the return value is -1
+
+	// FIXME: retrieve monitor info via wnck
+	// For now, use Xinerama directly
+	int id = -1;
+	int monitor_count = 0;
+	XineramaScreenInfo *monitor_list = NULL;
+	Display *dpy = gdk_x11_get_default_xdisplay();
+
+	if (XineramaIsActive(dpy))
+		monitor_list = XineramaQueryScreens(dpy, &monitor_count);
+
+	// bail out if no Xinermama or no monitors
+	if (!monitor_list || !monitor_count)
+		return -1;
+
+	// find which monitor the window's centre is on
+	GdkRectangle window_r;
+	if (window)
+		wnck_window_get_geometry(window, &window_r.x, &window_r.y, &window_r.width, &window_r.height);
+	else
+		window_r = *window_r_in;
+
+	GdkPoint centre = { window_r.x + window_r.width / 2, window_r.y + window_r.height / 2 };
+
+	for (int i = 0; i < monitor_count; ++i) {
+		if (centre.x >= monitor_list[i].x_org &&
+		    centre.x <  monitor_list[i].x_org + monitor_list[i].width &&
+		    centre.y >= monitor_list[i].y_org &&
+		    centre.y <  monitor_list[i].y_org + monitor_list[i].height) {
+			id = i;
+			break;
+		}
+	}
+
+	// if that fails, try intersection of rectangles
+	// just use the first matching
+	// FIXME?: should find whichever shows most of the window (if tied, closest to window centre)
+	if (id < 0) {
+		for (int i = 0; i < monitor_count; ++i) {
+			GdkRectangle r = {
+				monitor_list[i].x_org, monitor_list[i].y_org,
+				monitor_list[i].x_org + monitor_list[i].width,
+				monitor_list[i].y_org + monitor_list[i].height
+			};
+			if (gdk_rectangle_intersect(&window_r, &r, NULL)) {
+				id = i;
+				break;
+			}
+		}
+	}
+
+	// and if that too fails, use the default
+	if (id < 0)
+		id = 0; // FIXME: primary monitor
+
+	if (monitor_r) {
+		monitor_r->x = monitor_list[id].x_org;
+		monitor_r->y = monitor_list[id].y_org;
+		monitor_r->width = monitor_list[id].width;
+		monitor_r->height = monitor_list[id].height;
+	}
+
+	return id;
+}
+
+
+/**
+ *
+ */
+int get_monitor_geometry(int index, GdkRectangle *monitor_r)
+{
+	// if out of range, output is for monitor 0 (if present) else this:
+	*monitor_r = (GdkRectangle){ 0, 0, 640, 480 };
+
+	// FIXME: retrieve monitor info via wnck
+	// For now, use Xinerama directly
+	int monitor_count = 0;
+	XineramaScreenInfo *monitor_list = NULL;
+	Display *dpy = gdk_x11_get_default_xdisplay();
+
+	if (XineramaIsActive(dpy))
+		monitor_list = XineramaQueryScreens(dpy, &monitor_count);
+
+	// bail out if no Xinermama or no monitors
+	if (!monitor_list || !monitor_count)
+		return -1; // no xinerama!
+
+	// FIXME: default to primary monitor
+	if (index < 0 || index >= monitor_count)
+		index = 0;
+
+	monitor_r->x = monitor_list[index].x_org;
+	monitor_r->y = monitor_list[index].y_org;
+	monitor_r->width = monitor_list[index].width;
+	monitor_r->height = monitor_list[index].height;
+
+	return index;
 }

@@ -118,6 +118,9 @@ int c_focus(lua_State *lua);
 
 int c_get_window_fullscreen(lua_State *lua);
 
+int c_get_monitor_index(lua_State *lua);
+int c_get_monitor_geometry(lua_State *lua);
+
 int c_xy(lua_State *lua);
 int c_xywh(lua_State *lua);
 

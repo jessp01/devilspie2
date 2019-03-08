@@ -222,6 +222,25 @@ get_fullscreen
 	(available from version 0.32)
 
 
+get_monitor_index
+
+   Returns the index of the monitor containing the window centre (or some
+   part of the window).
+   (Available from version 0.44)
+
+
+get_monitor_geometry
+
+   Returns x, y, width, height for the window's monitor.
+   (Available from version 0.44)
+
+
+get_monitor_geometry(index)
+
+   Returns x, y, width, height for the given monitor.
+   If the index is out of range, nothing is returned.
+
+
 and the rest of the commands are used to modify the properties of the windows:
 
 

@@ -179,6 +179,9 @@ register_cfunctions(lua_State *lua)
 	lua_register(lua, "focus", c_focus);
 	lua_register(lua, "focus_window", c_focus);
 
+	lua_register(lua, "get_monitor_index", c_get_monitor_index);
+	lua_register(lua, "get_monitor_geometry", c_get_monitor_geometry);
+
 	lua_register(lua, "xy", c_xy);
 	lua_register(lua, "xywh", c_xywh);
 

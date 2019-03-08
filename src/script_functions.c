@@ -2020,6 +2020,75 @@ int c_get_window_fullscreen(lua_State *lua)
 /**
  *
  */
+int c_get_monitor_index(lua_State *lua)
+{
+	int top = lua_gettop(lua);
+	if (top != 0) {
+		luaL_error(lua, "get_monitor_index: %s", no_indata_expected_error);
+		return 0;
+	}
+
+	if (top == 0) {
+		WnckWindow *window = get_current_window();
+		if (window) {
+			int index = get_monitor_index_geometry(window, NULL, NULL);
+			if (index >= 0)
+				lua_pushnumber(lua, index + 1);
+		}
+	}
+
+	return 1;
+}
+
+
+/**
+ *
+ */
+int c_get_monitor_geometry(lua_State *lua)
+{
+	int top = lua_gettop(lua);
+	if (top > 1) {
+		luaL_error(lua, "get_monitor_geometry: %s", one_indata_expected_error);
+		return 0;
+	}
+
+	GdkRectangle geom;
+
+	if (top == 0) {
+		WnckWindow *window = get_current_window();
+		if (!window)
+			return 1; // =nil
+
+		get_monitor_index_geometry(window, NULL, &geom);
+
+	} else if (top == 1) {
+		int type = lua_type(lua, 1);
+
+		if (type!=LUA_TNUMBER) {
+			luaL_error(lua, "get_monitor_geometry: %s",
+				   number_expected_as_indata_error);
+			return 0;
+		}
+
+		int index = lua_tonumber(lua, 1) - 1;
+		int actual = get_monitor_geometry(index, &geom);
+
+		if (actual != index)
+			return 0;
+	}
+
+	lua_pushnumber(lua, geom.x);
+	lua_pushnumber(lua, geom.y);
+	lua_pushnumber(lua, geom.width);
+	lua_pushnumber(lua, geom.height);
+
+	return 4;
+}
+
+
+/**
+ *
+ */
 int c_xy(lua_State *lua)
 {
 	int top = lua_gettop(lua);

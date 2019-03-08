@@ -417,9 +417,12 @@ set_viewport(x, y)
 	(Available from version 0.40)
 
 center()
+centre()
 
    Centers the current window on the current workspace.
+   May place the window across multiple monitors.
    (Available from version 0.26)
+   (‘centre’ available from version 0.44)
 
 
 set_opacity(value)

@@ -234,6 +234,7 @@ char* my_wnck_get_string_property_latin1(Window xwindow, Atom atom)
 	unsigned char *property;
 	int err, result;
 	char *retval;
+	Atom XA_UTF8_STRING;
 
 	devilspie2_error_trap_push();
 	property = NULL;
@@ -249,8 +250,11 @@ char* my_wnck_get_string_property_latin1(Window xwindow, Atom atom)
 		return NULL;
 
 	retval = NULL;
+	XA_UTF8_STRING = XInternAtom(gdk_x11_get_default_xdisplay(), "UTF8_STRING", False);
 
 	if (type == XA_STRING) {
+		retval = g_strdup ((char*)property);
+	} else if (type == XA_UTF8_STRING) {
 		retval = g_strdup ((char*)property);
 	} else if (type == XA_ATOM && nitems > 0 && format == 32) {
 		long *pp;

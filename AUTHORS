@@ -59,3 +59,6 @@ Nicola Fontana <ntd (at) entidi (dot) it>
 
 Darren Salt <Darren Salt <devspam (at) moreofthesa (dot) me (dot) uk>
 - Add support for setting and deleting window properties
+
+Klaus Ethgen <Klaus@Ethgen.ch>
+- Allow reading of XA_UTF8_STRING properties

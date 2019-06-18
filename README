@@ -286,11 +286,13 @@ set_window_position2(xpos, ypos)
    (Available from version 0.21)
 
 
-set_window_property(property, value)
+set_window_property(property, value, [utf8])
 
    Set a property of a window to a string or a cardinal (32-bit integer or
    boolean).
-   (Available from version 0.44)
+   Optionally takes a boolean to indicate UTF8_STRING properties. Ignored
+   for non-string values.
+   (Available from version 0.44; UTF-8 option available from version 0.45.)
 
 
 delete_window_property(property)

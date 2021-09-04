@@ -1783,9 +1783,9 @@ int c_center(lua_State *lua)
 
 	WnckWorkspace *workspace;
 
-	if (top > 1) {
+	if (top > 2) {
 		// no input, or one input
-		luaL_error(lua, "center: %s", one_indata_expected_error);
+		luaL_error(lua, "center: %s", one_or_two_indata_expected_error);
 		return 0;
 	}
 
@@ -1798,21 +1798,45 @@ int c_center(lua_State *lua)
 
 	wnck_window_get_geometry(window, &window_r.x, &window_r.y, &window_r.width, &window_r.height);
 
-	if (top == 1) {
-		int type = lua_type(lua, 1);
-		if (type != LUA_TNUMBER) {
-			luaL_error(lua, "center: %s", number_expected_as_indata_error);
-			return 0;
+	// Specified monitor no.:
+	//     -1 = treat all as one
+	//      0 = current monitor
+	//   1..n = monitor 0..(n-1)
+	// Note that monitor_no is one less than this
+	int monitor_no = -2;
+	enum { CENTRE_NONE, CENTRE_H, CENTRE_V, CENTRE_HV } centre = CENTRE_HV;
+
+	for (int i = 1; i <= top; ++i) {
+		int type = lua_type(lua, i);
+		gchar *indata;
+
+		switch (type) {
+		case LUA_TNUMBER:
+			monitor_no = lua_tonumber(lua, i) - 1;
+			break;
+		case LUA_TSTRING:
+			indata = (gchar*)lua_tostring(lua, i);
+			switch (*indata & 0xDF) {
+			case 'H':
+				centre = CENTRE_H;
+				break;
+			case 'V':
+				centre = CENTRE_V;
+				break;
+			default:
+				centre = CENTRE_HV;
+			}
+			break;
+		default:
+			luaL_error(lua, "center: %s", number_or_string_expected_as_indata_error);
 		}
+	}
 
-		// Specified monitor no.:
-		//      0 = current monitor
-		//   1..n = monitor 0..(n-1)
-		int monitor_no = lua_tonumber(lua, 1) - 1;
+	if (monitor_no < -2 || monitor_no >= get_monitor_count())
+		monitor_no = 0; // FIXME: primary monitor; show warning?
 
-		if (monitor_no < -1 || monitor_no >= get_monitor_count())
-			monitor_no = 0; // FIXME: primary monitor; show warning?
-		else if (monitor_no == -1) {
+	if (monitor_no >= -1) {
+		if (monitor_no == -1) {
 			monitor_no = get_monitor_index_geometry(NULL, &window_r, &desktop_r);
 			if (monitor_no == -1)
 				goto handle_as_single_monitor;
@@ -1840,8 +1864,19 @@ handle_as_single_monitor:;
 		desktop_r.height = wnck_workspace_get_height(workspace);
 	}
 
-	window_r.x = desktop_r.x + (desktop_r.width - window_r.width) / 2;
-	window_r.y = desktop_r.y + (desktop_r.height - window_r.height) / 2;
+	if (centre & 1)
+		window_r.x = desktop_r.x + (desktop_r.width - window_r.width) / 2;
+	else if (window_r.x < desktop_r.x)
+		window_r.x = desktop_r.x;
+	else if (window_r.x + window_r.width >= desktop_r.x + desktop_r.width)
+		window_r.x = desktop_r.x + desktop_r.width - window_r.width;
+
+	if (centre & 2)
+		window_r.y = desktop_r.y + (desktop_r.height - window_r.height) / 2;
+	else if (window_r.y < desktop_r.y)
+		window_r.y = desktop_r.y;
+	else if (window_r.y + window_r.height >= desktop_r.y + desktop_r.height)
+		window_r.y = desktop_r.y + desktop_r.height - window_r.height;
 
 	devilspie2_error_trap_push();
 	XMoveWindow (gdk_x11_get_default_xdisplay(),

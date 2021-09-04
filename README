@@ -435,28 +435,34 @@ set_viewport(x, y)
 	where in the viewport the window will be placed.
 	(Available from version 0.40)
 
-center()
-centre()
+center([index,] [direction])
+centre([index,] [direction])
 
-   Centers the current window on the current workspace.
+   With no parameters, centres the current window on the current workspace.
    May place the window across multiple monitors.
-   (Available from version 0.26)
-   (‘centre’ available from version 0.44)
 
-
-center(index)
-centre(index)
-
-   Centres the current window on the specified monitor (counting from 1) on
-   the current workspace.
+   If index is specified, centres the current window on the specified
+   monitor (counting from 1) on the current workspace.
 
    If index = 0 then the ‘current’ monitor (with the window's centre point)
    is used (falling back on then the first monitor showing part of the
    window then the first monitor).
 
+   If index = -1 then all monitors are treated as one large virtual monitor.
+
    If index is out of range then the first monitor is used.
 
-   (Available from version 0.44)
+   If direction begins with 'H' or 'h', the window is horizontally centred only.
+
+   If direction begins with 'V' or 'v', the window is vertically centred only.
+
+   If centring only along one axis, the window may be moved along the other
+   axis to ensure that it is on the specified monitor.
+
+   The defaults are index = -1 (all monitors), direction = '' (both axes).
+
+   (Available without parameters from version 0.26)
+   (Parameters and ‘centre’ available from version 0.44)
 
 
 set_opacity(value)

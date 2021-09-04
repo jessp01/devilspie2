@@ -36,6 +36,8 @@ gchar *boolean_expected_as_indata_error = NULL;
 
 gchar *string_expected_as_indata_error = NULL;
 
+gchar *number_or_string_expected_as_indata_error = NULL;
+
 gchar *integer_greater_than_zero_expected_error = NULL;
 gchar *could_not_find_current_viewport_error = NULL;
 
@@ -104,6 +106,14 @@ int init_script_error_messages()
 	string_expected_as_indata_error =
 	    g_strdup_printf(_("String expected as indata"));
 	if (!string_expected_as_indata_error) {
+		printf("%s", ALLOCATE_ERROR_STRING);
+		printf("\n");
+		return -1;
+	}
+
+	number_or_string_expected_as_indata_error =
+	    g_strdup_printf(_("Number or string expected as indata"));
+	if (!number_or_string_expected_as_indata_error) {
 		printf("%s", ALLOCATE_ERROR_STRING);
 		printf("\n");
 		return -1;

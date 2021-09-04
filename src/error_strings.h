@@ -1,3 +1,4 @@
+
 /**
  *	This file is part of devilspie2
  *	Copyright (C) 2012-2017 Andreas Rönnquist
@@ -33,6 +34,8 @@ extern gchar *number_expected_as_indata_error;
 extern gchar *boolean_expected_as_indata_error;
 
 extern gchar *string_expected_as_indata_error;
+
+extern gchar *number_or_string_expected_as_indata_error;
 
 extern gchar *integer_greater_than_zero_expected_error;
 extern gchar *could_not_find_current_viewport_error;

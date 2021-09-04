@@ -115,6 +115,19 @@ get_application_name()
    returns the application name of the current window.
 
 
+get_process_name()
+
+   returns the name of the process owning the current window.
+
+   On (at least) Linux, the process name is read from /proc/<pid>/comm. If
+   that's not possible, 'ps' is launched in a shell. For this reason, you
+   should avoid calling get_process_name() more than necessary.
+
+   This function is not compatible with busybox ps.
+
+   (Available from version 0.44)
+
+
 get_window_geometry()
 
    Returns the window geometry as four numbers - x-position, y-position,
@@ -148,6 +161,12 @@ get_window_is_maximized_horizontally()
 
    Returns true if the window is horizontally maximized, false otherwise.
    (available from version 0.21)
+
+
+get_window_is_decorated()
+
+   Returns true if the window is decorated, false otherwise.
+   (Available from version 0.44.)
 
 
 get_window_type()

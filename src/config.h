@@ -35,7 +35,7 @@ typedef enum {
 } win_event_type;
 
 extern GSList *event_lists[W_NUM_EVENTS];
-extern const char *event_names[W_NUM_EVENTS];
+extern const char *const event_names[W_NUM_EVENTS];
 
 // Our git version which is defined through some magic in the build system
 extern const char *gitversion;

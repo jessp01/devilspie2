@@ -52,6 +52,7 @@ int c_unminimize_window(lua_State *lua);
 
 int c_decorate_window(lua_State *lua);
 int c_undecorate_window(lua_State *lua);
+int c_get_window_is_decorated(lua_State *lua);
 
 int c_set_window_workspace(lua_State *lua);
 int c_change_workspace(lua_State *lua);
@@ -125,5 +126,7 @@ int c_xy(lua_State *lua);
 int c_xywh(lua_State *lua);
 
 int c_on_geometry_changed(lua_State *lua);
+
+int c_get_process_name(lua_State *lua);
 
 #endif /*__HEADER_SCRIPT_FUNCTIONS_*/

@@ -68,7 +68,7 @@ gchar *config_filename = NULL;
 /**
  *
  */
-static void load_list_of_scripts(WnckScreen *screen, WnckWindow *window,
+static void load_list_of_scripts(WnckScreen *screen G_GNUC_UNUSED, WnckWindow *window,
                                  GSList *file_list)
 {
 	GSList *temp_file_list = file_list;
@@ -177,8 +177,7 @@ void devilspie_exit()
  */
 static void signal_handler(int sig)
 {
-	printf("\n");
-	printf("%s", _("Received signal:"));
+	printf("\n%s", _("Received signal:"));
 	printf(" %d (%s)\n", sig, strsignal(sig));
 
 	done_script_error_messages();
@@ -239,8 +238,7 @@ void print_script_lists()
 	}
 
 	if (!have_any_files) {
-		printf("%s", _("No script files found in the script folder - exiting."));
-		printf("\n\n");
+		printf("%s\n\n", _("No script files found in the script folder - exiting."));
 		exit(EXIT_SUCCESS);
 	}
 }
@@ -249,9 +247,9 @@ void print_script_lists()
 /**
  *
  */
-void folder_changed_callback(GFileMonitor *mon,
+void folder_changed_callback(GFileMonitor *mon G_GNUC_UNUSED,
                              GFile *first_file,
-                             GFile *second_file,
+                             GFile *second_file G_GNUC_UNUSED,
                              GFileMonitorEvent event,
                              gpointer user_data)
 {
@@ -305,22 +303,22 @@ int main(int argc, char *argv[])
 {
 	static const GOptionEntry options[]= {
 		{	"debug",			'd',	0,	G_OPTION_ARG_NONE,		&debug,
-			N_("Print debug info to stdout")
+			N_("Print debug info to stdout"), NULL
 		},
 		{	"emulate",		'e',	0,	G_OPTION_ARG_NONE,		&emulate,
-			N_("Don't apply any rules, only emulate execution")
+			N_("Don't apply any rules, only emulate execution"), NULL
 		},
 		{	"folder",			'f',	0,	G_OPTION_ARG_STRING,		&script_folder,
 			N_("Search for scripts in this folder"),N_("FOLDER")
 		},
 		{	"version",		'v',	0,	G_OPTION_ARG_NONE,		&show_version,
-			N_("Show Devilspie2 version and quit")
+			N_("Show Devilspie2 version and quit"), NULL
 		},
 #ifdef HAVE_GTK3
 		// libwnck Version Information is only availible if you have
 		// libwnck 3.0 or later
 		{	"wnck-version",	'w',	0,	G_OPTION_ARG_NONE,		&show_wnck_version,
-			N_("Show libwnck version and quit")
+			N_("Show libwnck version and quit"), NULL
 		},
 #endif
 		{ NULL }
@@ -367,8 +365,7 @@ int main(int argc, char *argv[])
 
 			// - and if it doesn't, create it.
 			if (g_mkdir(temp_folder, 0700) != 0) {
-				printf("%s", _("Couldn't create the default folder for devilspie2 scripts."));
-				printf("\n");
+				printf("%s\n", _("Couldn't create the default folder for devilspie2 scripts."));
 				exit(EXIT_FAILURE);
 			}
 		}
@@ -394,16 +391,14 @@ int main(int argc, char *argv[])
 
 #if (GTK_MAJOR_VERSION >= 3)
 	if (!GDK_IS_X11_DISPLAY(gdk_display_get_default())) {
-		printf("%s", _("An X11 display is required for devilspie2."));
-		printf("\n\n");
+		printf("%s\n\n", _("An X11 display is required for devilspie2."));
 		return EXIT_FAILURE;
 	}
 
 #endif
 
 	if (init_script_error_messages()!=0) {
-		printf("%s", _("Couldn't init script error messages!"));
-		printf("\n");
+		printf("%s\n", _("Couldn't init script error messages!"));
 		exit(EXIT_FAILURE);
 	}
 
@@ -423,12 +418,10 @@ int main(int argc, char *argv[])
 	if (debug) {
 
 		if (emulate) {
-			printf("%s", _("Running devilspie2 in debug and emulate mode."));
+			printf("%s\n\n", _("Running devilspie2 in debug and emulate mode."));
 		} else {
-			printf("%s", _("Running devilspie2 in debug mode."));
+			printf("%s\n\n", _("Running devilspie2 in debug mode."));
 		}
-
-		printf("\n\n");
 
 		printf(_("Using scripts from folder: %s"), script_folder);
 
@@ -446,8 +439,7 @@ int main(int argc, char *argv[])
 	mon = g_file_monitor_directory(directory_file, G_FILE_MONITOR_NONE,
 	                               NULL, NULL);
 	if (!mon) {
-		printf("%s", _("Couldn't create directory monitor!"));
-		printf("\n");
+		printf("%s\n", _("Couldn't create directory monitor!"));
 		return EXIT_FAILURE;
 	}
 

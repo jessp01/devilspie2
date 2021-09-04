@@ -215,6 +215,26 @@ gboolean undecorate_window(Window xid)
 /**
  *
  */
+gboolean get_decorated(Window xid /*WnckWindow *window*/)
+{
+	Display *disp = gdk_x11_get_default_xdisplay();
+	Atom type_ret;
+	Atom hints_atom = XInternAtom(disp, "_MOTIF_WM_HINTS", False);
+	int format_ret;
+	unsigned long nitems_ret, bytes_after_ret, *prop_ret;
+
+	XGetWindowProperty(disp, xid, hints_atom, 0,
+	                PROP_MOTIF_WM_HINTS_ELEMENTS, 0, hints_atom,
+	                &type_ret, &format_ret, &nitems_ret,
+	                &bytes_after_ret, (unsigned char **)&prop_ret);
+
+	return type_ret != hints_atom || nitems_ret < 3 || prop_ret[2] != 0;
+}
+
+
+/**
+ *
+ */
 Screen *devilspie2_window_get_xscreen(Window xid)
 {
 	XWindowAttributes attrs;
@@ -237,6 +257,7 @@ char* my_wnck_get_string_property_latin1(Window xwindow, Atom atom)
 	unsigned char *property;
 	int err, result;
 	char *retval;
+	Atom XA_UTF8_STRING;
 
 	devilspie2_error_trap_push();
 	property = NULL;
@@ -252,8 +273,11 @@ char* my_wnck_get_string_property_latin1(Window xwindow, Atom atom)
 		return NULL;
 
 	retval = NULL;
+	XA_UTF8_STRING = XInternAtom(gdk_x11_get_default_xdisplay(), "UTF8_STRING", False);
 
 	if (type == XA_STRING) {
+		retval = g_strdup ((char*)property);
+	} else if (type == XA_UTF8_STRING) {
 		retval = g_strdup ((char*)property);
 	} else if (type == XA_ATOM && nitems > 0 && format == 32) {
 		long *pp;
@@ -267,7 +291,7 @@ char* my_wnck_get_string_property_latin1(Window xwindow, Atom atom)
 				XFree (prop_name);
 			}
 		} else {
-			int i;
+			gulong i;
 			char** prop_names;
 
 			prop_names = g_new (char *, nitems + 1);

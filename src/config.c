@@ -39,7 +39,7 @@
  *
  */
 GSList *event_lists[W_NUM_EVENTS] = { NULL, NULL, NULL, NULL };
-const char *event_names[W_NUM_EVENTS] = {
+const char *const event_names[W_NUM_EVENTS] = {
 	"window_open",
 	"window_close",
 	"window_focus",
@@ -189,8 +189,7 @@ int load_config(gchar *filename)
 	GDir *dir = g_dir_open(script_folder, 0, NULL);
 	if (!g_file_test(script_folder, G_FILE_TEST_IS_DIR)) {
 
-		printf("%s", _("script_folder isn't a folder."));
-		printf("\n");
+		printf("%s\n", _("script_folder isn't a folder."));
 		return -1;
 	}
 

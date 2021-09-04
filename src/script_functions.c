@@ -17,6 +17,7 @@
  *	If not, see <http://www.gnu.org/licenses/>.
  */
 #include <stdlib.h>
+#include <sys/types.h>
 
 #define WNCK_I_KNOW_THIS_IS_UNSTABLE
 #include <libwnck/libwnck.h>
@@ -672,6 +673,33 @@ int c_decorate_window(lua_State *lua)
 	return 1;
 }
 
+
+
+/**
+ * Decorates a window
+ */
+int c_get_window_is_decorated(lua_State *lua)
+{
+	gboolean result = TRUE;
+	int top = lua_gettop(lua);
+
+	if (top != 0) {
+		luaL_error(lua, "get_window_is_decorated: %s", no_indata_expected_error);
+		return 0;
+	}
+
+	if (!devilspie2_emulate) {
+		WnckWindow *window = get_current_window();
+
+		if (window) {
+			result = get_decorated(wnck_window_get_xid(window));
+		}
+	}
+
+	lua_pushboolean(lua,result);
+
+	return 1;
+}
 
 
 /**
@@ -2261,7 +2289,7 @@ static void on_geometry_changed(WnckWindow *window, struct lua_callback *callbac
 	set_current_window(old_window);
 }
 
-static void on_geometry_changed_disconnect(gpointer data, GClosure *closure)
+static void on_geometry_changed_disconnect(gpointer data, GClosure *closure G_GNUC_UNUSED)
 {
 	g_free(data);
 }
@@ -2294,6 +2322,100 @@ int c_on_geometry_changed(lua_State *lua)
 
 	return 0;
 }
+
+/**
+ * returns the process binary name
+ */
+static gchar *c_get_process_name_INT_proc(lua_State *, pid_t);
+static gchar *c_get_process_name_INT_ps(lua_State *, pid_t);
+
+int c_get_process_name(lua_State *lua)
+{
+	int top = lua_gettop(lua);
+
+	if (top != 0) {
+		luaL_error(lua, "get_process_name: %s", no_indata_expected_error);
+		return 0;
+	}
+
+	WnckWindow *window = get_current_window();
+
+	if (window) {
+		pid_t pid = wnck_window_get_pid(window);
+
+		if (pid != 0) {
+			gchar *cmdname = c_get_process_name_INT_proc(lua, pid);
+			if (!cmdname)
+				cmdname = c_get_process_name_INT_ps(lua, pid);
+
+			/* chop off any trailing LF */
+			gchar *lf = cmdname + strlen(cmdname) - 1;
+			if (lf >= cmdname && *lf == '\n')
+				*lf = 0;
+
+			lua_pushstring(lua, cmdname ? cmdname : "");
+			g_free(cmdname);
+			return 1;
+		}
+	}
+
+	lua_pushstring(lua, "");
+	return 1;
+}
+
+static gchar *c_get_process_name_INT_proc(lua_State *lua, pid_t pid)
+{
+	/* 16 is fine for cmdname on Linux. Could be longer elsewhere, though. */
+	char cmd[1024], cmdname[1024];
+	FILE *cmdfp;
+
+	cmdname[0] = 0;
+
+	snprintf(cmd, sizeof(cmd), "/proc/%lu/comm", (unsigned long)pid);
+	cmdfp = fopen(cmd, "r");
+	if (cmdfp == NULL) {
+		if (errno != ENOENT && errno != EACCES) {
+			luaL_error(lua, "get_process_name: Failed to open \"%s\" (%d).", cmd, errno);
+		}
+		return NULL;
+	}
+
+	if (fgets(cmdname, sizeof(cmdname), cmdfp) == NULL) {
+		luaL_error(lua, "get_process_name: Failed to read from \"%s\".", cmd);
+		fclose(cmdfp);
+		return NULL;
+	}
+
+	fclose(cmdfp);
+	return g_strdup(cmdname);
+}
+
+static gchar *c_get_process_name_INT_ps(lua_State *lua, pid_t pid)
+{
+	char cmd[1024], cmdname[1024];
+	FILE *cmdfp;
+
+	/* I'd like to use "ps ho comm c %lu" here.
+	 * Seems that FreeBSD ps outputs headers regardless.
+	 * (Tested using procps 'ps' with PS_PERSONALITY=bsd)
+	 */
+	snprintf(cmd, sizeof(cmd), "ps o comm c %lu | tail -n 1", (unsigned long)pid);
+	cmdfp = popen(cmd, "r");
+	if (cmdfp == NULL) {
+		luaL_error(lua, "get_process_name: Failed to run command \"%s\".", cmd);
+		return 0;
+	}
+
+	if (fgets(cmdname, sizeof(cmdname), cmdfp) == NULL) {
+		luaL_error(lua, "get_process_name: Failed to read output from command \"%s\".", cmd);
+		pclose(cmdfp);
+		return 0;
+	}
+
+	pclose(cmdfp);
+	return g_strdup(cmdname);
+}
+
 
 /*
  * Devilspie:

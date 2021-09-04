@@ -17,6 +17,7 @@
  *	If not, see <http://www.gnu.org/licenses/>.
  */
 #include <stdlib.h>
+#include <sys/types.h>
 
 #define WNCK_I_KNOW_THIS_IS_UNSTABLE
 #include <libwnck/libwnck.h>
@@ -2275,14 +2276,14 @@ int c_get_process_name(lua_State *lua)
 
 	WnckWindow *window = get_current_window();
 	if (window) {
-		int pid = wnck_window_get_pid(window);
+		pid_t pid = wnck_window_get_pid(window);
 		if (pid == 0) {
 			lua_pushstring(lua, "");
 			return 1;
 		}
 
 		char cmd[1024];
-		snprintf(cmd, sizeof(cmd), "ps c %d | tail -n 1 | awk '{print $5}'", pid);
+		snprintf(cmd, sizeof(cmd), "ps c %lu | tail -n 1 | awk '{print $5}'", (unsigned long)pid);
 		FILE *cmdfp = popen(cmd, "r");
 		if (cmdfp == NULL) {
 			luaL_error(lua, "get_process_name: Failed to run command \"%s\".", cmd);

@@ -2264,6 +2264,9 @@ int c_on_geometry_changed(lua_State *lua)
 /**
  * returns the process binary name
  */
+static gchar *c_get_process_name_INT_proc(lua_State *, pid_t);
+static gchar *c_get_process_name_INT_ps(lua_State *, pid_t);
+
 int c_get_process_name(lua_State *lua)
 {
 	int top = lua_gettop(lua);
@@ -2272,44 +2275,79 @@ int c_get_process_name(lua_State *lua)
 		luaL_error(lua, "get_process_name: %s", no_indata_expected_error);
 		return 0;
 	}
-	char *test = NULL;
 
 	WnckWindow *window = get_current_window();
+
 	if (window) {
 		pid_t pid = wnck_window_get_pid(window);
-		if (pid == 0) {
-			lua_pushstring(lua, "");
+
+		if (pid != 0) {
+			gchar *cmdname = c_get_process_name_INT_proc(lua, pid);
+			if (!cmdname)
+				cmdname = c_get_process_name_INT_ps(lua, pid);
+			lua_pushstring(lua, cmdname ? cmdname : "");
+			g_free(cmdname);
 			return 1;
 		}
-
-		char cmd[1024];
-		/* I'd like to use "ps ho comm c %lu" here.
-		 * Seems that FreeBSD ps outputs headers regardless.
-		 * (Tested using procps 'ps' with PS_PERSONALITY=bsd)
-		 */
-		snprintf(cmd, sizeof(cmd), "ps o comm c %lu | tail -n 1", (unsigned long)pid);
-		FILE *cmdfp = popen(cmd, "r");
-		if (cmdfp == NULL) {
-			luaL_error(lua, "get_process_name: Failed to run command \"%s\".", cmd);
-			return 0;
-		}
-		char cmdname[1024];
-		if (fgets(cmdname, sizeof(cmdname), cmdfp) == NULL) {
-			luaL_error(lua, "get_process_name: Failed to read output from command \"%s\".", cmd);
-			pclose(cmdfp);
-			return 0;
-		}
-		pclose(cmdfp);
-
-		test = &cmdname[0];
-	} else {
-		test = "";
 	}
 
-	lua_pushstring(lua, test);
-
+	lua_pushstring(lua, "");
 	return 1;
 }
+
+static gchar *c_get_process_name_INT_proc(lua_State *lua, pid_t pid)
+{
+	/* 16 is fine for cmdname on Linux. Could be longer elsewhere, though. */
+	char cmd[1024], cmdname[1024];
+	FILE *cmdfp;
+
+	cmdname[0] = 0;
+
+	snprintf(cmd, sizeof(cmd), "/proc/%lu/comm", (unsigned long)pid);
+	cmdfp = fopen(cmd, "r");
+	if (cmdfp == NULL) {
+		if (errno != ENOENT && errno != EACCES) {
+			luaL_error(lua, "get_process_name: Failed to open \"%s\" (%d).", cmd, errno);
+		}
+		return NULL;
+	}
+
+	if (fgets(cmdname, sizeof(cmdname), cmdfp) == NULL) {
+		luaL_error(lua, "get_process_name: Failed to read from \"%s\".", cmd);
+		fclose(cmdfp);
+		return NULL;
+	}
+
+	fclose(cmdfp);
+	return g_strdup(cmdname);
+}
+
+static gchar *c_get_process_name_INT_ps(lua_State *lua, pid_t pid)
+{
+	char cmd[1024], cmdname[1024];
+	FILE *cmdfp;
+
+	/* I'd like to use "ps ho comm c %lu" here.
+	 * Seems that FreeBSD ps outputs headers regardless.
+	 * (Tested using procps 'ps' with PS_PERSONALITY=bsd)
+	 */
+	snprintf(cmd, sizeof(cmd), "ps o comm c %lu | tail -n 1", (unsigned long)pid);
+	cmdfp = popen(cmd, "r");
+	if (cmdfp == NULL) {
+		luaL_error(lua, "get_process_name: Failed to run command \"%s\".", cmd);
+		return 0;
+	}
+
+	if (fgets(cmdname, sizeof(cmdname), cmdfp) == NULL) {
+		luaL_error(lua, "get_process_name: Failed to read output from command \"%s\".", cmd);
+		pclose(cmdfp);
+		return 0;
+	}
+
+	pclose(cmdfp);
+	return g_strdup(cmdname);
+}
+
 
 /*
  * Devilspie:

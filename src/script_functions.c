@@ -2282,14 +2282,14 @@ int c_get_process_name(lua_State *lua)
 		}
 
 		char cmd[1024];
-		snprintf(cmd, 1024, "ps c %d | tail -n 1 | awk '{print $5}'", pid);
+		snprintf(cmd, sizeof(cmd), "ps c %d | tail -n 1 | awk '{print $5}'", pid);
 		FILE *cmdfp = popen(cmd, "r");
 		if (cmdfp == NULL) {
 			luaL_error(lua, "get_process_name: Failed to run command \"%s\".", cmd);
 			return 0;
 		}
 		char cmdname[1024];
-		if (fgets(cmdname, 1024, cmdfp) == NULL) {
+		if (fgets(cmdname, sizeof(cmdname), cmdfp) == NULL) {
 			luaL_error(lua, "get_process_name: Failed to read output from command \"%s\".", cmd);
 			pclose(cmdfp);
 			return 0;

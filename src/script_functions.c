@@ -2283,7 +2283,11 @@ int c_get_process_name(lua_State *lua)
 		}
 
 		char cmd[1024];
-		snprintf(cmd, sizeof(cmd), "ps c %lu | tail -n 1 | awk '{print $5}'", (unsigned long)pid);
+		/* I'd like to use "ps ho comm c %lu" here.
+		 * Seems that FreeBSD ps outputs headers regardless.
+		 * (Tested using procps 'ps' with PS_PERSONALITY=bsd)
+		 */
+		snprintf(cmd, sizeof(cmd), "ps o comm c %lu | tail -n 1", (unsigned long)pid);
 		FILE *cmdfp = popen(cmd, "r");
 		if (cmdfp == NULL) {
 			luaL_error(lua, "get_process_name: Failed to run command \"%s\".", cmd);

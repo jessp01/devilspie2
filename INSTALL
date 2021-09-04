@@ -13,7 +13,7 @@ Debian system, installing the following packages should do it:
 
 pkg-config
 libglib2.0-dev
-liblua5.1-0-dev
+liblua5.3-0-dev
 libwnck-3-dev
 libgtk-3-dev
 
@@ -32,6 +32,11 @@ To build, you simply do a
 	make GTK2=on
 
 to make the build use the Gtk2 libs.
+
+You can use other versions of Lua. For example:
+
+	make LUA=lua5.1
+	make LUA=lua5.4
 
 This will in the end create the devilspie2 binary in the bin/ folder.
 To build the same executable, but with debugging enabled, run

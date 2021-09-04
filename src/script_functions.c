@@ -471,8 +471,7 @@ int c_debug_print(lua_State *lua)
 		lua_call(lua, 1, 1);
 		s = lua_tostring(lua, -1);  /* get result */
 		if (s == NULL)
-			return luaL_error(lua, LUA_QL("tostring") " must return a string to "
-			                  LUA_QL("print"));
+			return luaL_error(lua, "'tostring' must return a string to 'print'");
 		if (i > 1) {
 			if (devilspie2_debug) fputs("\t", stdout);
 		}

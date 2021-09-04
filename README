@@ -150,6 +150,12 @@ get_window_is_maximized_horizontally()
    (available from version 0.21)
 
 
+get_window_is_decorated()
+
+   Returns true if the window is decorated, false otherwise.
+   (Available from version 0.44.)
+
+
 get_window_type()
 
    Returns the type of the window - The result type is a string, and can

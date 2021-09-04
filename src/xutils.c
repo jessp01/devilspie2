@@ -215,6 +215,26 @@ gboolean undecorate_window(Window xid)
 /**
  *
  */
+gboolean get_decorated(Window xid /*WnckWindow *window*/)
+{
+	Display *disp = gdk_x11_get_default_xdisplay();
+	Atom type_ret;
+	Atom hints_atom = XInternAtom(disp, "_MOTIF_WM_HINTS", False);
+	int format_ret;
+	unsigned long nitems_ret, bytes_after_ret, *prop_ret;
+
+	XGetWindowProperty(disp, xid, hints_atom, 0,
+	                PROP_MOTIF_WM_HINTS_ELEMENTS, 0, hints_atom,
+	                &type_ret, &format_ret, &nitems_ret,
+	                &bytes_after_ret, (unsigned char **)&prop_ret);
+
+	return type_ret != hints_atom || nitems_ret < 3 || prop_ret[2] != 0;
+}
+
+
+/**
+ *
+ */
 Screen *devilspie2_window_get_xscreen(Window xid)
 {
 	XWindowAttributes attrs;

@@ -675,6 +675,33 @@ int c_decorate_window(lua_State *lua)
 
 
 /**
+ * Decorates a window
+ */
+int c_get_window_is_decorated(lua_State *lua)
+{
+	gboolean result = TRUE;
+	int top = lua_gettop(lua);
+
+	if (top != 0) {
+		luaL_error(lua, "get_window_is_decorated: %s", no_indata_expected_error);
+		return 0;
+	}
+
+	if (!devilspie2_emulate) {
+		WnckWindow *window = get_current_window();
+
+		if (window) {
+			result = get_decorated(wnck_window_get_xid(window));
+		}
+	}
+
+	lua_pushboolean(lua,result);
+
+	return 1;
+}
+
+
+/**
  * Move a window to a specific workspace
  */
 int c_set_window_workspace(lua_State *lua)

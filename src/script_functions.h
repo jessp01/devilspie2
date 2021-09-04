@@ -52,6 +52,7 @@ int c_unminimize_window(lua_State *lua);
 
 int c_decorate_window(lua_State *lua);
 int c_undecorate_window(lua_State *lua);
+int c_get_window_is_decorated(lua_State *lua);
 
 int c_set_window_workspace(lua_State *lua);
 int c_change_workspace(lua_State *lua);

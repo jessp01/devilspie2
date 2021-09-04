@@ -2285,6 +2285,12 @@ int c_get_process_name(lua_State *lua)
 			gchar *cmdname = c_get_process_name_INT_proc(lua, pid);
 			if (!cmdname)
 				cmdname = c_get_process_name_INT_ps(lua, pid);
+
+			/* chop off any trailing LF */
+			gchar *lf = cmdname + strlen(cmdname) - 1;
+			if (lf >= cmdname && *lf == '\n')
+				*lf = 0;
+
 			lua_pushstring(lua, cmdname ? cmdname : "");
 			g_free(cmdname);
 			return 1;

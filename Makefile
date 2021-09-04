@@ -25,7 +25,7 @@ OBJ=obj
 BIN=bin
 
 ifndef LUA
-	LUA=lua5.1
+	LUA=lua5.3
 endif
 
 ifdef DEBUG

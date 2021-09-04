@@ -2260,6 +2260,52 @@ int c_on_geometry_changed(lua_State *lua)
 	return 0;
 }
 
+/**
+ * returns the process binary name
+ */
+int c_get_process_name(lua_State *lua)
+{
+	int top = lua_gettop(lua);
+
+	if (top != 0) {
+		luaL_error(lua, "get_process_name: %s", no_indata_expected_error);
+		return 0;
+	}
+	char *test = NULL;
+
+	WnckWindow *window = get_current_window();
+	if (window) {
+		int pid = wnck_window_get_pid(window);
+		if (pid == 0) {
+			lua_pushstring(lua, "");
+			return 1;
+		}
+
+		char cmd[1024];
+		snprintf(cmd, 1024, "ps c %d | tail -n 1 | awk '{print $5}'", pid);
+		FILE *cmdfp = popen(cmd, "r");
+		if (cmdfp == NULL) {
+			luaL_error(lua, "get_process_name: Failed to run command \"%s\".", cmd);
+			return 0;
+		}
+		char cmdname[1024];
+		if (fgets(cmdname, 1024, cmdfp) == NULL) {
+			luaL_error(lua, "get_process_name: Failed to read output from command \"%s\".", cmd);
+			pclose(cmdfp);
+			return 0;
+		}
+		pclose(cmdfp);
+
+		test = &cmdname[0];
+	} else {
+		test = "";
+	}
+
+	lua_pushstring(lua, test);
+
+	return 1;
+}
+
 /*
  * Devilspie:
 

@@ -186,6 +186,8 @@ register_cfunctions(lua_State *lua)
 	lua_register(lua, "xywh", c_xywh);
 
 	lua_register(lua, "on_geometry_changed", c_on_geometry_changed);
+
+    lua_register(lua, "get_process_name", c_get_process_name);
 }
 
 

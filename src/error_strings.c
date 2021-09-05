@@ -158,6 +158,8 @@ void done_script_error_messages()
 	g_free(boolean_expected_as_indata_error);
 	g_free(string_expected_as_indata_error);
 
+	g_free(number_or_string_expected_as_indata_error);
+
 	g_free(integer_greater_than_zero_expected_error);
 	g_free(could_not_find_current_viewport_error);
 	g_free(setting_viewport_failed_error);

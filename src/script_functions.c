@@ -47,6 +47,8 @@
 #endif
 
 
+#include "compat.h"
+
 #include "script_functions.h"
 
 #include "script.h"
@@ -2326,8 +2328,8 @@ int c_on_geometry_changed(lua_State *lua)
 /**
  * returns the process binary name
  */
-static gchar *c_get_process_name_INT_proc(lua_State *, pid_t);
-static gchar *c_get_process_name_INT_ps(lua_State *, pid_t);
+static ATTR_MALLOC gchar *c_get_process_name_INT_proc(lua_State *, pid_t);
+static ATTR_MALLOC gchar *c_get_process_name_INT_ps(lua_State *, pid_t);
 
 int c_get_process_name(lua_State *lua)
 {

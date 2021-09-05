@@ -32,10 +32,14 @@ ifndef LUA
 	LUA=lua5.3
 endif
 
+# Some hardening by default.
+# Set default optimisation; override CFLAGS if DEBUG is set.
+STD_CFLAGS=-Wall -Wformat -Wno-format-extra-args -Wformat-security -Wformat-nonliteral -Wformat=2
 ifdef DEBUG
-	STD_CFLAGS=-Wall -g3 -ggdb -D_DEBUG
+	STD_CFLAGS += -D_DEBUG
+	CFLAGS = -Og -g3 -ggdb
 else
-	STD_CFLAGS=-Wall -Wformat -Wno-format-extra-args -Wformat-security -Wformat-nonliteral -Wformat=2
+	CFLAGS ?= -O2
 endif
 
 DEPEND=Makefile.dep

@@ -63,4 +63,6 @@ int get_monitor_count(void);
 int get_monitor_index_geometry(WnckWindow *window, const GdkRectangle *window_r, /*out*/ GdkRectangle *monitor_r);
 int get_monitor_geometry(int index, /*out*/ GdkRectangle *monitor_r);
 
+int get_window_workspace_geometry(WnckWindow *window, /*out*/ GdkRectangle *monitor_r);
+
 #endif /*__HEADER_XUTILS_*/

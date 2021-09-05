@@ -694,3 +694,29 @@ int get_monitor_geometry(int index, GdkRectangle *monitor_r)
 
 	return index;
 }
+
+
+/**
+ *
+ */
+int get_window_workspace_geometry(WnckWindow *window, GdkRectangle *geom)
+{
+	WnckScreen *screen = wnck_window_get_screen(window);
+	WnckWorkspace *workspace = wnck_screen_get_active_workspace(screen);
+
+	if (workspace == NULL) {
+		workspace = wnck_screen_get_workspace(screen, 0);
+	}
+
+	if (workspace == NULL) {
+		g_printerr(_("Could not get workspace"));
+		return 1;
+	}
+
+	geom->x = 0;
+	geom->y = 0;
+	geom->width = wnck_workspace_get_width(workspace);
+	geom->height = wnck_workspace_get_height(workspace);
+
+	return 0;
+}

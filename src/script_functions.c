@@ -1807,8 +1807,6 @@ int c_center(lua_State *lua)
 
 	GdkRectangle desktop_r, window_r;
 
-	WnckWorkspace *workspace;
-
 	if (top > 2) {
 		// no input, or one input
 		luaL_error(lua, "center: %s", one_or_two_indata_expected_error);
@@ -1870,24 +1868,10 @@ int c_center(lua_State *lua)
 			goto handle_as_single_monitor;
 	} else {
 handle_as_single_monitor:;
-		WnckScreen *screen = wnck_window_get_screen(window);
-
-		workspace = wnck_screen_get_active_workspace(screen);
-
-		if (workspace == NULL) {
-			workspace = wnck_screen_get_workspace(screen,0);
-		}
-
-		if (workspace == NULL) {
-			g_printerr(_("Could not get workspace"));
+		if (get_window_workspace_geometry(window, &desktop_r)) {
 			lua_pushboolean(lua, FALSE);
 			return 1;
 		}
-
-		desktop_r.x = 0;
-		desktop_r.y = 0;
-		desktop_r.width = wnck_workspace_get_width(workspace);
-		desktop_r.height = wnck_workspace_get_height(workspace);
 	}
 
 	if (centre & 1)

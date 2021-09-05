@@ -257,7 +257,7 @@ void folder_changed_callback(GFileMonitor *mon G_GNUC_UNUSED,
 
 	// If a file is created or deleted, we need to check the file lists again
 	if ((event == G_FILE_MONITOR_EVENT_CREATED) ||
-	        (event == G_FILE_MONITOR_EVENT_DELETED)) {
+	    (event == G_FILE_MONITOR_EVENT_DELETED)) {
 
 		clear_file_lists();
 
@@ -334,8 +334,7 @@ int main(int argc, char *argv[])
 	bind_textdomain_codeset(PACKAGE, "");
 	textdomain(PACKAGE);
 
-	gchar *devilspie2_description =
-	    g_strdup_printf(_("apply rules on windows"));
+	gchar *devilspie2_description = g_strdup_printf(_("apply rules on windows"));
 
 	gchar *full_desc_string = g_strdup_printf("- %s", devilspie2_description);
 

@@ -177,7 +177,8 @@ static void set_decorations(Window xid /*WnckWindow *window*/, gboolean decorate
 	XGetWindowAttributes(gdk_x11_get_default_xdisplay(), xid, &attrs);
 
 	/* Apart from OpenBox, which doesn't respect it changing after mapping.
-	  Instead it has this workaround. */
+	 * Instead it has this workaround.
+	 */
 	devilspie2_change_state (attrs.screen,
 	                         xid /*wnck_window_get_xid(window)*/, !decorate,
 	                         my_wnck_atom_get ("_OB_WM_STATE_UNDECORATED"), 0);
@@ -329,7 +330,8 @@ char* my_wnck_get_string_property_latin1(Window xwindow, Atom atom)
 		}
 	} else if (type == XA_WINDOW && nitems == 1) {
 		/* unsinged long is the same format used for XID by libwnck:
-		   https://git.gnome.org/browse/libwnck/tree/libwnck/window.c?h=3.14.0#n763 */
+		 * https://git.gnome.org/browse/libwnck/tree/libwnck/window.c?h=3.14.0#n763
+		 */
 		retval = g_strdup_printf("%lu", (gulong) *(Window *)property);
 	}
 
@@ -434,8 +436,7 @@ int devilspie2_get_viewport_start(Window xid, int *x, int *y)
 
 	int result = -1;
 
-	my_wnck_get_cardinal_list(RootWindowOfScreen(
-	                              devilspie2_window_get_xscreen(xid)),
+	my_wnck_get_cardinal_list(RootWindowOfScreen(devilspie2_window_get_xscreen(xid)),
 	                          my_wnck_atom_get("_NET_DESKTOP_VIEWPORT"),
 	                          &list, &len);
 

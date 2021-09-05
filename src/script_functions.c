@@ -1686,7 +1686,7 @@ int c_set_viewport(lua_State *lua)
 	int width, height;
 	int viewport_start_x, viewport_start_y;
 	int win_x, win_y;
-	
+
 	if (top == 1) {
 
 		WnckScreen *screen;
@@ -1726,7 +1726,7 @@ int c_set_viewport(lua_State *lua)
 		}
 
 		x = ((num - 1) * wnck_screen_get_width(screen)) - viewport_start_x + win_x;
-		
+
 		devilspie2_error_trap_push();
 		XMoveResizeWindow(gdk_x11_get_default_xdisplay(),
 								wnck_window_get_xid(window),
@@ -1742,7 +1742,6 @@ int c_set_viewport(lua_State *lua)
 		return 1;
 
 	} else if (top == 2) {
-		
 		int type1 = lua_type(lua, 1);
 		int type2 = lua_type(lua, 2);
 
@@ -1776,7 +1775,7 @@ int c_set_viewport(lua_State *lua)
 			lua_pushboolean(lua, FALSE);
 			return 1;
 		}
-		
+
 		devilspie2_error_trap_push();
 		XMoveResizeWindow(gdk_x11_get_default_xdisplay(),
 								wnck_window_get_xid(window),
@@ -1790,13 +1789,11 @@ int c_set_viewport(lua_State *lua)
 
 		lua_pushboolean(lua, TRUE);
 		return 1;
-		
-	
 	} else {
 		luaL_error(lua, "set_viewport: %s", one_or_two_indata_expected_error);
 		return 0;
 	}
-	
+
 	return 0;
 }
 
@@ -2130,7 +2127,7 @@ int c_get_monitor_geometry(lua_State *lua)
 
 		if (type!=LUA_TNUMBER) {
 			luaL_error(lua, "get_monitor_geometry: %s",
-				   number_expected_as_indata_error);
+			           number_expected_as_indata_error);
 			return 0;
 		}
 

@@ -27,8 +27,8 @@ This copies the devilspie2.pot to [LANGUAGE ABBREV].po, (it replaces
 if you are translating into Swedish) and fills it with information that it gets
 from your system.
 
-Then start translating all strings in the generated po file using your 
-favourite texteditor, or a "gettext catalogs (.po files) editor" like poedit 
+Then start translating all strings in the generated po file using your
+favourite texteditor, or a "gettext catalogs (.po files) editor" like poedit
 (which can be found at http://www.poedit.net.)
 
 
@@ -70,7 +70,7 @@ get the latest git version of devilspie2, and then do the following:
 
 and then update your po file as described above.
 
-Open your file and locate the strings that need updating. To get the 
+Open your file and locate the strings that need updating. To get the
 translation to me you can fork devilspie2 on github, do the translation, and
 send a pull request to me, which I will merge into my devilspie2 repository.
 Please use English language in your commit messages so that I can understand

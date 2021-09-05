@@ -444,7 +444,7 @@ set_viewport(viewport)
 	- Also see the alternative usage of this function below.
 
 set_viewport(x, y)
-	
+
 	If you are using two indata to the set_viewport function, you can decide
 	where in the viewport the window will be placed.
 	(Available from version 0.40)

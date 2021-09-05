@@ -1,7 +1,9 @@
 #
-# Copyright © 2011-2015 Andreas Rönnquist.
+# Copyright © 2011-2021 devilspie2 developers
 # This file is distributed under the same license
 # as the devilspie2 package, see COPYING file.
 #
 
-Nothing here at the moment
+Optionally use GTK+4
+
+Support for Wayland? XWayland?

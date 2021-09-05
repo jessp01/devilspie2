@@ -69,22 +69,16 @@ it up into several, Devilspie2 runs on all Lua files in your requested
 devilspie2 folder, by default ~/.config/devilspie2 - that is all files with a
 .lua extension.
 
-The scripting language used is Lua (see www.lua.org) - See FAQ at
+The scripting language used is Lua; https://see www.lua.org/
 
-www.lua.org/FAQ.html
-
-, documentation at
-
-www.lua.org/docs.html
-
-, and tutorials at
-
-http://lua-users.org/wiki/TutorialDirectory
+  FAQ:           https://www.lua.org/FAQ.html
+  Documentation: https://www.lua.org/docs.html
+  Tutorials:     http://lua-users.org/wiki/TutorialDirectory
 
 
 The following commands are recognized by the Devilspie2 Lua interpreter:
 
-First; a function to show some debug info
+First, a function to show some debug info
 
 
 debug_print(string)
@@ -96,7 +90,7 @@ debug_print(string)
 
 
 
-Then, there's the functions to get the properties of a window, and related
+Then, there are the functions to get the properties of a window, and related
 information:
 
 
@@ -566,8 +560,8 @@ if (get_window_name() == "Terminal") then
    set_window_geometry(1600, 300, 900, 700);
 end
 
--- Make Iceweasel always start maximized.
-if (get_application_name() == "Iceweasel") then
+-- Make Firefox always start maximized.
+if (get_application_name() == "Firefox") then
    maximize();
 end
 
@@ -577,7 +571,7 @@ end
 Translations
 ------------
 
-Devilspie2 is now translatable using gettext - see README.translators for more
+Devilspie2 is translatable using gettext - see README.translators for more
 information.
 
 
@@ -590,9 +584,10 @@ see the AUTHORS file
 Contact
 -------
 
-Author: Andreas Rönnquist
+Author: Darren Salt
 Homepage: http://www.nongnu.org/devilspie2
-Contact, Mailinglist: devilspie2-discuss@nongnu.org,
+Contact, Mailing list: devilspie2-discuss@nongnu.org,
              https://lists.nongnu.org/mailman/listinfo/devilspie2-discuss
+See also: https://github.com/dsalt/devilspie
 
-IRC: #devilspie2 on irc.freenode.net
+IRC: #devilspie2 on irc.libera.chat

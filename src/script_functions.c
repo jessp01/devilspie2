@@ -757,7 +757,6 @@ int c_set_window_workspace(lua_State *lua)
 int c_change_workspace(lua_State *lua)
 {
 	int top = lua_gettop(lua);
-	GTimeVal timestamp;
 
 	if (top != 1) {
 		luaL_error(lua,"change_workspace: %s", one_indata_expected_error);
@@ -785,9 +784,9 @@ int c_change_workspace(lua_State *lua)
 			g_warning(_("Workspace number %d does not exist!"), number);
 		}
 
-		g_get_current_time(&timestamp);
+		gint64 timestamp = g_get_real_time();
 		if (!devilspie2_emulate) {
-			wnck_workspace_activate(workspace, timestamp.tv_sec);
+			wnck_workspace_activate(workspace, timestamp / 1000000);
 		}
 	}
 

@@ -123,7 +123,11 @@ void devilspie2_change_state(Screen *screen, Window xwindow,
  */
 void devilspie2_error_trap_push()
 {
+#if GTK_CHECK_VERSION(3, 0, 0)
+	gdk_x11_display_error_trap_push(gdk_display_get_default());
+#else
 	gdk_error_trap_push();
+#endif
 }
 
 
@@ -132,8 +136,12 @@ void devilspie2_error_trap_push()
  */
 int devilspie2_error_trap_pop()
 {
+#if GTK_CHECK_VERSION(3, 0, 0)
+	return gdk_x11_display_error_trap_pop(gdk_display_get_default());
+#else
 	XSync(gdk_x11_get_default_xdisplay(),False);
 	return gdk_error_trap_pop();
+#endif
 }
 
 

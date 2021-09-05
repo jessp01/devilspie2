@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the devilspie2 package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: devilspie2 0.42\n"
+"Project-Id-Version: devilspie2 0.44\n"
 "Report-Msgid-Bugs-To: andreas@ronnquist.net\n"
-"POT-Creation-Date: 2017-01-04 15:35+0100\n"
+"POT-Creation-Date: 2021-09-05 01:53+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,108 +21,108 @@ msgstr ""
 msgid "script_folder isn't a folder."
 msgstr ""
 
-#: config.c:204 script.c:238
+#: config.c:203 script.c:249
 #, c-format
 msgid "Error: %s"
 msgstr ""
 
-#: devilspie2.c:181
+#: devilspie2.c:180
 msgid "Received signal:"
 msgstr ""
 
-#: devilspie2.c:232
+#: devilspie2.c:231
 #, c-format
 msgid "List of Lua files handling \"%s\" events in folder:"
 msgstr ""
 
-#: devilspie2.c:242
+#: devilspie2.c:241
 msgid "No script files found in the script folder - exiting."
 msgstr ""
 
-#: devilspie2.c:308
+#: devilspie2.c:306
 msgid "Print debug info to stdout"
 msgstr ""
 
-#: devilspie2.c:311
+#: devilspie2.c:309
 msgid "Don't apply any rules, only emulate execution"
 msgstr ""
 
-#: devilspie2.c:314
+#: devilspie2.c:312
 msgid "Search for scripts in this folder"
 msgstr ""
 
-#: devilspie2.c:314
+#: devilspie2.c:312
 msgid "FOLDER"
 msgstr ""
 
-#: devilspie2.c:317
+#: devilspie2.c:315
 msgid "Show Devilspie2 version and quit"
 msgstr ""
 
-#: devilspie2.c:323
+#: devilspie2.c:321
 msgid "Show libwnck version and quit"
 msgstr ""
 
-#: devilspie2.c:340
+#: devilspie2.c:338
 msgid "apply rules on windows"
 msgstr ""
 
-#: devilspie2.c:347
+#: devilspie2.c:345
 #, c-format
 msgid "option parsing failed: %s"
 msgstr ""
 
-#: devilspie2.c:370
+#: devilspie2.c:368
 msgid "Couldn't create the default folder for devilspie2 scripts."
 msgstr ""
 
-#: devilspie2.c:397
+#: devilspie2.c:394
 msgid "An X11 display is required for devilspie2."
 msgstr ""
 
-#: devilspie2.c:405
+#: devilspie2.c:401
 msgid "Couldn't init script error messages!"
 msgstr ""
 
-#: devilspie2.c:426
+#: devilspie2.c:421
 msgid "Running devilspie2 in debug and emulate mode."
 msgstr ""
 
-#: devilspie2.c:428
+#: devilspie2.c:423
 msgid "Running devilspie2 in debug mode."
 msgstr ""
 
-#: devilspie2.c:433
+#: devilspie2.c:426
 #, c-format
 msgid "Using scripts from folder: %s"
 msgstr ""
 
-#: devilspie2.c:449
+#: devilspie2.c:442
 msgid "Couldn't create directory monitor!"
 msgstr ""
 
-#: script_functions.c:709 script_functions.c:755
+#: script_functions.c:736 script_functions.c:782
 #, c-format
 msgid "Workspace number %d does not exist!"
 msgstr ""
 
-#: script_functions.c:1734
+#: script_functions.c:1883
 msgid "Could not get workspace"
 msgstr ""
 
-#: xutils.c:186 xutils.c:204 error_strings.c:136
+#: xutils.c:189 xutils.c:207 error_strings.c:135
 msgid "Failed!"
 msgstr ""
 
-#: error_strings.c:51
+#: error_strings.c:53
 msgid "Couldn't allocate error string!"
 msgstr ""
 
-#: error_strings.c:53
+#: error_strings.c:55
 msgid "No indata expected"
 msgstr ""
 
-#: error_strings.c:60
+#: error_strings.c:61
 msgid "One indata expected"
 msgstr ""
 
@@ -130,31 +130,35 @@ msgstr ""
 msgid "Two indata expected"
 msgstr ""
 
-#: error_strings.c:74
+#: error_strings.c:73
 msgid "Four indata expected"
 msgstr ""
 
-#: error_strings.c:81
+#: error_strings.c:79
 msgid "One or two indata expected"
 msgstr ""
 
-#: error_strings.c:89
+#: error_strings.c:86
 msgid "Number expected as indata"
 msgstr ""
 
-#: error_strings.c:97
+#: error_strings.c:93
 msgid "Boolean expected as indata"
 msgstr ""
 
-#: error_strings.c:105
+#: error_strings.c:100
 msgid "String expected as indata"
 msgstr ""
 
-#: error_strings.c:113
+#: error_strings.c:107
+msgid "Number or string expected as indata"
+msgstr ""
+
+#: error_strings.c:115
 msgid "Integer greater than zero expected"
 msgstr ""
 
-#: error_strings.c:121
+#: error_strings.c:122
 msgid "Could not find current viewport"
 msgstr ""
 

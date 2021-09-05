@@ -49,95 +49,35 @@ gchar *failed_string = NULL;
 /**
  *
  */
+#define ALLOCATE_ERROR_STRING _("Couldn't allocate error string!")
+#define INIT_ERRMSG(errvar, errtxt) \
+	{ \
+		errvar = g_strdup(errtxt); \
+		if (!no_indata_expected_error) { \
+			printf("%s\n", ALLOCATE_ERROR_STRING); \
+			return -1; \
+		} \
+	}
 int init_script_error_messages()
 {
-#define ALLOCATE_ERROR_STRING _("Couldn't allocate error string!")
+	INIT_ERRMSG(no_indata_expected_error,                   _("No indata expected"));
+	INIT_ERRMSG(one_indata_expected_error,                  _("One indata expected"));
+	INIT_ERRMSG(two_indata_expected_error,                  _("Two indata expected"));
+	INIT_ERRMSG(four_indata_expected_error,                 _("Four indata expected"));
 
-	no_indata_expected_error = g_strdup_printf(_("No indata expected"));
-	if (!no_indata_expected_error) {
-		printf("%s\n", ALLOCATE_ERROR_STRING);
-		return -1;
-	}
+	INIT_ERRMSG(one_or_two_indata_expected_error,           _("One or two indata expected"));
 
-	one_indata_expected_error = g_strdup_printf(_("One indata expected"));
-	if (!one_indata_expected_error) {
-		printf("%s\n", ALLOCATE_ERROR_STRING);
-		return -1;
-	}
+	INIT_ERRMSG(number_expected_as_indata_error,            _("Number expected as indata"));
+	INIT_ERRMSG(boolean_expected_as_indata_error,           _("Boolean expected as indata"));
+	INIT_ERRMSG(string_expected_as_indata_error,            _("String expected as indata"));
 
-	two_indata_expected_error = g_strdup_printf(_("Two indata expected"));
-	if (!two_indata_expected_error) {
-		printf("%s\n", ALLOCATE_ERROR_STRING);
-		return -1;
-	}
+	INIT_ERRMSG(number_or_string_expected_as_indata_error,  _("Number or string expected as indata"));
 
-	four_indata_expected_error = g_strdup_printf(_("Four indata expected"));
-	if (!four_indata_expected_error) {
-		printf("%s\n", ALLOCATE_ERROR_STRING);
-		return -1;
-	}
+	INIT_ERRMSG(integer_greater_than_zero_expected_error,   _("Integer greater than zero expected"));
+	INIT_ERRMSG(could_not_find_current_viewport_error,      _("Could not find current viewport"));
+	INIT_ERRMSG(setting_viewport_failed_error,              _("Setting viewport failed"));
 
-	one_or_two_indata_expected_error = g_strdup_printf(_("One or two indata expected"));
-	if (!one_or_two_indata_expected_error) {
-		printf("%s\n", ALLOCATE_ERROR_STRING);
-		return -1;
-	}
-
-	number_expected_as_indata_error=
-	    g_strdup_printf(_("Number expected as indata"));
-	if (!number_expected_as_indata_error) {
-		printf("%s\n", ALLOCATE_ERROR_STRING);
-		return -1;
-	}
-
-	boolean_expected_as_indata_error =
-	    g_strdup_printf(_("Boolean expected as indata"));
-	if (!boolean_expected_as_indata_error) {
-		printf("%s\n", ALLOCATE_ERROR_STRING);
-		return -1;
-	}
-
-	string_expected_as_indata_error =
-	    g_strdup_printf(_("String expected as indata"));
-	if (!string_expected_as_indata_error) {
-		printf("%s\n", ALLOCATE_ERROR_STRING);
-		return -1;
-	}
-
-	number_or_string_expected_as_indata_error =
-	    g_strdup_printf(_("Number or string expected as indata"));
-	if (!number_or_string_expected_as_indata_error) {
-		printf("%s", ALLOCATE_ERROR_STRING);
-		printf("\n");
-		return -1;
-	}
-
-	integer_greater_than_zero_expected_error =
-	    g_strdup_printf(_("Integer greater than zero expected"));
-	if (!integer_greater_than_zero_expected_error) {
-		printf("%s\n", ALLOCATE_ERROR_STRING);
-		return -1;
-	}
-
-	could_not_find_current_viewport_error =
-	    g_strdup_printf(_("Could not find current viewport"));
-	if (!could_not_find_current_viewport_error) {
-		printf("%s\n", ALLOCATE_ERROR_STRING);
-		return -1;
-	}
-
-	setting_viewport_failed_error =
-	    g_strdup_printf(_("Setting viewport failed"));
-	if (!setting_viewport_failed_error) {
-		printf("%s\n", ALLOCATE_ERROR_STRING);
-		return -1;
-	}
-
-	failed_string = g_strdup_printf(_("Failed!"));
-	if (!failed_string) {
-		printf("%s\n", ALLOCATE_ERROR_STRING);
-		return -1;
-	}
+	INIT_ERRMSG(failed_string,                              _("Failed!"));
 
 	return 0;
 }

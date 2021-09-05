@@ -1020,7 +1020,7 @@ int c_get_window_geometry(lua_State *lua)
 		return 0;
 	}
 
-	int x, y, width, height;
+	int x = 0, y = 0, width = 0, height = 0;
 
 	WnckWindow *window = get_current_window();
 	if (window)
@@ -1050,7 +1050,7 @@ int c_get_client_window_geometry(lua_State *lua)
 		return 0;
 	}
 
-	int x, y, width, height;
+	int x = 0, y = 0, width = 0, height = 0;
 
 	WnckWindow *window = get_current_window();
 	if (window)

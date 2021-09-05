@@ -59,6 +59,10 @@ Nicola Fontana <ntd (at) entidi (dot) it>
 
 Darren Salt <Darren Salt <devspam (at) moreofthesa (dot) me (dot) uk>
 - Add support for setting and deleting window properties
+- Most of the changes since 0.43
 
 Klaus Ethgen <Klaus@Ethgen.ch>
 - Allow reading of XA_UTF8_STRING properties
+
+Longoon12000 <longoon12000@gmail.com>
+- Initial version of get_process_name

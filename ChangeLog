@@ -2,6 +2,23 @@
 ChangeLog:
 ----------
 
+0.44
+	* Default to Lua 5.3, and permit use of other versions
+	* Add support for setting and deleting window properties
+	* Add get_process_name(), which returns the name of the process
+	  owning the window (if possible)
+	* Add get_monitor_index() and get_monitor_geometry(); improve
+	  monitor index/geometry discovery
+	* Add get_window_is_decorated() (which uses the Motif window hints)
+	* Alias center() as centre()
+	* Extend centre() to allow centring on a given monitor and to allow
+	  horizontal or vertical only
+
+	* Quote the option hyphens in the man page (preventing replacement)
+	* Various const & compiler warning (gcc -Wextra) fix-ups
+	* Support for UTF-8 strings in window properties
+	* Allow replacements for pkg-config at compile time
+
 0.43
 	* Update contact adresses
 	* Move homepage to nongnu.org

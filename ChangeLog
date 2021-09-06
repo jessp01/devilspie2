@@ -13,7 +13,9 @@ ChangeLog:
 	* Alias center() as centre()
 	* Extend centre() to allow centring on a given monitor and to allow
 	  horizontal or vertical only
-
+	* Extend set_window_position() to allow positioning on a given
+	  monitor and control which corner is measured from.
+	  (Behaviour with two parameters is unchanged.)
 	* Quote the option hyphens in the man page (preventing replacement)
 	* Various const & compiler warning (gcc -Wextra) fix-ups
 	* Support for UTF-8 strings in window properties

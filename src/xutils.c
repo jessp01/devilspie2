@@ -716,3 +716,29 @@ int get_window_workspace_geometry(WnckWindow *window, GdkRectangle *geom)
 
 	return 0;
 }
+
+
+/**
+ * Wrapper for the above geometry-reading functions
+ * Selects according to monitor number
+ * Returns the monitor index, MONITOR_ALL or, on error, MONITOR_NONE
+ */
+int get_monitor_or_workspace_geometry(int monitor_no, WnckWindow *window, GdkRectangle *bounds)
+{
+	int ret;
+
+	switch (monitor_no)
+	{
+	case MONITOR_ALL:
+		return get_window_workspace_geometry(window, bounds) ? MONITOR_NONE : MONITOR_ALL;
+
+	case MONITOR_WINDOW:
+		ret = get_monitor_index_geometry(window, NULL, bounds);
+		return ret < 0 ? MONITOR_NONE : ret;
+
+	default:
+		if (monitor_no < 0 || monitor_no >= get_monitor_count())
+			return MONITOR_NONE;
+		return get_monitor_geometry(monitor_no, bounds) < 0 ? MONITOR_NONE : monitor_no;
+	}
+}

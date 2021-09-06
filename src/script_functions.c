@@ -56,15 +56,6 @@
 #include "error_strings.h"
 
 
-/* Special values for specifying which monitor.
- * These values are relied upon; changing them will require changing the code where used.
- * Scripts use these numbers plus 1.
- * Where these are used, values ≥ 0 (> 0 in scripts) correspond to actual monitors.
- */
-#define MONITOR_NONE    INT_MIN
-#define MONITOR_ALL     -2 /* Monitor no. -1 (all monitors as one) */
-#define MONITOR_WINDOW  -1 /* Monitor no. 0 (current monitor) */
-
 /**
  *
  */
@@ -260,11 +251,12 @@ int c_set_window_position(lua_State *lua)
 				GdkRectangle bounds, geom;
 
 				wnck_window_get_geometry(window, NULL, NULL, &geom.width, &geom.height);
-				if (monitor == MONITOR_ALL
-				    || (monitor == MONITOR_WINDOW && get_monitor_index_geometry(window, NULL, &bounds) < 0)
-				    || get_monitor_geometry(monitor, &bounds) < 0)
-					if (get_window_workspace_geometry(window, &bounds) != 0)
-						return 1;
+
+				monitor = get_monitor_or_workspace_geometry(monitor, window, &bounds);
+				if (monitor == MONITOR_NONE)	{
+					lua_pushboolean(lua, FALSE);
+					return 1;
+				}
 
 				if (x < 0)
 					x = bounds.x + bounds.width - -x - geom.width;
@@ -282,6 +274,7 @@ int c_set_window_position(lua_State *lua)
 		}
 	}
 
+	lua_pushboolean(lua, TRUE);
 	return 0;
 }
 
@@ -1892,19 +1885,10 @@ int c_center(lua_State *lua)
 		}
 	}
 
-	if (monitor_no != MONITOR_ALL) {
-		if (monitor_no == MONITOR_WINDOW) {
-			monitor_no = get_monitor_index_geometry(NULL, &window_r, &desktop_r);
-			if (monitor_no == MONITOR_WINDOW)
-				goto handle_as_single_monitor;
-		} else if (get_monitor_geometry(monitor_no, &desktop_r) < 0)
-			goto handle_as_single_monitor;
-	} else {
-handle_as_single_monitor:;
-		if (get_window_workspace_geometry(window, &desktop_r)) {
-			lua_pushboolean(lua, FALSE);
-			return 1;
-		}
+	monitor_no = get_monitor_or_workspace_geometry(monitor_no, window, &desktop_r);
+	if (monitor_no == MONITOR_NONE)	{
+		lua_pushboolean(lua, FALSE);
+		return 1;
 	}
 
 	if (centre & 1)

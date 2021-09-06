@@ -22,6 +22,15 @@
 
 #include "compat.h"
 
+/* Special values for specifying which monitor.
+ * These values are relied upon; changing them will require changing the code where used.
+ * Scripts use these numbers plus 1.
+ * Where these are used, values ≥ 0 (> 0 in scripts) correspond to actual monitors.
+ */
+#define MONITOR_NONE    INT_MIN
+#define MONITOR_ALL     -2 /* Monitor no. -1 (all monitors as one) */
+#define MONITOR_WINDOW  -1 /* Monitor no. 0 (current monitor) */
+
 /**
  *
  */
@@ -64,5 +73,12 @@ int get_monitor_index_geometry(WnckWindow *window, const GdkRectangle *window_r,
 int get_monitor_geometry(int index, /*out*/ GdkRectangle *monitor_r);
 
 int get_window_workspace_geometry(WnckWindow *window, /*out*/ GdkRectangle *monitor_r);
+
+/*
+ * Wrapper for the above geometry-reading functions
+ * Selects according to monitor number (MONITOR_ALL, MONITOR_WINDOW or a monitor index no.)
+ * Returns the monitor index, MONITOR_ALL or, on error, MONITOR_NONE
+ */
+int get_monitor_or_workspace_geometry(int monitor_no, WnckWindow *window, /*out*/ GdkRectangle *monitor_or_workspace_r);
 
 #endif /*__HEADER_XUTILS_*/

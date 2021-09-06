@@ -54,6 +54,14 @@
 #include "error_strings.h"
 
 
+/* Special values for specifying which monitor.
+ * These values are relied upon; changing them will require changing the code where used.
+ * Scripts use these numbers plus 1.
+ * Where these are used, values ≥ 0 (> 0 in scripts) correspond to actual monitors.
+ */
+#define MONITOR_ALL     -2 /* Monitor no. -1 (all monitors as one) */
+#define MONITOR_WINDOW  -1 /* Monitor no. 0 (current monitor) */
+
 /**
  *
  */
@@ -1818,12 +1826,7 @@ int c_center(lua_State *lua)
 
 	wnck_window_get_geometry(window, &window_r.x, &window_r.y, &window_r.width, &window_r.height);
 
-	// Specified monitor no.:
-	//     -1 = treat all as one
-	//      0 = current monitor
-	//   1..n = monitor 0..(n-1)
-	// Note that monitor_no is one less than this
-	int monitor_no = -2;
+	int monitor_no = MONITOR_ALL;
 	enum { CENTRE_NONE, CENTRE_H, CENTRE_V, CENTRE_HV } centre = CENTRE_HV;
 
 	for (int i = 1; i <= top; ++i) {
@@ -1833,6 +1836,8 @@ int c_center(lua_State *lua)
 		switch (type) {
 		case LUA_TNUMBER:
 			monitor_no = lua_tonumber(lua, i) - 1;
+			if (monitor_no < MONITOR_ALL || monitor_no >= get_monitor_count())
+				monitor_no = MONITOR_WINDOW; // FIXME: primary monitor; show warning?
 			break;
 		case LUA_TSTRING:
 			indata = (gchar*)lua_tostring(lua, i);
@@ -1852,13 +1857,10 @@ int c_center(lua_State *lua)
 		}
 	}
 
-	if (monitor_no < -2 || monitor_no >= get_monitor_count())
-		monitor_no = 0; // FIXME: primary monitor; show warning?
-
-	if (monitor_no >= -1) {
-		if (monitor_no == -1) {
+	if (monitor_no != MONITOR_ALL) {
+		if (monitor_no == MONITOR_WINDOW) {
 			monitor_no = get_monitor_index_geometry(NULL, &window_r, &desktop_r);
-			if (monitor_no == -1)
+			if (monitor_no == MONITOR_WINDOW)
 				goto handle_as_single_monitor;
 		} else if (get_monitor_geometry(monitor_no, &desktop_r) < 0)
 			goto handle_as_single_monitor;

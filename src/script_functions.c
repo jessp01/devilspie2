@@ -1367,47 +1367,44 @@ int c_get_window_type(lua_State *lua)
 	}
 
 	WnckWindow *window = get_current_window();
-
-	gchar *window_type_string = NULL;
+	const char *window_type_string;
 
 	if (window) {
 		WnckWindowType window_type = wnck_window_get_window_type(window);
 
 		switch (window_type) {
 		case WNCK_WINDOW_NORMAL:
-			window_type_string = g_strdup("WINDOW_TYPE_NORMAL");
+			window_type_string = "WINDOW_TYPE_NORMAL";
 			break;
 		case WNCK_WINDOW_DESKTOP:
-			window_type_string = g_strdup("WINDOW_TYPE_DESKTOP");
+			window_type_string = "WINDOW_TYPE_DESKTOP";
 			break;
 		case WNCK_WINDOW_DOCK:
-			window_type_string = g_strdup("WINDOW_TYPE_DOCK");
+			window_type_string = "WINDOW_TYPE_DOCK";
 			break;
 		case WNCK_WINDOW_DIALOG:
-			window_type_string = g_strdup("WINDOW_TYPE_DIALOG");
+			window_type_string = "WINDOW_TYPE_DIALOG";
 			break;
 		case WNCK_WINDOW_TOOLBAR:
-			window_type_string = g_strdup("WINDOW_TYPE_TOOLBAR");
+			window_type_string = "WINDOW_TYPE_TOOLBAR";
 			break;
 		case WNCK_WINDOW_MENU:
-			window_type_string = g_strdup("WINDOW_TYPE_MENU");
+			window_type_string = "WINDOW_TYPE_MENU";
 			break;
 		case WNCK_WINDOW_UTILITY:
-			window_type_string = g_strdup("WINDOW_TYPE_UTILITY");
+			window_type_string = "WINDOW_TYPE_UTILITY";
 			break;
 		case WNCK_WINDOW_SPLASHSCREEN:
-			window_type_string = g_strdup("WINDOW_TYPE_SPLASHSCREEN");
+			window_type_string = "WINDOW_TYPE_SPLASHSCREEN";
 			break;
 		default:
-			window_type_string = g_strdup("WINDOW_TYPE_UNRECOGNIZED");
+			window_type_string = "WINDOW_TYPE_UNRECOGNIZED";
 		};
 	} else {
-		window_type_string = g_strdup("WINDOW_ERROR");
+		window_type_string = "WINDOW_ERROR";
 	}
 
 	lua_pushstring(lua, window_type_string);
-
-	g_free(window_type_string);
 
 	return 1;
 }
@@ -1469,25 +1466,16 @@ int c_get_window_property(lua_State *lua)
 	}
 
 	const gchar *value = lua_tostring(lua, 1);
-
 	WnckWindow *window = get_current_window();
 
-	gchar *result = NULL;
-
 	if (window) {
-		result = my_wnck_get_string_property_latin1(wnck_window_get_xid(window),
-		         my_wnck_atom_get(value));
-	} else {
-		result = g_strdup_printf("NO RESULT");
-	}
+		char *result = my_wnck_get_string_property_latin1(wnck_window_get_xid(window), my_wnck_atom_get(value));
 
-	if (result) {
-		lua_pushstring(lua, result);
+		lua_pushstring(lua, result ? result : "");
+		g_free (result);
 	} else {
-		lua_pushstring(lua, "");
+		lua_pushstring(lua, "NO RESULT");
 	}
-
-	g_free(result);
 
 	return 1;
 }
@@ -1583,20 +1571,14 @@ int c_get_window_role(lua_State *lua)
 
 	WnckWindow *window = get_current_window();
 
-	gchar *result = NULL;
-
 	if (window) {
-		result = my_wnck_get_string_property_latin1(wnck_window_get_xid(window),
-		         my_wnck_atom_get("WM_WINDOW_ROLE"));
-	}
+		char *result = my_wnck_get_string_property_latin1(wnck_window_get_xid(window), my_wnck_atom_get("WM_WINDOW_ROLE"));
 
-	if (result) {
-		lua_pushstring(lua, result);
+		lua_pushstring(lua, result ? result : "");
+		g_free (result);
 	} else {
 		lua_pushstring(lua, "");
 	}
-
-	g_free(result);
 
 	return 1;
 }
@@ -1643,31 +1625,25 @@ int c_get_window_class(lua_State *lua)
 	}
 
 	WnckWindow *window = get_current_window();
-
-	gchar *result;
+	const char *result;
 
 	if (window) {
 		WnckClassGroup *class_group = wnck_window_get_class_group(window);
 
 #ifdef WNCK_MAJOR_VERSION
 #if WNCK_CHECK_VERSION(3,2,0)
-		gchar *class_name = (char*)wnck_class_group_get_id(class_group);
+		result = (char*)wnck_class_group_get_id(class_group);
 #else
-		gchar *class_name = (char*)wnck_class_group_get_res_class (class_group);
+		result = (char*)wnck_class_group_get_res_class (class_group);
 #endif
 #else
-		gchar *class_name = (char*)wnck_class_group_get_res_class (class_group);
+		result = (char*)wnck_class_group_get_res_class (class_group);
 #endif
-
-		result = g_strdup(class_name);
-
 	} else {
-		result = g_strdup("");
+		result = "";
 	}
 
 	lua_pushstring(lua, result);
-
-	g_free(result);
 
 	return 1;
 }

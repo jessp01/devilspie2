@@ -268,6 +268,9 @@ set_window_position(xpos, ypos, [index])
       +ve X ⇒ left, -ve X ⇒ right;
       +ve Y ⇒ top,  -ve Y ⇒ bottom.
 
+   NOTE: since -0 would have a use here but is equal to +0, ~ (bitwise NOT)
+   is used. To put the window 60px from the right or bottom, use ~60 or -61.
+
    If index = 0 then the ‘current’ monitor (with the window's centre point)
    is used (falling back on then the first monitor showing part of the
    window then the first monitor).

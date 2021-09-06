@@ -244,9 +244,9 @@ int c_set_window_position(lua_State *lua)
 		if (window) {
 			if (monitor != MONITOR_NONE) {
 				/* +ve x: relative to left
-				 * -ve x: relative to right
+				 * -ve x: relative to right (bitwise NOT)
 				 * +ve y: relative to top
-				 * -ve y: relative to bottom
+				 * -ve y: relative to bottom (bitwise NOT)
 				 */
 				GdkRectangle bounds, geom;
 
@@ -259,11 +259,11 @@ int c_set_window_position(lua_State *lua)
 				}
 
 				if (x < 0)
-					x = bounds.x + bounds.width - -x - geom.width;
+					x = bounds.x + bounds.width - ~x - geom.width;
 				else
 					x += bounds.x;
 				if (y < 0)
-					y = bounds.y + bounds.height - -y - geom.height;
+					y = bounds.y + bounds.height - ~y - geom.height;
 				else
 					y += bounds.y;
 			}

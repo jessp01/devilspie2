@@ -258,9 +258,21 @@ get_monitor_geometry(index)
 and the rest of the commands are used to modify the properties of the windows:
 
 
-set_window_position(xpos, ypos)
+set_window_position(xpos, ypos, [index])
 
    Set the position of a window.
+
+   If index is specified then the co-ordinates are relative to a corner of
+   the specified monitor (counting from 1) on the current workspace. Which
+   corner is determined by the co-ordinates' signs:
+      +ve X ⇒ left, -ve X ⇒ right;
+      +ve Y ⇒ top,  -ve Y ⇒ bottom.
+
+   If index = 0 then the ‘current’ monitor (with the window's centre point)
+   is used (falling back on then the first monitor showing part of the
+   window then the first monitor).
+
+   If index = -1 then all monitors are treated as one large virtual monitor.
 
 
 set_window_position2(xpos, ypos)

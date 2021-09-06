@@ -31,6 +31,7 @@ gchar *two_indata_expected_error = NULL;
 gchar *four_indata_expected_error = NULL;
 
 gchar *one_or_two_indata_expected_error = NULL;
+gchar *two_or_three_indata_expected_error = NULL;
 
 gchar *number_expected_as_indata_error = NULL;
 gchar *boolean_expected_as_indata_error = NULL;
@@ -66,6 +67,7 @@ int init_script_error_messages()
 	INIT_ERRMSG(four_indata_expected_error,                 _("Four indata expected"));
 
 	INIT_ERRMSG(one_or_two_indata_expected_error,           _("One or two indata expected"));
+	INIT_ERRMSG(two_or_three_indata_expected_error,         _("Two or three indata expected"));
 
 	INIT_ERRMSG(number_expected_as_indata_error,            _("Number expected as indata"));
 	INIT_ERRMSG(boolean_expected_as_indata_error,           _("Boolean expected as indata"));
@@ -94,6 +96,7 @@ void done_script_error_messages()
 	g_free(four_indata_expected_error);
 
 	g_free(one_or_two_indata_expected_error);
+	g_free(two_or_three_indata_expected_error);
 
 	g_free(number_expected_as_indata_error);
 	g_free(boolean_expected_as_indata_error);

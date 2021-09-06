@@ -31,6 +31,8 @@
 
 #include <locale.h>
 
+#include <limits.h>
+
 #include "intl.h"
 
 #include <lua.h>
@@ -59,6 +61,7 @@
  * Scripts use these numbers plus 1.
  * Where these are used, values ≥ 0 (> 0 in scripts) correspond to actual monitors.
  */
+#define MONITOR_NONE    INT_MIN
 #define MONITOR_ALL     -2 /* Monitor no. -1 (all monitors as one) */
 #define MONITOR_WINDOW  -1 /* Monitor no. 0 (current monitor) */
 
@@ -219,27 +222,59 @@ int c_set_window_position(lua_State *lua)
 {
 	int top = lua_gettop(lua);
 
-	if (top!=2) {
-		luaL_error(lua,"set_window_position: %s", two_indata_expected_error);
+	if (top < 2 || top > 3) {
+		luaL_error(lua, "set_window_position: %s", two_or_three_indata_expected_error);
 		return 0;
 	}
 
 	int type1 = lua_type(lua, 1);
 	int type2 = lua_type(lua, 2);
+	int type3 = top == 3 ? lua_type(lua, 3) : LUA_TNUMBER;
 
-	if ((type1 != LUA_TNUMBER) || (type2 != LUA_TNUMBER)) {
-		luaL_error(lua, "set_window_position: %s", two_indata_expected_error);
+	if ((type1 != LUA_TNUMBER) || (type2 != LUA_TNUMBER) || (type3 != LUA_TNUMBER)) {
+		luaL_error(lua, "set_window_position: %s", number_expected_as_indata_error);
 		return 0;
 	}
 
 	int x = lua_tonumber(lua, 1);
 	int y = lua_tonumber(lua, 2);
+	int monitor = MONITOR_NONE;
+
+	if (top == 3) {
+		monitor = lua_tonumber (lua, 3) - 1;
+		if (monitor < MONITOR_ALL || monitor >= get_monitor_count())
+			monitor = 0; // FIXME: primary monitor; show warning?
+	}
 
 	if (!devilspie2_emulate) {
 
 		WnckWindow *window = get_current_window();
 
 		if (window) {
+			if (monitor != MONITOR_NONE) {
+				/* +ve x: relative to left
+				 * -ve x: relative to right
+				 * +ve y: relative to top
+				 * -ve y: relative to bottom
+				 */
+				GdkRectangle bounds, geom;
+
+				wnck_window_get_geometry(window, NULL, NULL, &geom.width, &geom.height);
+				if (monitor == MONITOR_ALL
+				    || (monitor == MONITOR_WINDOW && get_monitor_index_geometry(window, NULL, &bounds) < 0)
+				    || get_monitor_geometry(monitor, &bounds) < 0)
+					if (get_window_workspace_geometry(window, &bounds) != 0)
+						return 1;
+
+				if (x < 0)
+					x = bounds.x + bounds.width - -x - geom.width;
+				else
+					x += bounds.x;
+				if (y < 0)
+					y = bounds.y + bounds.height - -y - geom.height;
+				else
+					y += bounds.y;
+			}
 			wnck_window_set_geometry(window,
 			                         WNCK_WINDOW_GRAVITY_CURRENT,
 			                         WNCK_WINDOW_CHANGE_X + WNCK_WINDOW_CHANGE_Y,

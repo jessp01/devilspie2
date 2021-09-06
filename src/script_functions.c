@@ -2106,13 +2106,11 @@ int c_get_monitor_index(lua_State *lua)
 		return 0;
 	}
 
-	if (top == 0) {
-		WnckWindow *window = get_current_window();
-		if (window) {
-			int index = get_monitor_index_geometry(window, NULL, NULL);
-			if (index >= 0)
-				lua_pushnumber(lua, index + 1);
-		}
+	WnckWindow *window = get_current_window();
+	if (window) {
+		int index = get_monitor_index_geometry(window, NULL, NULL);
+		if (index >= 0)
+			lua_pushnumber(lua, index + 1);
 	}
 
 	return 1;

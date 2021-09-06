@@ -275,7 +275,7 @@ int c_set_window_position(lua_State *lua)
 	}
 
 	lua_pushboolean(lua, TRUE);
-	return 0;
+	return 1;
 }
 
 
@@ -710,7 +710,7 @@ int c_decorate_window(lua_State *lua)
 
 
 /**
- * Decorates a window
+ * Checks if a window is decorated
  */
 int c_get_window_is_decorated(lua_State *lua)
 {
@@ -2093,8 +2093,9 @@ int c_get_monitor_index(lua_State *lua)
 	WnckWindow *window = get_current_window();
 	if (window) {
 		int index = get_monitor_index_geometry(window, NULL, NULL);
-		if (index >= 0)
-			lua_pushnumber(lua, index + 1);
+		if (index < 0)
+			index = -1; // invalid? assume single monitor
+		lua_pushnumber(lua, index + 1);
 	}
 
 	return 1;

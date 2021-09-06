@@ -74,14 +74,9 @@ int c_get_window_name(lua_State *lua)
 		luaL_error(lua, "get_window_name: %s", no_indata_expected_error);
 		return 0;
 	}
-	char *test = NULL;
 
 	WnckWindow *window = get_current_window();
-	if (window) {
-		test = (char*)wnck_window_get_name(window);
-	} else {
-		test = "";
-	}
+	char *test = window ? (char*)wnck_window_get_name(window) : "";
 
 	lua_pushstring(lua, test);
 
@@ -105,13 +100,9 @@ int c_get_window_has_name(lua_State *lua)
 		return 0;
 	}
 
-	gboolean has_name = FALSE;
 
 	WnckWindow *window = get_current_window();
-
-	if (window) {
-		has_name = wnck_window_has_name(window);
-	}
+	gboolean has_name = window ? wnck_window_has_name(window) : FALSE;
 
 	lua_pushboolean(lua, has_name);
 
@@ -379,13 +370,12 @@ int c_set_window_strut(lua_State *lua)
 
 	if (!devilspie2_emulate) {
 #if __x86_64__
-		int64_t struts[12];
+		int64_t struts[12] = {};
 #else
-		int32_t struts[12];
+		int32_t struts[12] = {};
 #endif
-		int i;
-		for (i = 0; i < 12; i++) {
-			struts[i] = i < top ? lua_tonumber(lua, i + 1) : 0;
+		for (int i = 0; i < top; i++) {
+			struts[i] = lua_tonumber(lua, i + 1);
 		}
 
 		Display *dpy = gdk_x11_get_default_xdisplay();
@@ -497,14 +487,14 @@ int c_get_application_name(lua_State *lua)
 int c_debug_print(lua_State *lua)
 {
 	int n = lua_gettop(lua);  /* number of arguments */
-	int i;
 	lua_getglobal(lua, "tostring");
-	for (i = 1; i <= n; i++) {
-		const char *s;
+
+	for (int i = 1; i <= n; i++) {
 		lua_pushvalue(lua, -1);  /* function to be called */
 		lua_pushvalue(lua, i);   /* value to print */
 		lua_call(lua, 1, 1);
-		s = lua_tostring(lua, -1);  /* get result */
+
+		const char *s = lua_tostring(lua, -1);  /* get result */
 		if (s == NULL)
 			return luaL_error(lua, "'tostring' must return a string to 'print'");
 		if (i > 1) {
@@ -761,11 +751,8 @@ int c_set_window_workspace(lua_State *lua)
 	WnckWindow *window = get_current_window();
 
 	if (window) {
-		WnckScreen *screen;
-		WnckWorkspace *workspace;
-
-		screen = wnck_window_get_screen(window);
-		workspace = wnck_screen_get_workspace(screen, number-1);
+		WnckScreen *screen = wnck_window_get_screen(window);
+		WnckWorkspace *workspace = wnck_screen_get_workspace(screen, number-1);
 
 		if (!workspace) {
 			g_warning(_("Workspace number %d does not exist!"), number);
@@ -806,11 +793,8 @@ int c_change_workspace(lua_State *lua)
 
 	WnckWindow *window = get_current_window();
 	if (window) {
-		WnckScreen *screen;
-		WnckWorkspace *workspace;
-
-		screen = wnck_window_get_screen(window);
-		workspace = wnck_screen_get_workspace(screen, number-1);
+		WnckScreen *screen = wnck_window_get_screen(window);
+		WnckWorkspace *workspace = wnck_screen_get_workspace(screen, number-1);
 
 		if (!workspace) {
 			g_warning(_("Workspace number %d does not exist!"), number);
@@ -844,9 +828,7 @@ int c_get_workspace_count(lua_State *lua)
 	WnckWindow *window = get_current_window();
 
 	if (window) {
-		WnckScreen *screen;
-
-		screen = wnck_window_get_screen(window);
+		WnckScreen *screen = wnck_window_get_screen(window);
 		count = wnck_screen_get_workspace_count(screen);
 	}
 
@@ -1182,11 +1164,7 @@ int c_get_window_is_maximized(lua_State *lua)
 	}
 
 	WnckWindow *window = get_current_window();
-
-	gboolean is_maximized = FALSE;
-	if (window) {
-		is_maximized = wnck_window_is_maximized(window);
-	}
+	gboolean is_maximized = window ? wnck_window_is_maximized(window) : FALSE;
 
 	lua_pushboolean(lua, is_maximized);
 
@@ -1207,11 +1185,7 @@ int c_get_window_is_maximized_vertically(lua_State *lua)
 	}
 
 	WnckWindow *window = get_current_window();
-
-	gboolean is_vertically_maximized = FALSE;
-	if (window) {
-		is_vertically_maximized = wnck_window_is_maximized_vertically(window);
-	}
+	gboolean is_vertically_maximized = window ? wnck_window_is_maximized_vertically(window) : FALSE;
 
 	lua_pushboolean(lua, is_vertically_maximized);
 
@@ -1233,13 +1207,9 @@ int c_get_window_is_maximized_horisontally(lua_State *lua)
 	}
 
 	WnckWindow *window = get_current_window();
+	gboolean is_horizontally_maximized = window ? wnck_window_is_maximized_horizontally(window) : FALSE;
 
-	gboolean is_horisontally_maximized = FALSE;
-	if (window) {
-		is_horisontally_maximized = wnck_window_is_maximized_horizontally(window);
-	}
-
-	lua_pushboolean(lua, is_horisontally_maximized);
+	lua_pushboolean(lua, is_horizontally_maximized);
 
 	return 1;
 }
@@ -1259,11 +1229,7 @@ int c_get_window_is_pinned(lua_State *lua)
 	}
 
 	WnckWindow *window = get_current_window();
-
-	gboolean is_pinned = FALSE;
-	if (window) {
-		is_pinned = wnck_window_is_pinned(window);
-	}
+	gboolean is_pinned = window ? wnck_window_is_pinned(window) : FALSE;
 
 	lua_pushboolean(lua, is_pinned);
 
@@ -1425,23 +1391,15 @@ int c_get_class_instance_name(lua_State *lua)
 		return 0;
 	}
 
-	const char *class_instance_name;
 
 	WnckWindow *window = get_current_window();
-
-	if (window) {
-		class_instance_name = wnck_window_get_class_instance_name(window);
-
-	} else {
-		class_instance_name="";
-	}
+	const char *class_instance_name = window ? wnck_window_get_class_instance_name(window) : "";
 
 	// one item returned - the window class instance name as a string.
 	lua_pushstring(lua, class_instance_name);
 
 	return 1;
 }
-
 #endif
 
 
@@ -1597,14 +1555,7 @@ int c_get_window_xid(lua_State *lua)
 	}
 
 	WnckWindow *window = get_current_window();
-
-	gulong result;
-
-	if (window) {
-		result = wnck_window_get_xid(window);
-	} else {
-		result = 0;
-	}
+	gulong result = window ? wnck_window_get_xid(window) : 0;
 
 	lua_pushnumber(lua, result);
 

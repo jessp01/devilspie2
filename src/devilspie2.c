@@ -177,15 +177,13 @@ void devilspie_exit()
  */
 static void signal_handler(int sig)
 {
-	printf("\n%s", _("Received signal:"));
-	printf(" %d (%s)\n", sig, strsignal(sig));
+	printf("\n%s %d (%s)\n", _("Received signal:"), sig, strsignal(sig));
 
 	done_script_error_messages();
 
 	if (sig == SIGINT) {
 		exit(EXIT_FAILURE);
 	}
-
 }
 
 

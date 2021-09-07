@@ -242,8 +242,7 @@ run_script(lua_State *lua)
 		throw( ScriptException( mssOut.str().c_str(), errorMsg ) );
 		*/
 
-		printf(_("Error: %s"), error_msg);
-		printf("\n");
+		printf(_("Error: %s\n"), error_msg);
 	}
 }
 

@@ -24,8 +24,8 @@ msgstr "script_folder är inte en folder."
 
 #: config.c:204 script.c:238
 #, c-format
-msgid "Error: %s"
-msgstr "Fel: %s"
+msgid "Error: %s\n"
+msgstr "Fel: %s\n"
 
 #: devilspie2.c:181
 msgid "Received signal:"

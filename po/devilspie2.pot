@@ -23,7 +23,7 @@ msgstr ""
 
 #: config.c:203 script.c:249
 #, c-format
-msgid "Error: %s"
+msgid "Error: %s\n"
 msgstr ""
 
 #: devilspie2.c:180

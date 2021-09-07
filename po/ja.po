@@ -23,8 +23,8 @@ msgstr "script_folderがフォルダの検出に失敗"
 
 #: config.c:196 script.c:238
 #, c-format
-msgid "Error: %s"
-msgstr "エラー: %s"
+msgid "Error: %s\n"
+msgstr "エラー: %s\n"
 
 #: devilspie2.c:166
 msgid "Received signal:"

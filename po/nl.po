@@ -24,8 +24,8 @@ msgstr "script_folder is geen map."
 
 #: config.c:196 script.c:238
 #, c-format
-msgid "Error: %s"
-msgstr "Fout: %s"
+msgid "Error: %s\n"
+msgstr "Fout: %s\n"
 
 #: devilspie2.c:166
 msgid "Received signal:"

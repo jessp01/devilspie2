@@ -23,8 +23,8 @@ msgstr "script_folder n'est pas un dossier."
 
 #: config.c:204 script.c:238
 #, c-format
-msgid "Error: %s"
-msgstr "Erreur: %s"
+msgid "Error: %s\n"
+msgstr "Erreur: %s\n"
 
 #: devilspie2.c:181
 msgid "Received signal:"

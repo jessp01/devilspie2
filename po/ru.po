@@ -22,8 +22,8 @@ msgstr "script_folder не является директорией"
 
 #: config.c:200 script.c:232
 #, c-format
-msgid "Error: %s"
-msgstr "Ошибка: %s"
+msgid "Error: %s\n"
+msgstr "Ошибка: %s\n"
 
 #: devilspie2.c:164
 msgid "Received signal:"

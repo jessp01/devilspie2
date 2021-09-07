@@ -22,8 +22,8 @@ msgstr "script_folder ei ole kansio."
 
 #: config.c:200 script.c:232
 #, c-format
-msgid "Error: %s"
-msgstr "Virhe: %s"
+msgid "Error: %s\n"
+msgstr "Virhe: %s\n"
 
 #: devilspie2.c:164
 msgid "Received signal:"

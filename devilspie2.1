@@ -1,5 +1,6 @@
 .\"
 .\" Copyright © 2011-2017 Andreas Rönnquist.
+.\" Copyright © 2021 Darren Salt.
 .\" This file is distributed under the same license
 .\" as the devilspie2 package, see COPYING file.
 .\"
@@ -8,11 +9,11 @@
 Devilspie2 - perform scripted actions on windows as they are created
 .SH Description
 .B Devilspie2
-is a program that detects windows as they are created, and performs scripted
+is a program that detects windows as they are created and performs scripted
 actions on them. The scripts are written in Lua, allowing a great deal of
 customisation.
 
-More details in /usr/share/doc/devilspie2.
+More details in /usr/share/doc/devilspie2/README.
 
 .SH Options
 .IP "\-\-version"
@@ -23,10 +24,10 @@ Sets the folder where the Lua scripts are loaded from.
 Shows debug information from the Lua scripts. If debug_print is used in the Lua
 scripts, that output will only be printed to stdout if this option is used.
 .IP "\-\-emulate"
-Emulate script behaviour. Using this option only emulates a scripts behaviour,
-and doesn't affect the windows that the scripts otherwise would modify.
+Emulation mode. This prevents windows from being affected by the scripts,
+but window positions etc. can still be read.
 .IP "\-\-wnck\-version"
-Show version of the libwnck used. (Only available on GTK3 or later)
+Show the version of libwnck in use. (Only available on GTK3 or later.)
 .SH Script Commands
 
 .TP

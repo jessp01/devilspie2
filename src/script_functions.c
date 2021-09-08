@@ -1466,18 +1466,21 @@ int c_set_window_property(lua_State *lua)
 
 	switch (type) {
 	case LUA_TSTRING:
-		my_wnck_set_string_property_latin1(wnck_window_get_xid(window), my_wnck_atom_get(property),
-		                                   lua_tostring(lua, 2));
+		if (!devilspie2_emulate)
+			my_wnck_set_string_property_latin1(wnck_window_get_xid(window), my_wnck_atom_get(property),
+			                                   lua_tostring(lua, 2));
 		break;
 
 	case LUA_TNUMBER:
-		my_wnck_set_cardinal_property(wnck_window_get_xid(window), my_wnck_atom_get(property),
-		                              (int32_t) lua_tonumber(lua, 2));
+		if (!devilspie2_emulate)
+			my_wnck_set_cardinal_property(wnck_window_get_xid(window), my_wnck_atom_get(property),
+			                              (int32_t) lua_tonumber(lua, 2));
 		break;
 
 	case LUA_TBOOLEAN:
-		my_wnck_set_cardinal_property(wnck_window_get_xid(window), my_wnck_atom_get(property),
-		                              (int32_t) lua_toboolean(lua, 2));
+		if (!devilspie2_emulate)
+			my_wnck_set_cardinal_property(wnck_window_get_xid(window), my_wnck_atom_get(property),
+			                              (int32_t) lua_toboolean(lua, 2));
 		break;
 
 	default:
@@ -1511,7 +1514,8 @@ int c_del_window_property(lua_State *lua)
 
 	const gchar *property = lua_tostring(lua, 1);
 
-	my_wnck_delete_property(wnck_window_get_xid(window), my_wnck_atom_get(property));
+	if (!devilspie2_emulate)
+		my_wnck_delete_property(wnck_window_get_xid(window), my_wnck_atom_get(property));
 
 	return 0;
 }
@@ -1686,15 +1690,17 @@ int c_set_viewport(lua_State *lua)
 
 		x = ((num - 1) * wnck_screen_get_width(screen)) - viewport_start_x + win_x;
 
-		devilspie2_error_trap_push();
-		XMoveResizeWindow(gdk_x11_get_default_xdisplay(),
-								wnck_window_get_xid(window),
-								x, win_y, width, height);
+		if (!devilspie2_emulate) {
+			devilspie2_error_trap_push();
+			XMoveResizeWindow(gdk_x11_get_default_xdisplay(),
+			                  wnck_window_get_xid(window),
+			                  x, win_y, width, height);
 
-		if (devilspie2_error_trap_pop()) {
-			g_printerr("set_viewport: %s", setting_viewport_failed_error);
-			lua_pushboolean(lua, FALSE);
-			return 1;
+			if (devilspie2_error_trap_pop()) {
+				g_printerr("set_viewport: %s", setting_viewport_failed_error);
+				lua_pushboolean(lua, FALSE);
+				return 1;
+			}
 		}
 
 		lua_pushboolean(lua, TRUE);
@@ -1735,15 +1741,17 @@ int c_set_viewport(lua_State *lua)
 			return 1;
 		}
 
-		devilspie2_error_trap_push();
-		XMoveResizeWindow(gdk_x11_get_default_xdisplay(),
-								wnck_window_get_xid(window),
-								new_xpos, new_ypos, width, height);
+		if (!devilspie2_emulate) {
+			devilspie2_error_trap_push();
+			XMoveResizeWindow(gdk_x11_get_default_xdisplay(),
+			                  wnck_window_get_xid(window),
+			                  new_xpos, new_ypos, width, height);
 
-		if (devilspie2_error_trap_pop()) {
-			g_printerr("set_viewport: %s", setting_viewport_failed_error);
-			lua_pushboolean(lua, FALSE);
-			return 1;
+			if (devilspie2_error_trap_pop()) {
+				g_printerr("set_viewport: %s", setting_viewport_failed_error);
+				lua_pushboolean(lua, FALSE);
+				return 1;
+			}
 		}
 
 		lua_pushboolean(lua, TRUE);
@@ -1832,15 +1840,17 @@ int c_center(lua_State *lua)
 	else if (window_r.y + window_r.height >= desktop_r.y + desktop_r.height)
 		window_r.y = desktop_r.y + desktop_r.height - window_r.height;
 
-	devilspie2_error_trap_push();
-	XMoveWindow (gdk_x11_get_default_xdisplay(),
-	             wnck_window_get_xid(window),
-	             window_r.x, window_r.y);
+	if (!devilspie2_emulate) {
+		devilspie2_error_trap_push();
+		XMoveWindow (gdk_x11_get_default_xdisplay(),
+		             wnck_window_get_xid(window),
+		             window_r.x, window_r.y);
 
-	if (devilspie2_error_trap_pop()) {
-		g_printerr("center: %s", failed_string);
-		lua_pushboolean(lua, FALSE);
-		return 1;
+		if (devilspie2_error_trap_pop()) {
+			g_printerr("center: %s", failed_string);
+			lua_pushboolean(lua, FALSE);
+			return 1;
+		}
 	}
 
 	lua_pushboolean(lua, TRUE);
@@ -1870,12 +1880,12 @@ int c_set_opacity(lua_State *lua)
 	}
 
 	double value = (double)lua_tonumber(lua, 1);
-
 	WnckWindow *window = get_current_window();
-	gulong xid = wnck_window_get_xid(window);
 
-	if (window)
+	if (!devilspie2_emulate && window) {
+		gulong xid = wnck_window_get_xid(window);
 		my_window_set_opacity(xid, value);
+	}
 
 	return 0;
 }
@@ -1903,7 +1913,7 @@ int c_set_window_type(lua_State *lua)
 
 	WnckWindow *window = get_current_window();
 
-	if (window) {
+	if (!devilspie2_emulate && window) {
 		gulong xid = wnck_window_get_xid(window);
 		my_window_set_window_type(xid, indata);
 	}
@@ -1954,7 +1964,7 @@ int c_focus(lua_State *lua)
 
 	WnckWindow *window = get_current_window();
 
-	if (window) {
+	if (!devilspie2_emulate && window) {
 		wnck_window_activate(window, GDK_CURRENT_TIME);
 	}
 
@@ -1974,7 +1984,7 @@ int c_close_window(lua_State *lua)
 	}
 
 	WnckWindow *window = get_current_window();
-	if (window) {
+	if (!devilspie2_emulate && window) {
 		wnck_window_close(window, GDK_CURRENT_TIME);
 	}
 

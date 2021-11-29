@@ -227,12 +227,18 @@ gboolean get_decorated(Window xid /*WnckWindow *window*/)
 	Atom type_ret;
 	Atom hints_atom = XInternAtom(disp, "_MOTIF_WM_HINTS", False);
 	int format_ret;
+	int err, result;
 	unsigned long nitems_ret, bytes_after_ret, *prop_ret;
 
+	devilspie2_error_trap_push();
 	XGetWindowProperty(disp, xid, hints_atom, 0,
 	                PROP_MOTIF_WM_HINTS_ELEMENTS, 0, hints_atom,
 	                &type_ret, &format_ret, &nitems_ret,
 	                &bytes_after_ret, (unsigned char **)&prop_ret);
+
+	err = devilspie2_error_trap_pop ();
+	if (err != Success || result != Success)
+		return FALSE;
 
 	return type_ret != hints_atom || nitems_ret < 3 || prop_ret[2] != 0;
 }

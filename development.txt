@@ -1,5 +1,6 @@
 #
 # Copyright © 2011-2017 Andreas Rönnquist.
+# Copyright © 2022 Darren Salt.
 # This file is distributed under the same license
 # as the devilspie2 package, see COPYING file.
 #
@@ -8,11 +9,11 @@ Devilspie2 development
 ======================
 
 Git is used for version control for devilpsie2. If you would like to provide
-code to devilspie2, the first thing to do is - learn git.
+code to devilspie2, the first thing to do is to learn git.
 
 Number two to think about is if you are willing to release your code as
-GPL. Devilspie2 is released under the GPL license version 3, and I will
-only accept code under that license.
+GPL. Devilspie2 is released under the GPL version 3, and I will only accept
+code under that licence.
 
 As with any C program, program execution starts in the main function - which
 is placed in devilspie2.c in this case. The main function interprets the
@@ -25,29 +26,26 @@ Adding a new script function
 ============================
 
 Add it in script.c in the function "register_cfunctions", using a
-lua_register call - To add a function having the lua name "center", and connect
-it with the C function c_center, do this:
+lua_register call - to add a function having the lua names "centre" and
+"center" and connect them with the C function c_center, do this:
 
-lua_register(lua,"center", c_center);
+  lua_register(lua, "centre", c_center);
+  lua_register(lua, "center", c_center);
 
-This registers a center function, that will call the c_center function in the
-C code. The C function should be placed in script_functions.c & its header,
-with the following prototype:
+This registers a centre function which, when used, will call the c_center
+function in the C code. The C function should be placed in script_functions.c
+and its header, with the following prototype:
 
-int c_center(lua_State *lua);
+  int c_center(lua_State *lua);
 
 What is returned is an integer represeting the amount of return values that the
 Lua function returns. These return values are pushed to the stack using a
 lua_push for the correct type - for example lua_pushboolean(lua, TRUE);
 
-And logically if there are nothing to return, we simply do a "return 0;".
+And logically if there is nothing to return, we simply do a "return 0;".
 
 If we need something that isn't directly implemented in libwnck, we can add
 a function implementing it to the file "xutils.c" - please separate stuff from
 script_functions if it has no need to be there, and simply call it from your
 function in script_functions.c. The point is to keep input and Lua interpreting
 to script_functions, while the actual wnck and/or X work is in the xutils files.
-
-
-
-

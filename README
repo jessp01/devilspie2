@@ -434,6 +434,8 @@ set_on_top()
 
    sets a window on top of the others.
    Unlike set_window_above, it doesn't lock the window in this position.
+   As of version 0.45, the window's layer (above, between, below) is
+   maintained.
 
 
 set_window_below([below])

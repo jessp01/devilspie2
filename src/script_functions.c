@@ -435,11 +435,8 @@ int c_set_on_top(lua_State *lua)
 	if (!devilspie2_emulate) {
 		WnckWindow *window = get_current_window();
 
-		if (window) {
-			wnck_window_make_above(window);
-
-			wnck_window_unmake_above(window);
-		}
+		if (window)
+			XRaiseWindow(gdk_x11_get_default_xdisplay(), wnck_window_get_xid(window));
 	}
 
 	return 0;

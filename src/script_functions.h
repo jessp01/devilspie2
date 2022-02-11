@@ -87,6 +87,7 @@ int c_set_window_below(lua_State *lua);
 
 int c_make_always_on_top(lua_State *lua);
 int c_set_on_top(lua_State *lua);
+int c_set_on_bottom(lua_State *lua);
 
 int c_get_window_type(lua_State *lua);
 

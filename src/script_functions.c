@@ -1264,14 +1264,15 @@ int c_set_window_above(lua_State *lua)
 		set_above = TRUE;
 	}
 
-	WnckWindow *window = get_current_window();
 	if (!devilspie2_emulate) {
-		Window xid = wnck_window_get_xid(window);
-		devilspie2_change_state(devilspie2_window_get_xscreen(xid),
-		                        xid,
-		                        set_above,
-		                        my_wnck_atom_get("_NET_WM_STATE_ABOVE"),
-		                        0);
+		WnckWindow *window = get_current_window();
+
+		if (window) {
+			if (set_above)
+				wnck_window_make_above(window);
+			else
+				wnck_window_unmake_above(window);
+		}
 	}
 
 	return 0;
@@ -1305,15 +1306,15 @@ int c_set_window_below(lua_State *lua)
 		set_below = TRUE;
 	}
 
-	WnckWindow *window = get_current_window();
 	if (!devilspie2_emulate) {
+		WnckWindow *window = get_current_window();
 
-		Window xid = wnck_window_get_xid(window);
-		devilspie2_change_state(devilspie2_window_get_xscreen(xid),
-		                        xid,
-		                        set_below,
-		                        my_wnck_atom_get("_NET_WM_STATE_BELOW"),
-		                        0);
+		if (window) {
+			if (set_below)
+				wnck_window_make_below(window);
+			else
+				wnck_window_unmake_below(window);
+		}
 	}
 
 	return 0;

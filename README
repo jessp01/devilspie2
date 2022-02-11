@@ -290,13 +290,13 @@ set_window_property(property, value)
 
    Set a property of a window to a string or a cardinal (32-bit integer or
    boolean).
-   (Available from version 0.??)
+   (Available from version 0.44)
 
 
 delete_window_property(property)
 
    Remove a property from a window.
-   (Available from version 0.??)
+   (Available from version 0.44)
 
 
 set_window_size (xsize, ysize)

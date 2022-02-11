@@ -445,6 +445,13 @@ set_window_below([below])
    Optionally takes a boolean(true or false) as value.
 
 
+set_on_bottom()
+
+   sets a window below the others.
+   Unlike set_window_below, it doesn't lock the window in this position.
+   (Available from version 0.45.)
+
+
 set_window_fullscreen(fullscreen)
 
    Asks the window manager to set the fullscreen state of the window according

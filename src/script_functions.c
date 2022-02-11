@@ -444,6 +444,29 @@ int c_set_on_top(lua_State *lua)
 
 
 /**
+ * sets the window below all the others
+ */
+int c_set_on_bottom(lua_State *lua)
+{
+	int top = lua_gettop(lua);
+
+	if (top != 0) {
+		luaL_error(lua, "set_on_bottom: %s", no_indata_expected_error);
+		return 0;
+	}
+
+	if (!devilspie2_emulate) {
+		WnckWindow *window = get_current_window();
+
+		if (window)
+			XLowerWindow(gdk_x11_get_default_xdisplay(), wnck_window_get_xid(window));
+	}
+
+	return 0;
+}
+
+
+/**
  * returns the application name
  */
 int c_get_application_name(lua_State *lua)

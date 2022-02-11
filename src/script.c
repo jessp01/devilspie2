@@ -141,6 +141,7 @@ register_cfunctions(lua_State *lua)
 
 	lua_register(lua, "make_always_on_top", c_make_always_on_top);
 	lua_register(lua, "set_on_top", c_set_on_top);
+	lua_register(lua, "set_on_bottom", c_set_on_bottom);
 
 	lua_register(lua, "get_window_type", c_get_window_type);
 

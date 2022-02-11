@@ -227,7 +227,7 @@ gboolean get_decorated(Window xid /*WnckWindow *window*/)
 	Atom type_ret;
 	Atom hints_atom = XInternAtom(disp, "_MOTIF_WM_HINTS", False);
 	int format_ret;
-	int err, result;
+	int err, result = 0;
 	unsigned long nitems_ret, bytes_after_ret, *prop_ret;
 
 	devilspie2_error_trap_push();

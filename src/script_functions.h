@@ -36,10 +36,6 @@ int c_set_window_size(lua_State *lua);
 
 int c_set_window_strut(lua_State *lua);
 
-int c_make_always_on_top(lua_State *lua);
-
-int c_set_on_top(lua_State *lua);
-
 int c_get_application_name(lua_State *lua);
 
 int c_debug_print(lua_State *lua);
@@ -88,6 +84,9 @@ int c_set_window_fullscreen(lua_State *lua);
 
 int c_set_window_above(lua_State *lua);
 int c_set_window_below(lua_State *lua);
+
+int c_make_always_on_top(lua_State *lua);
+int c_set_on_top(lua_State *lua);
 
 int c_get_window_type(lua_State *lua);
 

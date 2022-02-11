@@ -87,10 +87,6 @@ register_cfunctions(lua_State *lua)
 
 	lua_register(lua, "get_application_name", c_get_application_name);
 
-	lua_register(lua, "make_always_on_top", c_make_always_on_top);
-
-	lua_register(lua, "set_on_top", c_set_on_top);
-
 	lua_register(lua, "debug_print", c_debug_print);
 
 	lua_register(lua, "shade", c_shade_window);
@@ -142,6 +138,9 @@ register_cfunctions(lua_State *lua)
 	lua_register(lua, "set_window_below", c_set_window_below);
 	lua_register(lua, "set_window_above", c_set_window_above);
 	lua_register(lua, "set_window_fullscreen", c_set_window_fullscreen);
+
+	lua_register(lua, "make_always_on_top", c_make_always_on_top);
+	lua_register(lua, "set_on_top", c_set_on_top);
 
 	lua_register(lua, "get_window_type", c_get_window_type);
 

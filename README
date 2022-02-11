@@ -319,17 +319,6 @@ set_window_geometry2 (xpos, ypos, xsize, ysize)
    (available from version 0.21)
 
 
-make_always_on_top()
-
-   Sets a window always on top.
-
-
-set_on_top()
-
-   sets a window on top of the others. (unlike make_always_on_top, it doesn't
-   lock the window in this position.)
-
-
 shade()
 
    "Shades" a window, showing only the title-bar.
@@ -437,6 +426,14 @@ set_window_above([above])
    Set the current window above all normal windows. (available from version
    0.21)
    Optionally takes a boolean(true or false) as value.
+
+   make_always_on_top() is the same as set_window_above(true).
+
+
+set_on_top()
+
+   sets a window on top of the others.
+   Unlike set_window_above, it doesn't lock the window in this position.
 
 
 set_window_below([below])

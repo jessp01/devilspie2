@@ -71,9 +71,9 @@ else
 	PKG_WNCK=libwnck-3.0
 endif
 
-LIB_CFLAGS=$(shell $(PKG_CONFIG) --cflags --silence-errors $(PKG_GTK) $(PKG_WNCK) $(LUA) || $(PKG_CONFIG) --cflags $(PKG_GTK) $(PKG_WNCK) lua)
+LIB_CFLAGS=$(shell $(PKG_CONFIG) --cflags --silence-errors $(PKG_GTK) $(PKG_WNCK) $(LUA) || $(PKG_CONFIG) --cflags $(PKG_GTK) $(PKG_WNCK) $(LUA))
 STD_LDFLAGS=
-LIBS=-lX11 -lXinerama $(shell $(PKG_CONFIG) --libs --silence-errors $(PKG_GTK) $(PKG_WNCK) $(LUA) || $(PKG_CONFIG) --libs $(PKG_GTK) $(PKG_WNCK) lua)
+LIBS=-lX11 -lXinerama $(shell $(PKG_CONFIG) --libs --silence-errors $(PKG_GTK) $(PKG_WNCK) $(LUA) || $(PKG_CONFIG) --libs $(PKG_GTK) $(PKG_WNCK) $(LUA))
 
 LOCAL_CFLAGS=$(STD_CFLAGS) $(DEPRECATED) $(CFLAGS) $(LIB_CFLAGS)
 LOCAL_LDFLAGS=$(STD_CFLAGS) $(LDFLAGS) $(STD_LDFLAGS)

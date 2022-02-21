@@ -2,6 +2,8 @@
 ChangeLog:
 ----------
 
+0.45
+
 0.44
 	* Default to Lua 5.3, and permit use of other versions
 	* Add support for setting and deleting window properties

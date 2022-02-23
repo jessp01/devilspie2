@@ -71,9 +71,12 @@ else
 	PKG_WNCK=libwnck-3.0
 endif
 
-LIB_CFLAGS=$(shell $(PKG_CONFIG) --cflags --silence-errors $(PKG_GTK) $(PKG_WNCK) $(LUA) || $(PKG_CONFIG) --cflags $(PKG_GTK) $(PKG_WNCK) lua)
+LUA_LIB_CFLAGS := $(shell $(PKG_CONFIG) --cflags --silence-errors $(LUA) ||  $(PKG_CONFIG) --cflags lua)
+LUA_LIBS := $(shell $(PKG_CONFIG) --libs --silence-errors $(LUA) ||  $(PKG_CONFIG) --libs lua)
+
+LIB_CFLAGS := $(shell $(PKG_CONFIG) --cflags $(PKG_GTK) $(PKG_WNCK)) $(LUA_LIB_CFLAGS)
 STD_LDFLAGS=
-LIBS=-lX11 -lXinerama $(shell $(PKG_CONFIG) --libs --silence-errors $(PKG_GTK) $(PKG_WNCK) $(LUA) || $(PKG_CONFIG) --libs $(PKG_GTK) $(PKG_WNCK) lua)
+LIBS := -lX11 -lXinerama $(shell $(PKG_CONFIG) --libs $(PKG_GTK) $(PKG_WNCK)) $(LUA_LIBS)
 
 LOCAL_CFLAGS=$(STD_CFLAGS) $(DEPRECATED) $(CFLAGS) $(LIB_CFLAGS)
 LOCAL_LDFLAGS=$(STD_CFLAGS) $(LDFLAGS) $(STD_LDFLAGS)
@@ -93,9 +96,12 @@ endif
 
 LOCAL_CFLAGS+=-DLOCALEDIR=\"$(LOCALEDIR)\" -DPACKAGE=\"$(NAME)\" -DDEVILSPIE2_VERSION=\"$(VERSION)\"
 
-.PHONY: all
-all: $(BIN)/$(NAME)
+.PHONY: all .lua
+all: .lua $(BIN)/$(NAME)
 	${MAKE} -C po -j1 all
+
+.lua:
+	@if $(PKG_CONFIG) --cflags --silence-errors $(LUA) >/dev/null; then :; else echo '$(LUA) dev files not found - falling back on system default lua' >&2; fi
 
 $(OBJ)/%.o: $(SRC)/%.c
 	$(CC) $(LOCAL_CFLAGS) $(LOCAL_CPPFLAGS) -c $< -o $@

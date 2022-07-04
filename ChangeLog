@@ -3,6 +3,10 @@ ChangeLog:
 ----------
 
 0.45
+	* Fixes related to Lua version handling
+	* Misc build fixes
+	* Add set_on_bottom(): move to bottom of stack
+	* Change set_on_top() so that it merely raises the window
 
 0.44
 	* Default to Lua 5.3, and permit use of other versions

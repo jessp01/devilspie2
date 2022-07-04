@@ -928,14 +928,14 @@ int c_maximize_window_vertically(lua_State *lua)
 
 
 /**
- * Maximize the window horisontally
+ * Maximize the window horizontally
  */
-int c_maximize_window_horisontally(lua_State *lua)
+int c_maximize_window_horizontally(lua_State *lua)
 {
 	int top = lua_gettop(lua);
 
 	if (top != 0) {
-		luaL_error(lua, "maximize_horisontally: %s", no_indata_expected_error);
+		luaL_error(lua, "maximize_horizontally: %s", no_indata_expected_error);
 		return 0;
 	}
 
@@ -949,6 +949,11 @@ int c_maximize_window_horisontally(lua_State *lua)
 	return 0;
 }
 
+int c_maximize_window_horisontally(lua_State *lua)
+{
+	fprintf(stderr, "warning: deprecated function %s called\n", __func__ + 2);
+	return c_maximize_window_horizontally(lua);
+}
 
 
 /**
@@ -1179,7 +1184,7 @@ int c_get_window_is_maximized(lua_State *lua)
 	int top = lua_gettop(lua);
 
 	if (top != 0) {
-		luaL_error(lua, "get_window_is__maximized: %s",
+		luaL_error(lua, "get_window_is_maximized: %s",
 		           no_indata_expected_error);
 		return 0;
 	}
@@ -1200,7 +1205,7 @@ int c_get_window_is_maximized_vertically(lua_State *lua)
 	int top = lua_gettop(lua);
 
 	if (top != 0) {
-		luaL_error(lua, "get_window_is_horisontally_maximized: %s",
+		luaL_error(lua, "get_window_is_maximized_vertically: %s",
 		           no_indata_expected_error);
 		return 0;
 	}
@@ -1217,12 +1222,12 @@ int c_get_window_is_maximized_vertically(lua_State *lua)
 /**
  *
  */
-int c_get_window_is_maximized_horisontally(lua_State *lua)
+int c_get_window_is_maximized_horizontally(lua_State *lua)
 {
 	int top = lua_gettop(lua);
 
 	if (top != 0) {
-		luaL_error(lua, "get_window_is_horisontally_maximized: %s",
+		luaL_error(lua, "get_window_is_maximized_horizontally: %s",
 		           no_indata_expected_error);
 		return 0;
 	}
@@ -1233,6 +1238,12 @@ int c_get_window_is_maximized_horisontally(lua_State *lua)
 	lua_pushboolean(lua, is_horizontally_maximized);
 
 	return 1;
+}
+
+int c_get_window_is_maximized_horisontally(lua_State *lua)
+{
+	fprintf(stderr, "warning: deprecated function %s called\n", __func__ + 2);
+	return c_get_window_is_maximized_horizontally(lua);
 }
 
 

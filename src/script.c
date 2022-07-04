@@ -93,13 +93,19 @@ register_cfunctions(lua_State *lua)
 	lua_register(lua, "unshade", c_unshade_window);
 
 	lua_register(lua, "maximize", c_maximize_window);
-	lua_register(lua, "maximize_horisontally", c_maximize_window_horisontally);
-	lua_register(lua, "maximize_horizontally", c_maximize_window_horisontally);
+	lua_register(lua, "maximise", c_maximize_window);
+	lua_register(lua, "maximize_horisontally", c_maximize_window_horisontally); // deprecated
+	lua_register(lua, "maximize_horizontally", c_maximize_window_horizontally);
+	lua_register(lua, "maximise_horizontally", c_maximize_window_horizontally);
 	lua_register(lua, "maximize_vertically", c_maximize_window_vertically);
+	lua_register(lua, "maximise_vertically", c_maximize_window_vertically);
 	lua_register(lua, "unmaximize", c_unmaximize_window);
+	lua_register(lua, "unmaximise", c_unmaximize_window);
 
 	lua_register(lua, "minimize", c_minimize_window);
+	lua_register(lua, "minimise", c_minimize_window);
 	lua_register(lua, "unminimize", c_unminimize_window);
+	lua_register(lua, "unminimise", c_unminimize_window);
 
 	lua_register(lua, "decorate_window", c_decorate_window);
 	lua_register(lua, "undecorate_window", c_undecorate_window);
@@ -122,14 +128,19 @@ register_cfunctions(lua_State *lua)
 	lua_register(lua, "set_skip_pager", c_set_skip_pager);
 
 	lua_register(lua, "get_window_is_maximized", c_get_window_is_maximized);
+	lua_register(lua, "get_window_is_maximised", c_get_window_is_maximized);
 
 	lua_register(lua, "get_window_is_maximized_vertically",
 	             c_get_window_is_maximized_vertically);
+	lua_register(lua, "get_window_is_maximised_vertically",
+	             c_get_window_is_maximized_vertically);
 
-	lua_register(lua, "get_window_is_maximized_horisontally",
+	lua_register(lua, "get_window_is_maximized_horisontally", // deprecated
 	             c_get_window_is_maximized_horisontally);
 	lua_register(lua, "get_window_is_maximized_horizontally",
-	             c_get_window_is_maximized_horisontally);
+	             c_get_window_is_maximized_horizontally);
+	lua_register(lua, "get_window_is_maximised_horizontally",
+	             c_get_window_is_maximized_horizontally);
 	lua_register(lua, "get_window_is_pinned",
 	             c_get_window_is_pinned);
 

@@ -57,7 +57,8 @@ int c_get_workspace_count(lua_State *lua);
 int c_unmaximize_window(lua_State *lua);
 int c_maximize_window(lua_State *lua);
 int c_maximize_window_vertically(lua_State *lua);
-int c_maximize_window_horisontally(lua_State *lua);
+int c_maximize_window_horisontally(lua_State *lua); // deprecated
+int c_maximize_window_horizontally(lua_State *lua);
 
 int c_pin_window(lua_State *lua);
 int c_unpin_window(lua_State *lua);
@@ -77,7 +78,8 @@ int c_set_skip_pager(lua_State *lua);
 
 int c_get_window_is_maximized(lua_State *lua);
 int c_get_window_is_maximized_vertically(lua_State *lua);
-int c_get_window_is_maximized_horisontally(lua_State *lua);
+int c_get_window_is_maximized_horisontally(lua_State *lua); // deprecated
+int c_get_window_is_maximized_horizontally(lua_State *lua);
 int c_get_window_is_pinned(lua_State *lua);
 
 int c_set_window_fullscreen(lua_State *lua);

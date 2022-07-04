@@ -76,7 +76,7 @@ The scripting language used is Lua; https://see www.lua.org/
   Tutorials:     http://lua-users.org/wiki/TutorialDirectory
 
 
-The following commands are recognized by the Devilspie2 Lua interpreter:
+The following commands are recognised by the Devilspie2 Lua interpreter:
 
 First, a function to show some debug info
 
@@ -141,21 +141,24 @@ get_window_client_geometry()
 
 
 get_window_is_maximized()
+get_window_is_maximised()
 
-   Returns true if the window is maximized, false otherwise. (available from
-   version 0.21)
+   Returns true if the window is maximised, false otherwise. (available from
+   version 0.21; -ise from 0.45)
 
 
 get_window_is_maximized_vertically()
+get_window_is_maximised_vertically()
 
-   Returns true if the window is vertically maximized, false otherwise.
-   (available from version 0.21)
+   Returns true if the window is vertically maximised, false otherwise.
+   (available from version 0.21; -ise from 0.45)
 
 
 get_window_is_maximized_horizontally()
+get_window_is_maximised_horizontally()
 
-   Returns true if the window is horizontally maximized, false otherwise.
-   (available from version 0.21)
+   Returns true if the window is horizontally maximised, false otherwise.
+   (available from version 0.21; -ise from 0.45)
 
 
 get_window_is_decorated()
@@ -178,7 +181,7 @@ get_window_type()
    "WINDOW_TYPE_UTILITY"
    "WINDOW_TYPE_SPLASHSCREEN"
 
-   or "WINDOW_TYPE_UNRECOGNIZED" if libwnck didn't recognize the type.
+   or "WINDOW_TYPE_UNRECOGNIZED" if libwnck didn't recognise the type.
 
    If the function for some reason didn't have a window to work on the string
    result is "WINDOW_ERROR".
@@ -337,34 +340,46 @@ unshade()
 
 
 maximize()
+maximise()
 
-   maximizes a window
+   maximises a window
+   (-ise from 0.45)
 
 
 unmaximize()
+unmaximise()
 
-   unmaximizes a window
+   unmaximises a window
+   (-ise from 0.45)
 
 
 maximize_vertically()
+maximise_vertically()
 
-   maximizes the current window vertically.
+   maximises the current window vertically.
+   (-ise from 0.45)
 
 
 maximize_horizontally()
+maximise_horizontally()
 
-   maximizes the current window horizontally.
+   maximises the current window horizontally.
+   (-ise from 0.45)
 
 
 minimize()
+minimise()
 
-   minimizes a window
+   minimises a window
+   (-ise from 0.45)
 
 
 unminimize()
+unminimise()
 
-   unminimizes a window, that is bringing it back to screen from the minimized
+   unminimises a window, that is bringing it back to screen from the minimised
    position/size.
+   (-ise from 0.45)
 
 
 decorate_window()
@@ -588,9 +603,9 @@ if (get_window_name() == "Terminal") then
    set_window_geometry(1600, 300, 900, 700);
 end
 
--- Make Firefox always start maximized.
+-- Make Firefox always start maximised.
 if (get_application_name() == "Firefox") then
-   maximize();
+   maximise();
 end
 
 --------------------->8---------------------

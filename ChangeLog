@@ -7,6 +7,8 @@ ChangeLog:
 	* Misc build fixes
 	* Add set_on_bottom(): move to bottom of stack
 	* Change set_on_top() so that it merely raises the window
+	* Add get_class_group_name().
+          This complements get_class_instance_name re. WM_CLASS.
 
 0.44
 	* Default to Lua 5.3, and permit use of other versions

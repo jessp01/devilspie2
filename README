@@ -193,6 +193,13 @@ get_class_instance_name()
    later.
 
 
+get_class_group_name()
+
+   Gets the class group name from the WM_CLASS Property for the current
+   window. Only available on libwnck 3+, and in devilspie2 version 0.45 or
+   later.
+
+
 get_window_property(property)
 
    Returns the window property described in the property string. For a list of

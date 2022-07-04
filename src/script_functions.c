@@ -1413,12 +1413,34 @@ int c_get_class_instance_name(lua_State *lua)
 		return 0;
 	}
 
-
 	WnckWindow *window = get_current_window();
 	const char *class_instance_name = window ? wnck_window_get_class_instance_name(window) : "";
 
 	// one item returned - the window class instance name as a string.
 	lua_pushstring(lua, class_instance_name);
+
+	return 1;
+}
+
+/**
+ * c_get_class_group_name
+ * Only available on libwnck 3+
+ */
+int c_get_class_group_name(lua_State *lua)
+{
+	int top = lua_gettop(lua);
+
+	if (top != 0) {
+		luaL_error(lua, "get_window_class_group_name: %s",
+		           no_indata_expected_error);
+		return 0;
+	}
+
+	WnckWindow *window = get_current_window();
+	const char *class_group_name = window ? wnck_window_get_class_group_name(window) : "";
+
+	// one item returned - the window class instance name as a string.
+	lua_pushstring(lua, class_group_name);
 
 	return 1;
 }

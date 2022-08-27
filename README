@@ -268,6 +268,30 @@ get_monitor_geometry(index)
 and the rest of the commands are used to modify the properties of the windows:
 
 
+set_adjust_for_decoration([bool])
+
+   Allow for situations where moving or resizing the window is done
+   incorrectly, i.e.
+      set_window_position(0,0)
+   results in the window decoration being taken into account twice, i.e. 
+   the window (including decoration) is offset from the top left corner by
+   the width of the left side decoration and the height of the title bar.
+
+   This is currently off by default, and is sticky: if you do not explicitly
+   set it in your script, its current value is retained.
+
+   If used, it should be used at the start of the script.
+
+   This affects the following functions:
+      set_window_geometry
+      set_window_position
+      set_window_size
+      xy
+      xywh
+
+   (Available from version 0.45)
+
+
 set_window_position(xpos, ypos, [index])
 
    Set the position of a window.

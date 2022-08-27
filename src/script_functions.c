@@ -62,7 +62,34 @@
  */
 WnckWindow *current_window = NULL;
 
+static gboolean adjusting_for_decoration = FALSE;
 
+int c_set_adjust_for_decoration(lua_State *lua)
+{
+	gboolean v = TRUE;
+	int top = lua_gettop(lua);
+
+	if (top > 1) {
+		luaL_error(lua, "set_adjust_for_decoration: %s", one_indata_expected_error);
+		return 0;
+
+	}
+
+	if (top) {
+		int type = lua_type(lua, 1);
+
+		if (type != LUA_TBOOLEAN) {
+			luaL_error(lua, "set_window_above: %s", boolean_expected_as_indata_error);
+			return 0;
+		}
+
+		int value = lua_toboolean(lua, 1);
+		v = (gboolean)(value);
+	}
+
+	adjusting_for_decoration = v;
+	return 0;
+}
 
 /**
  * returns the window name
@@ -144,8 +171,7 @@ int c_set_window_geometry(lua_State *lua)
 
 	if (!devilspie2_emulate) {
 		WnckWindow *window = get_current_window();
-
-		set_window_geometry(window, x, y, xsize, ysize);
+		set_window_geometry(window, x, y, xsize, ysize, adjusting_for_decoration);
 	}
 
 	return 0;
@@ -242,7 +268,7 @@ int c_set_window_position(lua_State *lua)
 				 */
 				GdkRectangle bounds, geom;
 
-				wnck_window_get_geometry(window, NULL, NULL, &geom.width, &geom.height);
+				wnck_window_get_geometry(window, &geom.x, &geom.y, &geom.width, &geom.height);
 
 				monitor = get_monitor_or_workspace_geometry(monitor, window, &bounds);
 				if (monitor == MONITOR_NONE)	{
@@ -259,6 +285,9 @@ int c_set_window_position(lua_State *lua)
 				else
 					y += bounds.y;
 			}
+
+			if (adjusting_for_decoration)
+				adjust_for_decoration(window, &x, &y, NULL, NULL);
 			wnck_window_set_geometry(window,
 			                         WNCK_WINDOW_GRAVITY_CURRENT,
 			                         WNCK_WINDOW_CHANGE_X + WNCK_WINDOW_CHANGE_Y,
@@ -339,6 +368,8 @@ int c_set_window_size(lua_State *lua)
 		if (window) {
 
 			devilspie2_error_trap_push();
+			if (adjusting_for_decoration)
+				adjust_for_decoration (window, NULL, NULL, &x, &y);
 			wnck_window_set_geometry(window,
 			                         WNCK_WINDOW_GRAVITY_CURRENT,
 			                         WNCK_WINDOW_CHANGE_WIDTH + WNCK_WINDOW_CHANGE_HEIGHT,
@@ -2182,6 +2213,8 @@ int c_xy(lua_State *lua)
 			WnckWindow *window = get_current_window();
 
 			if (window) {
+				if (adjusting_for_decoration)
+					adjust_for_decoration (window, &x, &y, NULL, NULL);
 				wnck_window_set_geometry(window,
 				                         WNCK_WINDOW_GRAVITY_CURRENT,
 				                         WNCK_WINDOW_CHANGE_X + WNCK_WINDOW_CHANGE_Y,
@@ -2246,8 +2279,7 @@ int c_xywh(lua_State *lua)
 
 		if (!devilspie2_emulate) {
 			WnckWindow *window = get_current_window();
-
-			set_window_geometry(window, x, y, xsize, ysize);
+			set_window_geometry(window, x, y, xsize, ysize, adjusting_for_decoration);
 		}
 
 		return 0;

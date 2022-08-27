@@ -70,6 +70,8 @@ int c_close_window(lua_State *lua);
 void set_current_window(WnckWindow *window);
 WnckWindow *get_current_window();
 
+int c_set_adjust_for_decoration();
+
 int c_get_window_geometry(lua_State *lua);
 int c_get_client_window_geometry(lua_State *lua);
 

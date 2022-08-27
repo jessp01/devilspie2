@@ -66,7 +66,8 @@ int devilspie2_get_viewport_start(Window xwindow, int *x, int *y);
 void my_window_set_window_type(Window xid, gchar *window_type);
 void my_window_set_opacity(Window xid, double value);
 
-void set_window_geometry(WnckWindow *window, int x, int y, int w, int h);
+void adjust_for_decoration(WnckWindow *window, int *x, int *y, int *w, int *h);
+void set_window_geometry(WnckWindow *window, int x, int y, int w, int h, gboolean adjust_for_decoration);
 
 int get_monitor_count(void);
 int get_monitor_index_geometry(WnckWindow *window, const GdkRectangle *window_r, /*out*/ GdkRectangle *monitor_r);

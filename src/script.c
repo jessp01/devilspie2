@@ -121,6 +121,8 @@ register_cfunctions(lua_State *lua)
 
 	lua_register(lua, "close_window", c_close_window);
 
+	lua_register(lua, "set_adjust_for_decoration", c_set_adjust_for_decoration);
+
 	lua_register(lua, "get_window_geometry", c_get_window_geometry);
 	lua_register(lua, "get_window_client_geometry", c_get_client_window_geometry);
 

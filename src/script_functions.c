@@ -1440,13 +1440,13 @@ int c_get_window_type(lua_State *lua)
 }
 
 
-#ifdef HAVE_GTK3
 /**
  * c_get_class_instance_name
  * Only available on libwnck 3+
  */
 int c_get_class_instance_name(lua_State *lua)
 {
+#ifdef HAVE_GTK3
 	int top = lua_gettop(lua);
 
 	if (top != 0) {
@@ -1460,7 +1460,7 @@ int c_get_class_instance_name(lua_State *lua)
 
 	// one item returned - the window class instance name as a string.
 	lua_pushstring(lua, class_instance_name);
-
+#endif
 	return 1;
 }
 
@@ -1470,6 +1470,7 @@ int c_get_class_instance_name(lua_State *lua)
  */
 int c_get_class_group_name(lua_State *lua)
 {
+#ifdef HAVE_GTK3
 	int top = lua_gettop(lua);
 
 	if (top != 0) {
@@ -1483,10 +1484,9 @@ int c_get_class_group_name(lua_State *lua)
 
 	// one item returned - the window class instance name as a string.
 	lua_pushstring(lua, class_group_name);
-
+#endif
 	return 1;
 }
-#endif
 
 
 /**

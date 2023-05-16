@@ -182,11 +182,9 @@ register_cfunctions(lua_State *lua)
 	lua_register(lua, "get_window_fullscreen", c_get_window_fullscreen);
 	lua_register(lua, "get_fullscreen", c_get_window_fullscreen);
 
-#ifdef HAVE_GTK3
-	// wnck_window_get_class_instance_name is only availible on wnck 3 and later
+	// wnck_window_get_class_{instance,group}_name are only availible on wnck 3 and later
 	lua_register(lua, "get_class_instance_name",c_get_class_instance_name);
 	lua_register(lua, "get_class_group_name", c_get_class_group_name);
-#endif
 
 	lua_register(lua, "focus", c_focus);
 	lua_register(lua, "focus_window", c_focus);

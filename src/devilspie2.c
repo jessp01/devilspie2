@@ -56,11 +56,9 @@ static gboolean debug = FALSE;
 static gboolean emulate = FALSE;
 static gboolean show_version = FALSE;
 
-#ifdef HAVE_GTK3
 // libwnck Version Information is only availible if you have
 // libwnck 3.0 or later
 static gboolean show_wnck_version = FALSE;
-#endif
 
 static gchar *script_folder = NULL;
 static gchar *temp_folder = NULL;
@@ -316,13 +314,11 @@ int main(int argc, char *argv[])
 		{	"version",		'v',	0,	G_OPTION_ARG_NONE,		&show_version,
 			N_("Show Devilspie2 version and quit"), NULL
 		},
-#ifdef HAVE_GTK3
 		// libwnck Version Information is only availible if you have
 		// libwnck 3.0 or later
 		{	"wnck-version",	'w',	0,	G_OPTION_ARG_NONE,		&show_wnck_version,
 			N_("Show libwnck version and quit"), NULL
 		},
-#endif
 		{ NULL }
 	};
 
@@ -378,17 +374,25 @@ int main(int argc, char *argv[])
 		printf("Devilspie2 v%s\n\n", DEVILSPIE2_VERSION);
 		exit(EXIT_SUCCESS);
 	}
-#ifdef HAVE_GTK3
 	// libwnck Version Information is only availible if you have
 	// libwnck 3.0 or later
 	if (show_wnck_version) {
+#ifdef _DEBUG
+		printf("GTK v%d.%d.%d\n",
+		       GTK_MAJOR_VERSION,
+		       GTK_MINOR_VERSION,
+		       GTK_MICRO_VERSION);
+#endif
+#ifdef HAVE_GTK3
 		printf("libwnck v%d.%d.%d\n\n",
 		       WNCK_MAJOR_VERSION,
 		       WNCK_MINOR_VERSION,
 		       WNCK_MICRO_VERSION);
+#else
+		printf("libwnck v2.x\n\n");
+#endif
 		exit(EXIT_SUCCESS);
 	}
-#endif
 
 #if (GTK_MAJOR_VERSION >= 3)
 	if (!GDK_IS_X11_DISPLAY(gdk_display_get_default())) {

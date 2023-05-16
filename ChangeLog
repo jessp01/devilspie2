@@ -12,6 +12,8 @@ ChangeLog:
 	* More aliases for function names containing 'maximize' or
 	  'minimize': accept -ise spellings
 	* Visibly deprecate function names containing 'horisontally'
+	* Add set_adjust_for_decoration(), useful if you have problems with
+	  positioning & resizing of decorated windows [note: experimental]
 
 0.44
 	* Default to Lua 5.3, and permit use of other versions

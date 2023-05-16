@@ -4,6 +4,9 @@
 # as the devilspie2 package, see COPYING file.
 #
 
+Implement on-title-change
+- see https://gist.github.com/ssokolow/e7c9aae63fb7973e4d64cff969a78ae8
+
 Optionally use GTK+4
 
 Support for Wayland? XWayland?

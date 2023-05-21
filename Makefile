@@ -60,6 +60,10 @@ VERSION = $(shell cat ./VERSION)
 DATADIR = ${DESTDIR}${PREFIX}/share
 LOCALEDIR = ${DATADIR}/locale
 MANDIR = ${DATADIR}/man
+# /etc if installing in /usr, else ${PREFIX}/etc
+# if this isn't right, submit a patch
+ETCDIR = ${DESTDIR}$(if $(patsubst /usr,,${PREFIX}),${PREFIX},)/etc
+APPDIR = ${ETCDIR}/xdg/autostart
 MANPAGE = ${NAME}.1
 
 ifdef GTK2
@@ -123,6 +127,8 @@ install:
 	install -m 755 $(PROG) $(DESTDIR)$(PREFIX)/bin
 	install -d $(MANDIR)/man1
 	install -m 644 $(MANPAGE) $(MANDIR)/man1
+	install -d $(APPDIR)
+	install -m 644 $(NAME).desktop $(APPDIR)
 	${MAKE} -C po install
 
 .PHONY: uninstall

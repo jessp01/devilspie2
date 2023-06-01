@@ -62,6 +62,57 @@
  */
 WnckWindow *current_window = NULL;
 
+
+static Bool current_time_cb(Display *display, XEvent *xevent, XPointer arg)
+{
+	Window wnd = GPOINTER_TO_UINT(arg);
+
+	if (xevent->type == PropertyNotify &&
+	    xevent->xproperty.window == wnd &&
+	    xevent->xproperty.atom == my_wnck_atom_get("WM_NAME"))
+		return True;
+
+	return False;
+}
+
+/**
+ * Get current X11 timestamp.
+ *
+ * Unfortunately, gtk_get_current_event_time() does not work here
+ * because we cannot assume we are inside an event.
+ *
+ * Getting this timestamp is tricky. According to a comment in the ICCCM
+ * specification (https://tronche.com/gui/x/icccm/sec-2.html#s-2.1):
+ *
+ *     A zero-length append to a property is a way to obtain a
+ *     timestamp for this purpose; the timestamp is in the
+ *     corresponding PropertyNotify event.
+ *
+ * So here we are zero-length appending to the "WM_NAME" property.
+ */
+static guint32 current_time(void)
+{
+	WnckWindow *window;
+	gulong wnd;
+	Display *dpy;
+	Atom prop;
+	XEvent xevent;
+
+	window = get_current_window();
+	if (window == NULL)
+		return GDK_CURRENT_TIME;
+
+	dpy = gdk_x11_get_default_xdisplay();
+	wnd = wnck_window_get_xid(window);
+	prop = my_wnck_atom_get("WM_NAME");
+	XChangeProperty(dpy, wnd, prop, XA_STRING, 8, PropModeAppend, NULL, 0);
+
+	/* Wait for the event to succeed */
+	XIfEvent(dpy, &xevent, current_time_cb, GUINT_TO_POINTER(wnd));
+	return xevent.xproperty.time;
+}
+
+
 static gboolean adjusting_for_decoration = FALSE;
 
 int c_set_adjust_for_decoration(lua_State *lua)
@@ -655,7 +706,7 @@ int c_unminimize_window(lua_State *lua)
 		WnckWindow *window = get_current_window();
 
 		if (window) {
-			wnck_window_unminimize (window, GDK_CURRENT_TIME);
+			wnck_window_unminimize (window, current_time());
 		}
 	}
 
@@ -2051,7 +2102,7 @@ int c_focus(lua_State *lua)
 	WnckWindow *window = get_current_window();
 
 	if (!devilspie2_emulate && window) {
-		wnck_window_activate(window, GDK_CURRENT_TIME);
+		wnck_window_activate(window, current_time());
 	}
 
 	return 0;
@@ -2071,7 +2122,7 @@ int c_close_window(lua_State *lua)
 
 	WnckWindow *window = get_current_window();
 	if (!devilspie2_emulate && window) {
-		wnck_window_close(window, GDK_CURRENT_TIME);
+		wnck_window_close(window, current_time());
 	}
 
 	return 0;
@@ -2445,7 +2496,7 @@ static gchar *c_get_process_name_INT_ps(lua_State *lua, pid_t pid)
  * Focus the current window.
 
 ESExpResult *func_focus(ESExp *f, int argc, ESExpResult **argv, Context *c) {
-  wnck_window_activate (c->window, GDK_CURRENT_TIME);
+  wnck_window_activate (c->window, current_time());
   if (debug) g_printerr (_("Focusing\n"));
   return e_sexp_result_new_bool (f, TRUE);
 }

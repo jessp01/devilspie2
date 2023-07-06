@@ -561,7 +561,7 @@ int c_get_application_name(lua_State *lua)
 		return 0;
 	}
 
-	const char *application_name;
+	const char *application_name = "";
 
 	WnckWindow *window = get_current_window();
 
@@ -569,10 +569,8 @@ int c_get_application_name(lua_State *lua)
 
 		WnckApplication *application=
 		    wnck_window_get_application(get_current_window());
-		application_name = wnck_application_get_name(application);
-
-	} else {
-		application_name = "";
+		if (application)
+			application_name = wnck_application_get_name(application);
 	}
 
 	// one item returned - the application name as a string.
@@ -1717,22 +1715,21 @@ int c_get_window_class(lua_State *lua)
 	}
 
 	WnckWindow *window = get_current_window();
-	const char *result;
+	const char *result = "";
 
 	if (window) {
 		WnckClassGroup *class_group = wnck_window_get_class_group(window);
-
+		if (class_group) {
 #ifdef WNCK_MAJOR_VERSION
 #if WNCK_CHECK_VERSION(3,2,0)
-		result = (char*)wnck_class_group_get_id(class_group);
+			result = (char*)wnck_class_group_get_id(class_group);
 #else
-		result = (char*)wnck_class_group_get_res_class (class_group);
+			result = (char*)wnck_class_group_get_res_class (class_group);
 #endif
 #else
-		result = (char*)wnck_class_group_get_res_class (class_group);
+			result = (char*)wnck_class_group_get_res_class (class_group);
 #endif
-	} else {
-		result = "";
+		}
 	}
 
 	lua_pushstring(lua, result);

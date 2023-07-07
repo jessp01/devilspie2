@@ -933,7 +933,7 @@ int c_get_workspace_count(lua_State *lua)
 		count = wnck_screen_get_workspace_count(screen);
 	}
 
-	lua_pushnumber(lua, count);
+	lua_pushinteger(lua, count);
 
 	return 1;
 }
@@ -1149,10 +1149,10 @@ int c_get_window_geometry(lua_State *lua)
 		wnck_window_get_geometry(window, &x, &y, &width, &height);
 	}
 
-	lua_pushnumber(lua, x);
-	lua_pushnumber(lua, y);
-	lua_pushnumber(lua, width);
-	lua_pushnumber(lua, height);
+	lua_pushinteger(lua, x);
+	lua_pushinteger(lua, y);
+	lua_pushinteger(lua, width);
+	lua_pushinteger(lua, height);
 
 	return 4;
 }
@@ -1179,10 +1179,10 @@ int c_get_client_window_geometry(lua_State *lua)
 		wnck_window_get_client_window_geometry(window, &x, &y, &width, &height);
 	}
 
-	lua_pushnumber(lua, x);
-	lua_pushnumber(lua, y);
-	lua_pushnumber(lua, width);
-	lua_pushnumber(lua, height);
+	lua_pushinteger(lua, x);
+	lua_pushinteger(lua, y);
+	lua_pushinteger(lua, width);
+	lua_pushinteger(lua, height);
 
 	return 4;
 }
@@ -1696,7 +1696,7 @@ int c_get_window_xid(lua_State *lua)
 	WnckWindow *window = get_current_window();
 	gulong result = window ? wnck_window_get_xid(window) : 0;
 
-	lua_pushnumber(lua, result);
+	lua_pushinteger(lua, result);
 
 	return 1;
 }
@@ -2078,8 +2078,8 @@ int c_get_screen_geometry(lua_State *lua)
 		height = wnck_screen_get_height(screen);
 	}
 
-	lua_pushnumber(lua, width);
-	lua_pushnumber(lua, height);
+	lua_pushinteger(lua, width);
+	lua_pushinteger(lua, height);
 
 	return 2;
 }
@@ -2166,7 +2166,7 @@ int c_get_monitor_index(lua_State *lua)
 		int index = get_monitor_index_geometry(window, NULL, NULL);
 		if (index < 0)
 			index = -1; // invalid? assume single monitor
-		lua_pushnumber(lua, index + 1);
+		lua_pushinteger(lua, index + 1);
 	}
 
 	return 1;
@@ -2209,10 +2209,10 @@ int c_get_monitor_geometry(lua_State *lua)
 			return 0;
 	}
 
-	lua_pushnumber(lua, geom.x);
-	lua_pushnumber(lua, geom.y);
-	lua_pushnumber(lua, geom.width);
-	lua_pushnumber(lua, geom.height);
+	lua_pushinteger(lua, geom.x);
+	lua_pushinteger(lua, geom.y);
+	lua_pushinteger(lua, geom.width);
+	lua_pushinteger(lua, geom.height);
 
 	return 4;
 }
@@ -2235,8 +2235,8 @@ int c_xy(lua_State *lua)
 
 			wnck_window_get_geometry(window, &x, &y, &width, &height);
 
-			lua_pushnumber(lua, x);
-			lua_pushnumber(lua, y);
+			lua_pushinteger(lua, x);
+			lua_pushinteger(lua, y);
 
 			return 2;
 		}
@@ -2295,10 +2295,10 @@ int c_xywh(lua_State *lua)
 
 			wnck_window_get_geometry(window, &x, &y, &width, &height);
 
-			lua_pushnumber(lua, x);
-			lua_pushnumber(lua, y);
-			lua_pushnumber(lua, width);
-			lua_pushnumber(lua, height);
+			lua_pushinteger(lua, x);
+			lua_pushinteger(lua, y);
+			lua_pushinteger(lua, width);
+			lua_pushinteger(lua, height);
 
 			return 4;
 		}

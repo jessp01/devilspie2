@@ -442,6 +442,7 @@ int c_set_window_size(lua_State *lua)
 /**
  * Sets the window strut
  */
+#define NUM_STRUTS 12
 int c_set_window_strut(lua_State *lua)
 {
 	int top = lua_gettop(lua);
@@ -450,13 +451,11 @@ int c_set_window_strut(lua_State *lua)
 		luaL_error(lua,"set_window_strut: %s", four_indata_expected_error);
 		return 0;
 	}
+	if (top > NUM_STRUTS)
+		top = NUM_STRUTS;
 
 	if (!devilspie2_emulate) {
-#if __x86_64__
-		int64_t struts[12] = {};
-#else
-		int32_t struts[12] = {};
-#endif
+		gulong struts[NUM_STRUTS] = {};
 		for (int i = 0; i < top; i++) {
 			struts[i] = lua_tonumber(lua, i + 1);
 		}
@@ -471,7 +470,7 @@ int c_set_window_strut(lua_State *lua)
 			                32,
 			                PropModeReplace,
 			                (unsigned char*)struts,
-			                12);
+			                NUM_STRUTS);
 			XSync(dpy, False);
 		}
 	}

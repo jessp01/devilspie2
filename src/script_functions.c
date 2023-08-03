@@ -455,12 +455,21 @@ int c_set_window_strut(lua_State *lua)
 		top = NUM_STRUTS;
 
 	if (!devilspie2_emulate) {
-		gulong struts[NUM_STRUTS] = {};
+		Display *dpy = gdk_x11_get_default_xdisplay();
+		int screen = DefaultScreen(dpy);
+		int width = DisplayWidth(dpy, screen);
+		int height = DisplayHeight(dpy, screen);
+
+		gulong struts[NUM_STRUTS] = {
+			0, 0, 0, 0,
+			0, height, 0, height,
+			0, width, 0, width
+		};
+
 		for (int i = 0; i < top; i++) {
 			struts[i] = lua_tonumber(lua, i + 1);
 		}
 
-		Display *dpy = gdk_x11_get_default_xdisplay();
 		WnckWindow *window = get_current_window();
 
 		if (window) {

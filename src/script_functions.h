@@ -35,6 +35,7 @@ int c_set_window_geometry2(lua_State *lua);
 int c_set_window_size(lua_State *lua);
 
 int c_set_window_strut(lua_State *lua);
+int c_get_window_strut(lua_State *lua);
 
 int c_get_application_name(lua_State *lua);
 

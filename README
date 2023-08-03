@@ -588,11 +588,18 @@ focus_window()
 	Focuses the current window. (Function is available from version 0.30)
 
 
-set_window_strut(left, right, top, bottom)
+set_window_strut(left, right, top, bottom, ...)
 
 	Set the reserved area at the borders of the desktop for a docking area such
-	as a taskbar or a panel (available from version 0.32)
+	as a taskbar or a panel. Will handle up to 12 values.
+	(Available from version 0.32)
 
+get_window_strut()
+
+	Get the reserved area at the borders of the desktop for a docking
+	area such as a taskbar or a panel. Returns a table (usually 12
+	elements, but may be 4) or nil.
+	(Available from version 0.45)
 
 xy(x, y), xy()
     Set the position of a window, or if you don't give any input, get the

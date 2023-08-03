@@ -479,6 +479,48 @@ int c_set_window_strut(lua_State *lua)
 }
 
 /**
+ * Gets the window strut
+ */
+int c_get_window_strut(lua_State *lua)
+{
+	int top = lua_gettop(lua);
+
+	if (top != 0) {
+		luaL_error(lua, "get_window_strut: %s", no_indata_expected_error);
+		return 0;
+	}
+
+	WnckWindow *window = get_current_window();
+
+	if (!window)
+		return 0;
+
+	Display *dpy = gdk_x11_get_default_xdisplay();
+	gulong *struts = NULL;
+	int len = 0;
+
+	gboolean ret = my_wnck_get_cardinal_list (wnck_window_get_xid(window),
+	                                          XInternAtom(dpy, "_NET_WM_STRUT_PARTIAL", False),
+	                                          &struts, &len);
+	/* if that fails, try reading the older, deprecated property */
+	if (!ret)
+		ret = my_wnck_get_cardinal_list (wnck_window_get_xid(window),
+		                                 XInternAtom(dpy, "_NET_WM_STRUT", False),
+		                                 &struts, &len);
+
+	if (len) {
+		lua_createtable(lua, len, 0);
+		for (int i = 0; i < len; ++i) {
+			lua_pushinteger(lua, struts[i]);
+			lua_rawseti(lua, -2, i + 1);
+		}
+		g_free(struts);
+		return 1;
+	}
+	return 0;
+}
+
+/**
  * Sets the window on top of all others and locks it "always on top"
  */
 int c_make_always_on_top(lua_State *lua)

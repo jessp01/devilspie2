@@ -111,8 +111,10 @@ all: .lua $(BIN)/$(NAME)
 $(OBJ)/%.o: $(SRC)/%.c
 	$(CC) $(LOCAL_CFLAGS) $(LOCAL_CPPFLAGS) -c $< -o $@
 
-$(BIN)/$(NAME): $(BIN) $(OBJ) $(OBJECTS)
+$(BIN)/$(NAME): $(BIN) $(OBJECTS)
 	$(CC) $(LOCAL_CFLAGS) $(LOCAL_LDFLAGS) $(OBJECTS) -o $(PROG) $(LIBS)
+
+$(OBJECTS): $(OBJ)
 
 $(BIN) $(OBJ):
 	mkdir -p -- $@

@@ -42,7 +42,9 @@ You can use other versions of Lua. For example:
 This will in the end create the devilspie2 binary in the bin/ folder.
 To build the same executable, but with debugging enabled, run
 
-	make DEBUG=1.
+	make DEBUG=1
+
+(Any value works for GTK2 and DEBUG; it only matters whether they're defined.)
 
 
 To install Devilspie2 system-wide - simply run make install as superuser:

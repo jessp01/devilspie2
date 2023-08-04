@@ -131,7 +131,7 @@ int c_set_adjust_for_decoration(lua_State *lua)
 		int type = lua_type(lua, 1);
 
 		if (type != LUA_TBOOLEAN) {
-			luaL_error(lua, "set_window_above: %s", boolean_expected_as_indata_error);
+			luaL_error(lua, "set_adjust_for_decoration: %s", boolean_expected_as_indata_error);
 			return 0;
 		}
 

@@ -592,13 +592,22 @@ set_window_strut(left, right, top, bottom, ...)
 
 	Set the reserved area at the borders of the desktop for a docking area such
 	as a taskbar or a panel. Will handle up to 12 values.
+
+	Default minimum values are 0 and default maximum values are taken
+	from the screen size (current or maximum, depending on whether
+	xrandr is used).
+
 	(Available from version 0.32)
 
 get_window_strut()
 
 	Get the reserved area at the borders of the desktop for a docking
-	area such as a taskbar or a panel. Returns a table (usually 12
-	elements, but may be 4) or nil.
+	area such as a taskbar or a panel.
+
+	Returns a table (12 integers as for _NET_WM_WINDOW_STRUT_PARTIAL) or
+	nil. If _NET_WM_WINDOW_STRUT was read then defaults are	used as for
+	set_window_strut().
+
 	(Available from version 0.45)
 
 xy(x, y), xy()

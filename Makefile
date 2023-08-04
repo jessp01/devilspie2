@@ -79,9 +79,20 @@ endif
 LUA_LIB_CFLAGS := $(shell $(PKG_CONFIG) --cflags --silence-errors $(LUA) ||  $(PKG_CONFIG) --cflags lua)
 LUA_LIBS := $(shell $(PKG_CONFIG) --libs --silence-errors $(LUA) ||  $(PKG_CONFIG) --libs lua)
 
-LIB_CFLAGS := $(shell $(PKG_CONFIG) --cflags $(PKG_GTK) $(PKG_WNCK)) $(LUA_LIB_CFLAGS)
+ifndef NO_XRANDR
+	RANDR_LIB_CFLAGS := $(shell $(PKG_CONFIG) --cflags xrandr)
+	RANDR_LIBS := $(shell $(PKG_CONFIG) --libs xrandr)
+	ifneq (,$(RANDR_LIBS))
+		RANDR_LIB_CFLAGS += -DHAVE_XRANDR
+	endif
+else
+	RANDR_LIB_CFLAGS :=
+	RANDR_LIBS :=
+endif
+
+LIB_CFLAGS := $(shell $(PKG_CONFIG) --cflags $(PKG_GTK) $(PKG_WNCK)) $(LUA_LIB_CFLAGS) $(RANDR_LIB_CFLAGS)
 STD_LDFLAGS=
-LIBS := -lX11 -lXinerama $(shell $(PKG_CONFIG) --libs $(PKG_GTK) $(PKG_WNCK)) $(LUA_LIBS)
+LIBS := -lX11 -lXinerama $(shell $(PKG_CONFIG) --libs $(PKG_GTK) $(PKG_WNCK)) $(LUA_LIBS) $(RANDR_LIBS)
 
 LOCAL_CFLAGS=$(STD_CFLAGS) $(DEPRECATED) $(CFLAGS) $(LIB_CFLAGS)
 LOCAL_LDFLAGS=$(STD_CFLAGS) $(LDFLAGS) $(STD_LDFLAGS)

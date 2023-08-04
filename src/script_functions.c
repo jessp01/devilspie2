@@ -449,10 +449,16 @@ static gulong *get_default_struts(Display *dpy)
 
 	static gulong struts[NUM_STRUTS];
 	memset (struts, 0, sizeof(struts));
-
+#ifdef HAVE_XRANDR
+	// If we have xrandr (we probably do), get the maximum screen size
+	int x; // throwaway
+	XRRGetScreenSizeRange (dpy, RootWindow(dpy, screen),
+	                       &x, &x, &width, &height);
+#else
+	// Otherwise, fall back to the current size
 	width = DisplayWidth(dpy, screen);
 	height = DisplayHeight(dpy, screen);
-
+#endif
 	struts[5] = struts[7] = height;
 	struts[9] = struts[11] = width;
 

@@ -101,6 +101,8 @@ int c_get_class_instance_name(lua_State *lua);
 int c_get_class_group_name(lua_State *lua);
 
 int c_get_window_property(lua_State *lua);
+int c_window_property_is_utf8(lua_State *lua);
+int c_get_window_property_full(lua_State *lua);
 int c_get_window_role(lua_State *lua);
 
 int c_get_window_xid(lua_State *lua);

@@ -260,7 +260,7 @@ Screen *devilspie2_window_get_xscreen(Window xid)
 /**
  *
  */
-char* my_wnck_get_string_property(Window xwindow, Atom atom)
+char* my_wnck_get_string_property(Window xwindow, Atom atom, gboolean *utf8)
 {
 	Atom type;
 	int format;
@@ -270,6 +270,10 @@ char* my_wnck_get_string_property(Window xwindow, Atom atom)
 	int err, result;
 	char *retval;
 	Atom XA_UTF8_STRING;
+	gboolean is_utf8 = True;
+
+	if (utf8)
+		*utf8 = False;
 
 	devilspie2_error_trap_push();
 	property = NULL;
@@ -287,7 +291,11 @@ char* my_wnck_get_string_property(Window xwindow, Atom atom)
 	retval = NULL;
 	XA_UTF8_STRING = XInternAtom(gdk_x11_get_default_xdisplay(), "UTF8_STRING", False);
 
+	if (utf8)
+		*utf8 = False;
+
 	if (type == XA_STRING) {
+		is_utf8 = False;
 		retval = g_strdup ((char*)property);
 	} else if (type == XA_UTF8_STRING) {
 		retval = g_strdup ((char*)property);
@@ -338,6 +346,8 @@ char* my_wnck_get_string_property(Window xwindow, Atom atom)
 	}
 
 	XFree (property);
+	if (utf8)
+		*utf8 = is_utf8;
 	return retval;
 }
 

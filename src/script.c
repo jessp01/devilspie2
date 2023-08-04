@@ -159,6 +159,8 @@ register_cfunctions(lua_State *lua)
 	lua_register(lua, "get_window_type", c_get_window_type);
 
 	lua_register(lua, "get_window_property", c_get_window_property);
+	lua_register(lua, "window_property_is_utf8", c_window_property_is_utf8);
+	lua_register(lua, "get_window_property_full", c_get_window_property_full);
 	lua_register(lua, "get_window_role", c_get_window_role);
 	lua_register(lua, "get_window_xid", c_get_window_xid);
 

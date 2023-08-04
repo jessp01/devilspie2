@@ -214,6 +214,26 @@ get_window_property(property)
    (Available from version 0.21)
 
 
+window_property_is_utf8(property)
+
+   Returns whether the window property described in the property string is
+   UTF-8. (Always returns true for properties which are converted to string.)
+
+   Returns nil if the property doesn't exist.
+
+   (Available from version 0.45)
+
+
+get_window_property_full(property)
+
+   Returns a list suitable for assignment to two variables:
+   get_window_property(property), window_property_is_utf8(property)
+
+   Returns nil if the property doesn't exist.
+
+   (Available from version 0.45)
+
+
 get_window_role
 
    Returns a string describing the current window role of the matched window as

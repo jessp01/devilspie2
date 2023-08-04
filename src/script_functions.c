@@ -1468,14 +1468,18 @@ int c_set_window_property(lua_State *lua)
 
 	switch (type) {
 	case LUA_TSTRING:
-		type = lua_type(lua, 3);
-		if (type != LUA_TBOOLEAN) {
-			luaL_error(lua, "set_window_property: %s", boolean_expected_as_indata_error);
-			return 0;
+		gboolean use_utf8 = False;
+		if (top > 2) {
+			type = lua_type(lua, 3);
+			if (type != LUA_TBOOLEAN) {
+				luaL_error(lua, "set_window_property: %s", boolean_expected_as_indata_error);
+				return 0;
+			}
+			use_utf8 = lua_toboolean(lua, 3);
 		}
 		if (!devilspie2_emulate)
 			my_wnck_set_string_property(wnck_window_get_xid(window), my_wnck_atom_get(property),
-						    lua_tostring(lua, 2), lua_toboolean(lua, 3));
+						    lua_tostring(lua, 2), use_utf8);
 		break;
 
 	case LUA_TNUMBER:

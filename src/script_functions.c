@@ -1647,7 +1647,7 @@ int c_get_window_property(lua_State *lua)
 		lua_pushstring(lua, result ? result : "");
 		g_free (result);
 	} else {
-		lua_pushstring(lua, "NO RESULT");
+		lua_pushnil(lua);
 	}
 
 	return 1;

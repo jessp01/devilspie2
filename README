@@ -209,6 +209,8 @@ get_window_property(property)
    available properties, you should see the page
    http://standards.freedesktop.org/wm-spec/wm-spec-latest.html
 
+   From 0.45, returns nil if the property doesn't exist.
+
    (Available from version 0.21)
 
 

@@ -35,6 +35,7 @@ int c_set_window_geometry2(lua_State *lua);
 int c_set_window_size(lua_State *lua);
 
 int c_set_window_strut(lua_State *lua);
+int c_get_window_strut(lua_State *lua);
 
 int c_get_application_name(lua_State *lua);
 
@@ -57,7 +58,8 @@ int c_get_workspace_count(lua_State *lua);
 int c_unmaximize_window(lua_State *lua);
 int c_maximize_window(lua_State *lua);
 int c_maximize_window_vertically(lua_State *lua);
-int c_maximize_window_horisontally(lua_State *lua);
+int c_maximize_window_horisontally(lua_State *lua); // deprecated
+int c_maximize_window_horizontally(lua_State *lua);
 
 int c_pin_window(lua_State *lua);
 int c_unpin_window(lua_State *lua);
@@ -69,6 +71,8 @@ int c_close_window(lua_State *lua);
 void set_current_window(WnckWindow *window);
 WnckWindow *get_current_window();
 
+int c_set_adjust_for_decoration();
+
 int c_get_window_geometry(lua_State *lua);
 int c_get_client_window_geometry(lua_State *lua);
 
@@ -77,7 +81,8 @@ int c_set_skip_pager(lua_State *lua);
 
 int c_get_window_is_maximized(lua_State *lua);
 int c_get_window_is_maximized_vertically(lua_State *lua);
-int c_get_window_is_maximized_horisontally(lua_State *lua);
+int c_get_window_is_maximized_horisontally(lua_State *lua); // deprecated
+int c_get_window_is_maximized_horizontally(lua_State *lua);
 int c_get_window_is_pinned(lua_State *lua);
 
 int c_set_window_fullscreen(lua_State *lua);
@@ -87,12 +92,13 @@ int c_set_window_below(lua_State *lua);
 
 int c_make_always_on_top(lua_State *lua);
 int c_set_on_top(lua_State *lua);
+int c_set_on_bottom(lua_State *lua);
 
 int c_get_window_type(lua_State *lua);
 
-#ifdef HAVE_GTK3
+// these two require GTK 3 or later
 int c_get_class_instance_name(lua_State *lua);
-#endif
+int c_get_class_group_name(lua_State *lua);
 
 int c_get_window_property(lua_State *lua);
 int c_get_window_role(lua_State *lua);

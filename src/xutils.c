@@ -538,9 +538,25 @@ void my_window_set_opacity(Window xid, double value)
 /**
  *
  */
-void set_window_geometry(WnckWindow *window, int x, int y, int w, int h)
+void adjust_for_decoration(WnckWindow *window, int *x, int *y, int *w, int *h)
 {
+	GdkRectangle geom, geom_undec;
 
+	wnck_window_get_geometry(window, &geom.x, &geom.y, &geom.width, &geom.height);
+	wnck_window_get_client_window_geometry(window, &geom_undec.x, &geom_undec.y, &geom_undec.width, &geom_undec.height);
+
+	if (x) *x -= geom_undec.x - geom.x;
+	if (y) *y -= geom_undec.y - geom.y;
+	if (w) *w -= geom_undec.width - geom.width;
+	if (h) *h -= geom_undec.height - geom.height;
+}
+
+
+/**
+ *
+ */
+void set_window_geometry(WnckWindow *window, int x, int y, int w, int h, gboolean adjusting_for_decoration)
+{
 	if (window) {
 		WnckScreen *screen = wnck_window_get_screen(window);
 		int sw = wnck_screen_get_width(screen);
@@ -559,6 +575,9 @@ void set_window_geometry(WnckWindow *window, int x, int y, int w, int h)
 			x = sw + x;
 		if (y < 0)
 			y = sh + y;
+
+		if (adjusting_for_decoration)
+			adjust_for_decoration(window, &x, &y, &w, &h);
 
 		wnck_window_set_geometry(window,
 		                         gravity,

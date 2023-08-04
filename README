@@ -76,7 +76,7 @@ The scripting language used is Lua; https://see www.lua.org/
   Tutorials:     http://lua-users.org/wiki/TutorialDirectory
 
 
-The following commands are recognized by the Devilspie2 Lua interpreter:
+The following commands are recognised by the Devilspie2 Lua interpreter:
 
 First, a function to show some debug info
 
@@ -141,21 +141,24 @@ get_window_client_geometry()
 
 
 get_window_is_maximized()
+get_window_is_maximised()
 
-   Returns true if the window is maximized, false otherwise. (available from
-   version 0.21)
+   Returns true if the window is maximised, false otherwise. (available from
+   version 0.21; -ise from 0.45)
 
 
 get_window_is_maximized_vertically()
+get_window_is_maximised_vertically()
 
-   Returns true if the window is vertically maximized, false otherwise.
-   (available from version 0.21)
+   Returns true if the window is vertically maximised, false otherwise.
+   (available from version 0.21; -ise from 0.45)
 
 
 get_window_is_maximized_horizontally()
+get_window_is_maximised_horizontally()
 
-   Returns true if the window is horizontally maximized, false otherwise.
-   (available from version 0.21)
+   Returns true if the window is horizontally maximised, false otherwise.
+   (available from version 0.21; -ise from 0.45)
 
 
 get_window_is_decorated()
@@ -178,7 +181,7 @@ get_window_type()
    "WINDOW_TYPE_UTILITY"
    "WINDOW_TYPE_SPLASHSCREEN"
 
-   or "WINDOW_TYPE_UNRECOGNIZED" if libwnck didn't recognize the type.
+   or "WINDOW_TYPE_UNRECOGNIZED" if libwnck didn't recognise the type.
 
    If the function for some reason didn't have a window to work on the string
    result is "WINDOW_ERROR".
@@ -190,6 +193,13 @@ get_class_instance_name()
 
    Gets the class instance name from the WM_CLASS Property for the current
    window. Only available on libwnck 3+, and in devilspie2 version 0.21 or
+   later.
+
+
+get_class_group_name()
+
+   Gets the class group name from the WM_CLASS Property for the current
+   window. Only available on libwnck 3+, and in devilspie2 version 0.45 or
    later.
 
 
@@ -256,6 +266,30 @@ get_monitor_geometry(index)
 
 
 and the rest of the commands are used to modify the properties of the windows:
+
+
+set_adjust_for_decoration([bool])
+
+   Allow for situations where moving or resizing the window is done
+   incorrectly, i.e.
+      set_window_position(0,0)
+   results in the window decoration being taken into account twice, i.e. 
+   the window (including decoration) is offset from the top left corner by
+   the width of the left side decoration and the height of the title bar.
+
+   This is currently off by default, and is sticky: if you do not explicitly
+   set it in your script, its current value is retained.
+
+   If used, it should be used at the start of the script.
+
+   This affects the following functions:
+      set_window_geometry
+      set_window_position
+      set_window_size
+      xy
+      xywh
+
+   (Available from version 0.45)
 
 
 set_window_position(xpos, ypos, [index])
@@ -332,34 +366,46 @@ unshade()
 
 
 maximize()
+maximise()
 
-   maximizes a window
+   maximises a window
+   (-ise from 0.45)
 
 
 unmaximize()
+unmaximise()
 
-   unmaximizes a window
+   unmaximises a window
+   (-ise from 0.45)
 
 
 maximize_vertically()
+maximise_vertically()
 
-   maximizes the current window vertically.
+   maximises the current window vertically.
+   (-ise from 0.45)
 
 
 maximize_horizontally()
+maximise_horizontally()
 
-   maximizes the current window horizontally.
+   maximises the current window horizontally.
+   (-ise from 0.45)
 
 
 minimize()
+minimise()
 
-   minimizes a window
+   minimises a window
+   (-ise from 0.45)
 
 
 unminimize()
+unminimise()
 
-   unminimizes a window, that is bringing it back to screen from the minimized
+   unminimises a window, that is bringing it back to screen from the minimised
    position/size.
+   (-ise from 0.45)
 
 
 decorate_window()
@@ -436,6 +482,8 @@ set_on_top()
 
    sets a window on top of the others.
    Unlike set_window_above, it doesn't lock the window in this position.
+   As of version 0.45, the window's layer (above, between, below) is
+   maintained.
 
 
 set_window_below([below])
@@ -443,6 +491,13 @@ set_window_below([below])
    Set the current window below all normal windows. (available from version
    0.21)
    Optionally takes a boolean(true or false) as value.
+
+
+set_on_bottom()
+
+   sets a window below the others.
+   Unlike set_window_below, it doesn't lock the window in this position.
+   (Available from version 0.45.)
 
 
 set_window_fullscreen(fullscreen)
@@ -535,11 +590,27 @@ focus_window()
 	Focuses the current window. (Function is available from version 0.30)
 
 
-set_window_strut(left, right, top, bottom)
+set_window_strut(left, right, top, bottom, ...)
 
 	Set the reserved area at the borders of the desktop for a docking area such
-	as a taskbar or a panel (available from version 0.32)
+	as a taskbar or a panel. Will handle up to 12 values.
 
+	Default minimum values are 0 and default maximum values are taken
+	from the screen size (current or maximum, depending on whether
+	xrandr is used).
+
+	(Available from version 0.32)
+
+get_window_strut()
+
+	Get the reserved area at the borders of the desktop for a docking
+	area such as a taskbar or a panel.
+
+	Returns a table (12 integers as for _NET_WM_WINDOW_STRUT_PARTIAL) or
+	nil. If _NET_WM_WINDOW_STRUT was read then defaults are	used as for
+	set_window_strut().
+
+	(Available from version 0.45)
 
 xy(x, y), xy()
     Set the position of a window, or if you don't give any input, get the
@@ -574,9 +645,9 @@ if (get_window_name() == "Terminal") then
    set_window_geometry(1600, 300, 900, 700);
 end
 
--- Make Firefox always start maximized.
+-- Make Firefox always start maximised.
 if (get_application_name() == "Firefox") then
-   maximize();
+   maximise();
 end
 
 --------------------->8---------------------

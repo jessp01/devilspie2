@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=DevilsPie2
+Comment=Perform scripted actions on windows
+#Icon=devilspie2
+Exec=devilspie2
+Terminal=false
+Type=Application
+StartupNotify=false
+Categories=Utility;GTK;X11

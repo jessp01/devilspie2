@@ -59,6 +59,11 @@ PROG=$(BIN)/$(NAME)
 VERSION = $(shell cat ./VERSION)
 DATADIR = ${DESTDIR}${PREFIX}/share
 LOCALEDIR = ${DATADIR}/locale
+MANDIR = ${DATADIR}/man
+# /etc if installing in /usr, else ${PREFIX}/etc
+# if this isn't right, submit a patch
+ETCDIR = ${DESTDIR}$(if $(patsubst /usr,,${PREFIX}),${PREFIX},)/etc
+APPDIR = ${ETCDIR}/xdg/autostart
 MANPAGE = ${NAME}.1
 
 ifdef GTK2
@@ -71,9 +76,23 @@ else
 	PKG_WNCK=libwnck-3.0
 endif
 
-LIB_CFLAGS=$(shell $(PKG_CONFIG) --cflags --silence-errors $(PKG_GTK) $(PKG_WNCK) $(LUA) || $(PKG_CONFIG) --cflags $(PKG_GTK) $(PKG_WNCK) lua)
+LUA_LIB_CFLAGS := $(shell $(PKG_CONFIG) --cflags --silence-errors $(LUA) ||  $(PKG_CONFIG) --cflags lua)
+LUA_LIBS := $(shell $(PKG_CONFIG) --libs --silence-errors $(LUA) ||  $(PKG_CONFIG) --libs lua)
+
+ifndef NO_XRANDR
+	RANDR_LIB_CFLAGS := $(shell $(PKG_CONFIG) --cflags xrandr)
+	RANDR_LIBS := $(shell $(PKG_CONFIG) --libs xrandr)
+	ifneq (,$(RANDR_LIBS))
+		RANDR_LIB_CFLAGS += -DHAVE_XRANDR
+	endif
+else
+	RANDR_LIB_CFLAGS :=
+	RANDR_LIBS :=
+endif
+
+LIB_CFLAGS := $(shell $(PKG_CONFIG) --cflags $(PKG_GTK) $(PKG_WNCK)) $(LUA_LIB_CFLAGS) $(RANDR_LIB_CFLAGS)
 STD_LDFLAGS=
-LIBS=-lX11 -lXinerama $(shell $(PKG_CONFIG) --libs --silence-errors $(PKG_GTK) $(PKG_WNCK) $(LUA) || $(PKG_CONFIG) --libs $(PKG_GTK) $(PKG_WNCK) lua)
+LIBS := -lX11 -lXinerama $(shell $(PKG_CONFIG) --libs $(PKG_GTK) $(PKG_WNCK)) $(LUA_LIBS) $(RANDR_LIBS)
 
 LOCAL_CFLAGS=$(STD_CFLAGS) $(DEPRECATED) $(CFLAGS) $(LIB_CFLAGS)
 LOCAL_LDFLAGS=$(STD_CFLAGS) $(LDFLAGS) $(STD_LDFLAGS)
@@ -93,15 +112,20 @@ endif
 
 LOCAL_CFLAGS+=-DLOCALEDIR=\"$(LOCALEDIR)\" -DPACKAGE=\"$(NAME)\" -DDEVILSPIE2_VERSION=\"$(VERSION)\"
 
-.PHONY: all
-all: $(BIN)/$(NAME)
+.PHONY: all .lua
+all: .lua $(BIN)/$(NAME)
 	${MAKE} -C po -j1 all
+
+.lua:
+	@if $(PKG_CONFIG) --cflags --silence-errors $(LUA) >/dev/null; then :; else echo '$(LUA) dev files not found - falling back on system default lua' >&2; fi
 
 $(OBJ)/%.o: $(SRC)/%.c
 	$(CC) $(LOCAL_CFLAGS) $(LOCAL_CPPFLAGS) -c $< -o $@
 
-$(BIN)/$(NAME): $(BIN) $(OBJ) $(OBJECTS)
+$(BIN)/$(NAME): $(BIN) $(OBJECTS)
 	$(CC) $(LOCAL_CFLAGS) $(LOCAL_LDFLAGS) $(OBJECTS) -o $(PROG) $(LIBS)
+
+$(OBJECTS): $(OBJ)
 
 $(BIN) $(OBJ):
 	mkdir -p -- $@
@@ -114,8 +138,10 @@ clean:
 install:
 	install -d $(DESTDIR)$(PREFIX)/bin
 	install -m 755 $(PROG) $(DESTDIR)$(PREFIX)/bin
-	install -d $(DESTDIR)$(PREFIX)/share/man/man1
-	install -m 644 $(MANPAGE) $(DESTDIR)$(PREFIX)/share/man/man1
+	install -d $(MANDIR)/man1
+	install -m 644 $(MANPAGE) $(MANDIR)/man1
+	install -d $(APPDIR)
+	install -m 644 $(NAME).desktop $(APPDIR)
 	${MAKE} -C po install
 
 .PHONY: uninstall

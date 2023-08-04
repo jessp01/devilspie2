@@ -40,6 +40,7 @@
 #include <lualib.h>
 #include <lauxlib.h>
 
+#include <X11/extensions/Xrandr.h>
 
 #if (GTK_MAJOR_VERSION >= 3)
 #define HAVE_GTK3
@@ -63,6 +64,84 @@
 WnckWindow *current_window = NULL;
 
 
+static Bool current_time_cb(Display *display, XEvent *xevent, XPointer arg)
+{
+	Window wnd = GPOINTER_TO_UINT(arg);
+
+	if (xevent->type == PropertyNotify &&
+	    xevent->xproperty.window == wnd &&
+	    xevent->xproperty.atom == my_wnck_atom_get("WM_NAME"))
+		return True;
+
+	return False;
+}
+
+/**
+ * Get current X11 timestamp.
+ *
+ * Unfortunately, gtk_get_current_event_time() does not work here
+ * because we cannot assume we are inside an event.
+ *
+ * Getting this timestamp is tricky. According to a comment in the ICCCM
+ * specification (https://tronche.com/gui/x/icccm/sec-2.html#s-2.1):
+ *
+ *     A zero-length append to a property is a way to obtain a
+ *     timestamp for this purpose; the timestamp is in the
+ *     corresponding PropertyNotify event.
+ *
+ * So here we are zero-length appending to the "WM_NAME" property.
+ */
+static guint32 current_time(void)
+{
+	WnckWindow *window;
+	gulong wnd;
+	Display *dpy;
+	Atom prop;
+	XEvent xevent;
+
+	window = get_current_window();
+	if (window == NULL)
+		return GDK_CURRENT_TIME;
+
+	dpy = gdk_x11_get_default_xdisplay();
+	wnd = wnck_window_get_xid(window);
+	prop = my_wnck_atom_get("WM_NAME");
+	XChangeProperty(dpy, wnd, prop, XA_STRING, 8, PropModeAppend, NULL, 0);
+
+	/* Wait for the event to succeed */
+	XIfEvent(dpy, &xevent, current_time_cb, GUINT_TO_POINTER(wnd));
+	return xevent.xproperty.time;
+}
+
+
+static gboolean adjusting_for_decoration = FALSE;
+
+int c_set_adjust_for_decoration(lua_State *lua)
+{
+	gboolean v = TRUE;
+	int top = lua_gettop(lua);
+
+	if (top > 1) {
+		luaL_error(lua, "set_adjust_for_decoration: %s", one_indata_expected_error);
+		return 0;
+
+	}
+
+	if (top) {
+		int type = lua_type(lua, 1);
+
+		if (type != LUA_TBOOLEAN) {
+			luaL_error(lua, "set_window_above: %s", boolean_expected_as_indata_error);
+			return 0;
+		}
+
+		int value = lua_toboolean(lua, 1);
+		v = (gboolean)(value);
+	}
+
+	adjusting_for_decoration = v;
+	return 0;
+}
 
 /**
  * returns the window name
@@ -144,8 +223,7 @@ int c_set_window_geometry(lua_State *lua)
 
 	if (!devilspie2_emulate) {
 		WnckWindow *window = get_current_window();
-
-		set_window_geometry(window, x, y, xsize, ysize);
+		set_window_geometry(window, x, y, xsize, ysize, adjusting_for_decoration);
 	}
 
 	return 0;
@@ -161,7 +239,7 @@ int c_set_window_geometry2(lua_State *lua)
 	int top = lua_gettop(lua);
 
 	if (top != 4) {
-		luaL_error(lua,"set_window_geometry: %s", four_indata_expected_error);
+		luaL_error(lua, "set_window_geometry2: %s", four_indata_expected_error);
 		return 0;
 	}
 
@@ -174,7 +252,7 @@ int c_set_window_geometry2(lua_State *lua)
 	        (type2 != LUA_TNUMBER) ||
 	        (type3 != LUA_TNUMBER) ||
 	        (type4 != LUA_TNUMBER)) {
-		luaL_error(lua, "set_window_geometry: %s", four_indata_expected_error);
+		luaL_error(lua, "set_window_geometry2: %s", four_indata_expected_error);
 		return 0;
 	}
 
@@ -242,7 +320,7 @@ int c_set_window_position(lua_State *lua)
 				 */
 				GdkRectangle bounds, geom;
 
-				wnck_window_get_geometry(window, NULL, NULL, &geom.width, &geom.height);
+				wnck_window_get_geometry(window, &geom.x, &geom.y, &geom.width, &geom.height);
 
 				monitor = get_monitor_or_workspace_geometry(monitor, window, &bounds);
 				if (monitor == MONITOR_NONE)	{
@@ -259,6 +337,9 @@ int c_set_window_position(lua_State *lua)
 				else
 					y += bounds.y;
 			}
+
+			if (adjusting_for_decoration)
+				adjust_for_decoration(window, &x, &y, NULL, NULL);
 			wnck_window_set_geometry(window,
 			                         WNCK_WINDOW_GRAVITY_CURRENT,
 			                         WNCK_WINDOW_CHANGE_X + WNCK_WINDOW_CHANGE_Y,
@@ -339,6 +420,8 @@ int c_set_window_size(lua_State *lua)
 		if (window) {
 
 			devilspie2_error_trap_push();
+			if (adjusting_for_decoration)
+				adjust_for_decoration (window, NULL, NULL, &x, &y);
 			wnck_window_set_geometry(window,
 			                         WNCK_WINDOW_GRAVITY_CURRENT,
 			                         WNCK_WINDOW_CHANGE_WIDTH + WNCK_WINDOW_CHANGE_HEIGHT,
@@ -357,6 +440,31 @@ int c_set_window_size(lua_State *lua)
 	return 0;
 }
 
+
+#define NUM_STRUTS 12
+static gulong *get_default_struts(Display *dpy)
+{
+	int screen = DefaultScreen(dpy);
+	int width, height;
+
+	static gulong struts[NUM_STRUTS];
+	memset (struts, 0, sizeof(struts));
+#ifdef HAVE_XRANDR
+	// If we have xrandr (we probably do), get the maximum screen size
+	int x; // throwaway
+	XRRGetScreenSizeRange (dpy, RootWindow(dpy, screen),
+	                       &x, &x, &width, &height);
+#else
+	// Otherwise, fall back to the current size
+	width = DisplayWidth(dpy, screen);
+	height = DisplayHeight(dpy, screen);
+#endif
+	struts[5] = struts[7] = height;
+	struts[9] = struts[11] = width;
+
+	return struts;
+}
+
 /**
  * Sets the window strut
  */
@@ -368,18 +476,17 @@ int c_set_window_strut(lua_State *lua)
 		luaL_error(lua,"set_window_strut: %s", four_indata_expected_error);
 		return 0;
 	}
+	if (top > NUM_STRUTS)
+		top = NUM_STRUTS;
 
 	if (!devilspie2_emulate) {
-#if __x86_64__
-		int64_t struts[12] = {};
-#else
-		int32_t struts[12] = {};
-#endif
+		Display *dpy = gdk_x11_get_default_xdisplay();
+
+		gulong *struts = get_default_struts(dpy);
 		for (int i = 0; i < top; i++) {
 			struts[i] = lua_tonumber(lua, i + 1);
 		}
 
-		Display *dpy = gdk_x11_get_default_xdisplay();
 		WnckWindow *window = get_current_window();
 
 		if (window) {
@@ -389,11 +496,66 @@ int c_set_window_strut(lua_State *lua)
 			                32,
 			                PropModeReplace,
 			                (unsigned char*)struts,
-			                12);
+			                NUM_STRUTS);
 			XSync(dpy, False);
 		}
 	}
 
+	return 0;
+}
+
+/**
+ * Gets the window strut
+ */
+int c_get_window_strut(lua_State *lua)
+{
+	int top = lua_gettop(lua);
+
+	if (top != 0) {
+		luaL_error(lua, "get_window_strut: %s", no_indata_expected_error);
+		return 0;
+	}
+
+	WnckWindow *window = get_current_window();
+
+	if (!window)
+		return 0;
+
+	Display *dpy = gdk_x11_get_default_xdisplay();
+	gulong *struts = NULL;
+	int len = 0;
+
+	gboolean ret = my_wnck_get_cardinal_list (wnck_window_get_xid(window),
+	                                          XInternAtom(dpy, "_NET_WM_STRUT_PARTIAL", False),
+	                                          &struts, &len);
+	/* if that fails, try reading the older, deprecated property */
+	if (!ret)
+		ret = my_wnck_get_cardinal_list (wnck_window_get_xid(window),
+		                                 XInternAtom(dpy, "_NET_WM_STRUT", False),
+		                                 &struts, &len);
+
+	if (len) {
+		int i;
+		if (len > NUM_STRUTS)
+			len = NUM_STRUTS;
+
+		lua_createtable(lua, NUM_STRUTS, 0);
+		for (i = 0; i < len; ++i) {
+			lua_pushinteger(lua, struts[i]);
+			lua_rawseti(lua, -2, i + 1);
+		}
+		g_free(struts);
+
+		// pad out with default values if necessary
+		if (len < NUM_STRUTS) {
+			struts = get_default_struts(dpy);
+			for (; i < NUM_STRUTS; ++i) {
+				lua_pushinteger(lua, struts[i]);
+				lua_rawseti(lua, -2, i + 1);
+			}
+		}
+		return 1;
+	}
 	return 0;
 }
 
@@ -436,11 +598,31 @@ int c_set_on_top(lua_State *lua)
 	if (!devilspie2_emulate) {
 		WnckWindow *window = get_current_window();
 
-		if (window) {
-			wnck_window_make_above(window);
+		if (window)
+			XRaiseWindow(gdk_x11_get_default_xdisplay(), wnck_window_get_xid(window));
+	}
 
-			wnck_window_unmake_above(window);
-		}
+	return 0;
+}
+
+
+/**
+ * sets the window below all the others
+ */
+int c_set_on_bottom(lua_State *lua)
+{
+	int top = lua_gettop(lua);
+
+	if (top != 0) {
+		luaL_error(lua, "set_on_bottom: %s", no_indata_expected_error);
+		return 0;
+	}
+
+	if (!devilspie2_emulate) {
+		WnckWindow *window = get_current_window();
+
+		if (window)
+			XLowerWindow(gdk_x11_get_default_xdisplay(), wnck_window_get_xid(window));
 	}
 
 	return 0;
@@ -459,7 +641,7 @@ int c_get_application_name(lua_State *lua)
 		return 0;
 	}
 
-	const char *application_name;
+	const char *application_name = "";
 
 	WnckWindow *window = get_current_window();
 
@@ -467,10 +649,8 @@ int c_get_application_name(lua_State *lua)
 
 		WnckApplication *application=
 		    wnck_window_get_application(get_current_window());
-		application_name = wnck_application_get_name(application);
-
-	} else {
-		application_name = "";
+		if (application)
+			application_name = wnck_application_get_name(application);
 	}
 
 	// one item returned - the application name as a string.
@@ -604,7 +784,7 @@ int c_unminimize_window(lua_State *lua)
 		WnckWindow *window = get_current_window();
 
 		if (window) {
-			wnck_window_unminimize (window, GDK_CURRENT_TIME);
+			wnck_window_unminimize (window, current_time());
 		}
 	}
 
@@ -833,7 +1013,7 @@ int c_get_workspace_count(lua_State *lua)
 		count = wnck_screen_get_workspace_count(screen);
 	}
 
-	lua_pushnumber(lua, count);
+	lua_pushinteger(lua, count);
 
 	return 1;
 }
@@ -908,14 +1088,14 @@ int c_maximize_window_vertically(lua_State *lua)
 
 
 /**
- * Maximize the window horisontally
+ * Maximize the window horizontally
  */
-int c_maximize_window_horisontally(lua_State *lua)
+int c_maximize_window_horizontally(lua_State *lua)
 {
 	int top = lua_gettop(lua);
 
 	if (top != 0) {
-		luaL_error(lua, "maximize_horisontally: %s", no_indata_expected_error);
+		luaL_error(lua, "maximize_horizontally: %s", no_indata_expected_error);
 		return 0;
 	}
 
@@ -929,6 +1109,11 @@ int c_maximize_window_horisontally(lua_State *lua)
 	return 0;
 }
 
+int c_maximize_window_horisontally(lua_State *lua)
+{
+	fprintf(stderr, "warning: deprecated function %s called\n", __func__ + 2);
+	return c_maximize_window_horizontally(lua);
+}
 
 
 /**
@@ -1044,10 +1229,10 @@ int c_get_window_geometry(lua_State *lua)
 		wnck_window_get_geometry(window, &x, &y, &width, &height);
 	}
 
-	lua_pushnumber(lua, x);
-	lua_pushnumber(lua, y);
-	lua_pushnumber(lua, width);
-	lua_pushnumber(lua, height);
+	lua_pushinteger(lua, x);
+	lua_pushinteger(lua, y);
+	lua_pushinteger(lua, width);
+	lua_pushinteger(lua, height);
 
 	return 4;
 }
@@ -1074,10 +1259,10 @@ int c_get_client_window_geometry(lua_State *lua)
 		wnck_window_get_client_window_geometry(window, &x, &y, &width, &height);
 	}
 
-	lua_pushnumber(lua, x);
-	lua_pushnumber(lua, y);
-	lua_pushnumber(lua, width);
-	lua_pushnumber(lua, height);
+	lua_pushinteger(lua, x);
+	lua_pushinteger(lua, y);
+	lua_pushinteger(lua, width);
+	lua_pushinteger(lua, height);
 
 	return 4;
 }
@@ -1159,7 +1344,7 @@ int c_get_window_is_maximized(lua_State *lua)
 	int top = lua_gettop(lua);
 
 	if (top != 0) {
-		luaL_error(lua, "get_window_is__maximized: %s",
+		luaL_error(lua, "get_window_is_maximized: %s",
 		           no_indata_expected_error);
 		return 0;
 	}
@@ -1180,7 +1365,7 @@ int c_get_window_is_maximized_vertically(lua_State *lua)
 	int top = lua_gettop(lua);
 
 	if (top != 0) {
-		luaL_error(lua, "get_window_is_horisontally_maximized: %s",
+		luaL_error(lua, "get_window_is_maximized_vertically: %s",
 		           no_indata_expected_error);
 		return 0;
 	}
@@ -1197,12 +1382,12 @@ int c_get_window_is_maximized_vertically(lua_State *lua)
 /**
  *
  */
-int c_get_window_is_maximized_horisontally(lua_State *lua)
+int c_get_window_is_maximized_horizontally(lua_State *lua)
 {
 	int top = lua_gettop(lua);
 
 	if (top != 0) {
-		luaL_error(lua, "get_window_is_horisontally_maximized: %s",
+		luaL_error(lua, "get_window_is_maximized_horizontally: %s",
 		           no_indata_expected_error);
 		return 0;
 	}
@@ -1213,6 +1398,12 @@ int c_get_window_is_maximized_horisontally(lua_State *lua)
 	lua_pushboolean(lua, is_horizontally_maximized);
 
 	return 1;
+}
+
+int c_get_window_is_maximized_horisontally(lua_State *lua)
+{
+	fprintf(stderr, "warning: deprecated function %s called\n", __func__ + 2);
+	return c_get_window_is_maximized_horizontally(lua);
 }
 
 
@@ -1378,13 +1569,13 @@ int c_get_window_type(lua_State *lua)
 }
 
 
-#ifdef HAVE_GTK3
 /**
  * c_get_class_instance_name
  * Only available on libwnck 3+
  */
 int c_get_class_instance_name(lua_State *lua)
 {
+#ifdef HAVE_GTK3
 	int top = lua_gettop(lua);
 
 	if (top != 0) {
@@ -1393,16 +1584,38 @@ int c_get_class_instance_name(lua_State *lua)
 		return 0;
 	}
 
-
 	WnckWindow *window = get_current_window();
 	const char *class_instance_name = window ? wnck_window_get_class_instance_name(window) : "";
 
 	// one item returned - the window class instance name as a string.
 	lua_pushstring(lua, class_instance_name);
-
+#endif
 	return 1;
 }
+
+/**
+ * c_get_class_group_name
+ * Only available on libwnck 3+
+ */
+int c_get_class_group_name(lua_State *lua)
+{
+#ifdef HAVE_GTK3
+	int top = lua_gettop(lua);
+
+	if (top != 0) {
+		luaL_error(lua, "get_window_class_group_name: %s",
+		           no_indata_expected_error);
+		return 0;
+	}
+
+	WnckWindow *window = get_current_window();
+	const char *class_group_name = window ? wnck_window_get_class_group_name(window) : "";
+
+	// one item returned - the window class instance name as a string.
+	lua_pushstring(lua, class_group_name);
 #endif
+	return 1;
+}
 
 
 /**
@@ -1510,7 +1723,7 @@ int c_del_window_property(lua_State *lua)
 	int top = lua_gettop(lua);
 
 	if (top != 1) {
-		luaL_error(lua, "set_window_property: %s", one_indata_expected_error);
+		luaL_error(lua, "del_window_property: %s", one_indata_expected_error);
 		return 0;
 	}
 
@@ -1519,7 +1732,7 @@ int c_del_window_property(lua_State *lua)
 	int type = lua_type(lua, 1);
 
 	if (type != LUA_TSTRING) {
-		luaL_error(lua, "set_window_property: %s", string_expected_as_indata_error);
+		luaL_error(lua, "del_window_property: %s", string_expected_as_indata_error);
 		return 0;
 	}
 
@@ -1572,7 +1785,7 @@ int c_get_window_xid(lua_State *lua)
 	WnckWindow *window = get_current_window();
 	gulong result = window ? wnck_window_get_xid(window) : 0;
 
-	lua_pushnumber(lua, result);
+	lua_pushinteger(lua, result);
 
 	return 1;
 }
@@ -1591,22 +1804,21 @@ int c_get_window_class(lua_State *lua)
 	}
 
 	WnckWindow *window = get_current_window();
-	const char *result;
+	const char *result = "";
 
 	if (window) {
 		WnckClassGroup *class_group = wnck_window_get_class_group(window);
-
+		if (class_group) {
 #ifdef WNCK_MAJOR_VERSION
 #if WNCK_CHECK_VERSION(3,2,0)
-		result = (char*)wnck_class_group_get_id(class_group);
+			result = (char*)wnck_class_group_get_id(class_group);
 #else
-		result = (char*)wnck_class_group_get_res_class (class_group);
+			result = (char*)wnck_class_group_get_res_class (class_group);
 #endif
 #else
-		result = (char*)wnck_class_group_get_res_class (class_group);
+			result = (char*)wnck_class_group_get_res_class (class_group);
 #endif
-	} else {
-		result = "";
+		}
 	}
 
 	lua_pushstring(lua, result);
@@ -1955,8 +2167,8 @@ int c_get_screen_geometry(lua_State *lua)
 		height = wnck_screen_get_height(screen);
 	}
 
-	lua_pushnumber(lua, width);
-	lua_pushnumber(lua, height);
+	lua_pushinteger(lua, width);
+	lua_pushinteger(lua, height);
 
 	return 2;
 }
@@ -1976,7 +2188,7 @@ int c_focus(lua_State *lua)
 	WnckWindow *window = get_current_window();
 
 	if (!devilspie2_emulate && window) {
-		wnck_window_activate(window, GDK_CURRENT_TIME);
+		wnck_window_activate(window, current_time());
 	}
 
 	return 0;
@@ -1996,7 +2208,7 @@ int c_close_window(lua_State *lua)
 
 	WnckWindow *window = get_current_window();
 	if (!devilspie2_emulate && window) {
-		wnck_window_close(window, GDK_CURRENT_TIME);
+		wnck_window_close(window, current_time());
 	}
 
 	return 0;
@@ -2010,7 +2222,7 @@ int c_get_window_fullscreen(lua_State *lua)
 {
 	int top = lua_gettop(lua);
 	if (top != 0) {
-		luaL_error(lua, "is_fullscreen: %s", no_indata_expected_error);
+		luaL_error(lua, "get_window_fullscreen: %s", no_indata_expected_error);
 		return 0;
 	}
 
@@ -2043,7 +2255,7 @@ int c_get_monitor_index(lua_State *lua)
 		int index = get_monitor_index_geometry(window, NULL, NULL);
 		if (index < 0)
 			index = -1; // invalid? assume single monitor
-		lua_pushnumber(lua, index + 1);
+		lua_pushinteger(lua, index + 1);
 	}
 
 	return 1;
@@ -2086,10 +2298,10 @@ int c_get_monitor_geometry(lua_State *lua)
 			return 0;
 	}
 
-	lua_pushnumber(lua, geom.x);
-	lua_pushnumber(lua, geom.y);
-	lua_pushnumber(lua, geom.width);
-	lua_pushnumber(lua, geom.height);
+	lua_pushinteger(lua, geom.x);
+	lua_pushinteger(lua, geom.y);
+	lua_pushinteger(lua, geom.width);
+	lua_pushinteger(lua, geom.height);
 
 	return 4;
 }
@@ -2112,8 +2324,8 @@ int c_xy(lua_State *lua)
 
 			wnck_window_get_geometry(window, &x, &y, &width, &height);
 
-			lua_pushnumber(lua, x);
-			lua_pushnumber(lua, y);
+			lua_pushinteger(lua, x);
+			lua_pushinteger(lua, y);
 
 			return 2;
 		}
@@ -2138,6 +2350,8 @@ int c_xy(lua_State *lua)
 			WnckWindow *window = get_current_window();
 
 			if (window) {
+				if (adjusting_for_decoration)
+					adjust_for_decoration (window, &x, &y, NULL, NULL);
 				wnck_window_set_geometry(window,
 				                         WNCK_WINDOW_GRAVITY_CURRENT,
 				                         WNCK_WINDOW_CHANGE_X + WNCK_WINDOW_CHANGE_Y,
@@ -2170,10 +2384,10 @@ int c_xywh(lua_State *lua)
 
 			wnck_window_get_geometry(window, &x, &y, &width, &height);
 
-			lua_pushnumber(lua, x);
-			lua_pushnumber(lua, y);
-			lua_pushnumber(lua, width);
-			lua_pushnumber(lua, height);
+			lua_pushinteger(lua, x);
+			lua_pushinteger(lua, y);
+			lua_pushinteger(lua, width);
+			lua_pushinteger(lua, height);
 
 			return 4;
 		}
@@ -2202,8 +2416,7 @@ int c_xywh(lua_State *lua)
 
 		if (!devilspie2_emulate) {
 			WnckWindow *window = get_current_window();
-
-			set_window_geometry(window, x, y, xsize, ysize);
+			set_window_geometry(window, x, y, xsize, ysize, adjusting_for_decoration);
 		}
 
 		return 0;
@@ -2369,7 +2582,7 @@ static gchar *c_get_process_name_INT_ps(lua_State *lua, pid_t pid)
  * Focus the current window.
 
 ESExpResult *func_focus(ESExp *f, int argc, ESExpResult **argv, Context *c) {
-  wnck_window_activate (c->window, GDK_CURRENT_TIME);
+  wnck_window_activate (c->window, current_time());
   if (debug) g_printerr (_("Focusing\n"));
   return e_sexp_result_new_bool (f, TRUE);
 }

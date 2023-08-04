@@ -2,6 +2,19 @@
 ChangeLog:
 ----------
 
+0.45
+	* Fixes related to Lua version handling
+	* Misc build fixes
+	* Add set_on_bottom(): move to bottom of stack
+	* Change set_on_top() so that it merely raises the window
+	* Add get_class_group_name().
+          This complements get_class_instance_name re. WM_CLASS.
+	* More aliases for function names containing 'maximize' or
+	  'minimize': accept -ise spellings
+	* Visibly deprecate function names containing 'horisontally'
+	* Add set_adjust_for_decoration(), useful if you have problems with
+	  positioning & resizing of decorated windows [note: experimental]
+
 0.44
 	* Default to Lua 5.3, and permit use of other versions
 	* Add support for setting and deleting window properties

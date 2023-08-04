@@ -17,6 +17,7 @@ libglib2.0-dev
 liblua5.3-0-dev
 libwnck-3-dev
 libgtk-3-dev
+libxrandr-dev (optional)
 
 on a system still using Gtk version 2 replace the wnck and gtk libs with:
 
@@ -39,10 +40,17 @@ You can use other versions of Lua. For example:
 	make LUA=lua5.1
 	make LUA=lua5.4
 
+You can build without xrandr:
+
+	make NO_XRANDR=yes
+
 This will in the end create the devilspie2 binary in the bin/ folder.
 To build the same executable, but with debugging enabled, run
 
-	make DEBUG=1.
+	make DEBUG=1
+
+(Any value works for GTK2, NO_XRANDR and DEBUG; it only matters whether
+they're defined.)
 
 
 To install Devilspie2 system-wide - simply run make install as superuser:

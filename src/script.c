@@ -93,13 +93,19 @@ register_cfunctions(lua_State *lua)
 	lua_register(lua, "unshade", c_unshade_window);
 
 	lua_register(lua, "maximize", c_maximize_window);
-	lua_register(lua, "maximize_horisontally", c_maximize_window_horisontally);
-	lua_register(lua, "maximize_horizontally", c_maximize_window_horisontally);
+	lua_register(lua, "maximise", c_maximize_window);
+	lua_register(lua, "maximize_horisontally", c_maximize_window_horisontally); // deprecated
+	lua_register(lua, "maximize_horizontally", c_maximize_window_horizontally);
+	lua_register(lua, "maximise_horizontally", c_maximize_window_horizontally);
 	lua_register(lua, "maximize_vertically", c_maximize_window_vertically);
+	lua_register(lua, "maximise_vertically", c_maximize_window_vertically);
 	lua_register(lua, "unmaximize", c_unmaximize_window);
+	lua_register(lua, "unmaximise", c_unmaximize_window);
 
 	lua_register(lua, "minimize", c_minimize_window);
+	lua_register(lua, "minimise", c_minimize_window);
 	lua_register(lua, "unminimize", c_unminimize_window);
+	lua_register(lua, "unminimise", c_unminimize_window);
 
 	lua_register(lua, "decorate_window", c_decorate_window);
 	lua_register(lua, "undecorate_window", c_undecorate_window);
@@ -115,6 +121,8 @@ register_cfunctions(lua_State *lua)
 
 	lua_register(lua, "close_window", c_close_window);
 
+	lua_register(lua, "set_adjust_for_decoration", c_set_adjust_for_decoration);
+
 	lua_register(lua, "get_window_geometry", c_get_window_geometry);
 	lua_register(lua, "get_window_client_geometry", c_get_client_window_geometry);
 
@@ -122,14 +130,19 @@ register_cfunctions(lua_State *lua)
 	lua_register(lua, "set_skip_pager", c_set_skip_pager);
 
 	lua_register(lua, "get_window_is_maximized", c_get_window_is_maximized);
+	lua_register(lua, "get_window_is_maximised", c_get_window_is_maximized);
 
 	lua_register(lua, "get_window_is_maximized_vertically",
 	             c_get_window_is_maximized_vertically);
+	lua_register(lua, "get_window_is_maximised_vertically",
+	             c_get_window_is_maximized_vertically);
 
-	lua_register(lua, "get_window_is_maximized_horisontally",
+	lua_register(lua, "get_window_is_maximized_horisontally", // deprecated
 	             c_get_window_is_maximized_horisontally);
 	lua_register(lua, "get_window_is_maximized_horizontally",
-	             c_get_window_is_maximized_horisontally);
+	             c_get_window_is_maximized_horizontally);
+	lua_register(lua, "get_window_is_maximised_horizontally",
+	             c_get_window_is_maximized_horizontally);
 	lua_register(lua, "get_window_is_pinned",
 	             c_get_window_is_pinned);
 
@@ -141,6 +154,7 @@ register_cfunctions(lua_State *lua)
 
 	lua_register(lua, "make_always_on_top", c_make_always_on_top);
 	lua_register(lua, "set_on_top", c_set_on_top);
+	lua_register(lua, "set_on_bottom", c_set_on_bottom);
 
 	lua_register(lua, "get_window_type", c_get_window_type);
 
@@ -168,10 +182,11 @@ register_cfunctions(lua_State *lua)
 	lua_register(lua, "get_window_fullscreen", c_get_window_fullscreen);
 	lua_register(lua, "get_fullscreen", c_get_window_fullscreen);
 
-#ifdef HAVE_GTK3
-	// wnck_window_get_class_instance_name is only availible on wnck 3 and later
+	lua_register(lua, "get_window_strut", c_get_window_strut);
+
+	// wnck_window_get_class_{instance,group}_name are only availible on wnck 3 and later
 	lua_register(lua, "get_class_instance_name",c_get_class_instance_name);
-#endif
+	lua_register(lua, "get_class_group_name", c_get_class_group_name);
 
 	lua_register(lua, "focus", c_focus);
 	lua_register(lua, "focus_window", c_focus);

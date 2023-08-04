@@ -74,6 +74,8 @@ init_script()
 void
 register_cfunctions(lua_State *lua)
 {
+	lua_register(lua, "use_utf8", c_use_utf8);
+
 	lua_register(lua, "get_window_name", c_get_window_name);
 	lua_register(lua, "get_window_has_name", c_get_window_has_name);
 

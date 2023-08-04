@@ -63,7 +63,6 @@
  */
 WnckWindow *current_window = NULL;
 
-
 static Bool current_time_cb(Display *display, XEvent *xevent, XPointer arg)
 {
 	Window wnd = GPOINTER_TO_UINT(arg);
@@ -111,6 +110,36 @@ static guint32 current_time(void)
 	/* Wait for the event to succeed */
 	XIfEvent(dpy, &xevent, current_time_cb, GUINT_TO_POINTER(wnd));
 	return xevent.xproperty.time;
+}
+
+
+static gboolean default_use_utf8 = False;
+
+gboolean c_use_utf8(lua_State *lua)
+{
+	gboolean v = default_use_utf8;
+	int top = lua_gettop(lua);
+
+	if (top > 1) {
+		luaL_error(lua, "use_utf8: %s", one_indata_expected_error);
+		return 0;
+	}
+
+	if (top) {
+		int type = lua_type(lua, 1);
+
+		if (type != LUA_TBOOLEAN) {
+			luaL_error(lua, "use_utf8: %s", boolean_expected_as_indata_error);
+			return 0;
+		}
+
+		int value = lua_toboolean(lua, 1);
+		v = (gboolean)(value);
+	}
+
+	lua_pushboolean(lua, default_use_utf8);
+	default_use_utf8 = v;
+	return 1;
 }
 
 
@@ -1707,7 +1736,7 @@ int c_set_window_property(lua_State *lua)
 
 	switch (type) {
 	case LUA_TSTRING:
-		gboolean use_utf8 = False;
+		gboolean use_utf8 = default_use_utf8;
 		if (top > 2) {
 			type = lua_type(lua, 3);
 			if (type != LUA_TBOOLEAN) {

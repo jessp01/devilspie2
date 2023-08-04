@@ -346,8 +346,11 @@ set_window_property(property, value, [utf8])
 
    Set a property of a window to a string or a cardinal (32-bit integer or
    boolean).
-   Optionally takes a boolean to indicate UTF8_STRING properties. Ignored
-   for non-string values.
+
+   Optionally takes a boolean to indicate UTF8_STRING properties. The
+   default is initially false and can be set via use_utf8(). Ignored for
+   non-string values.
+
    (Available from version 0.44; UTF-8 option available from version 0.45.)
 
 
@@ -642,6 +645,12 @@ xy(x, y), xy()
 xywh(x, y, w, h), xywh()
     Set the position and size of a window, or if you don't give any input, get
     the position and size of a window.
+
+
+use_utf8([bool])
+    Controls whether string-setting functions assume UTF-8 by default.
+    If no value is supplied, the setting is left unchanged.
+    Returns the previous value.
 
 
 Please note that strings comparisons are case sensitive, comparing

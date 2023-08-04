@@ -239,7 +239,7 @@ int c_set_window_geometry2(lua_State *lua)
 	int top = lua_gettop(lua);
 
 	if (top != 4) {
-		luaL_error(lua,"set_window_geometry: %s", four_indata_expected_error);
+		luaL_error(lua, "set_window_geometry2: %s", four_indata_expected_error);
 		return 0;
 	}
 
@@ -252,7 +252,7 @@ int c_set_window_geometry2(lua_State *lua)
 	        (type2 != LUA_TNUMBER) ||
 	        (type3 != LUA_TNUMBER) ||
 	        (type4 != LUA_TNUMBER)) {
-		luaL_error(lua, "set_window_geometry: %s", four_indata_expected_error);
+		luaL_error(lua, "set_window_geometry2: %s", four_indata_expected_error);
 		return 0;
 	}
 
@@ -1714,7 +1714,7 @@ int c_del_window_property(lua_State *lua)
 	int top = lua_gettop(lua);
 
 	if (top != 1) {
-		luaL_error(lua, "set_window_property: %s", one_indata_expected_error);
+		luaL_error(lua, "del_window_property: %s", one_indata_expected_error);
 		return 0;
 	}
 
@@ -1723,7 +1723,7 @@ int c_del_window_property(lua_State *lua)
 	int type = lua_type(lua, 1);
 
 	if (type != LUA_TSTRING) {
-		luaL_error(lua, "set_window_property: %s", string_expected_as_indata_error);
+		luaL_error(lua, "del_window_property: %s", string_expected_as_indata_error);
 		return 0;
 	}
 
@@ -2213,7 +2213,7 @@ int c_get_window_fullscreen(lua_State *lua)
 {
 	int top = lua_gettop(lua);
 	if (top != 0) {
-		luaL_error(lua, "is_fullscreen: %s", no_indata_expected_error);
+		luaL_error(lua, "get_window_fullscreen: %s", no_indata_expected_error);
 		return 0;
 	}
 

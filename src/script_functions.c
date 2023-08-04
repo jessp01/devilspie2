@@ -1642,7 +1642,7 @@ int c_get_window_property(lua_State *lua)
 	WnckWindow *window = get_current_window();
 
 	if (window) {
-		char *result = my_wnck_get_string_property_latin1(wnck_window_get_xid(window), my_wnck_atom_get(value));
+		char *result = my_wnck_get_string_property(wnck_window_get_xid(window), my_wnck_atom_get(value));
 
 		lua_pushstring(lua, result ? result : "");
 		g_free (result);
@@ -1758,7 +1758,7 @@ int c_get_window_role(lua_State *lua)
 	WnckWindow *window = get_current_window();
 
 	if (window) {
-		char *result = my_wnck_get_string_property_latin1(wnck_window_get_xid(window), my_wnck_atom_get("WM_WINDOW_ROLE"));
+		char *result = my_wnck_get_string_property(wnck_window_get_xid(window), my_wnck_atom_get("WM_WINDOW_ROLE"));
 
 		lua_pushstring(lua, result ? result : "");
 		g_free (result);

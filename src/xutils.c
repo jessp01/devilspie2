@@ -260,7 +260,7 @@ Screen *devilspie2_window_get_xscreen(Window xid)
 /**
  *
  */
-char* my_wnck_get_string_property_latin1(Window xwindow, Atom atom)
+char* my_wnck_get_string_property(Window xwindow, Atom atom)
 {
 	Atom type;
 	int format;

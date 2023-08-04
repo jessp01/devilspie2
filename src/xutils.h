@@ -51,7 +51,7 @@ gboolean decorate_window(Window xid);
 gboolean undecorate_window(Window xid);
 gboolean get_decorated(Window xid);
 
-char* my_wnck_get_string_property_latin1 (Window xwindow, Atom atom) ATTR_MALLOC;
+char* my_wnck_get_string_property(Window xwindow, Atom atom) ATTR_MALLOC;
 void my_wnck_set_string_property(Window xwindow, Atom atom, const gchar *const value, gboolean utf8);
 void my_wnck_set_cardinal_property (Window xwindow, Atom atom, int32_t value);
 void my_wnck_delete_property (Window xwindow, Atom atom);

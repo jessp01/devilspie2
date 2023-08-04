@@ -40,6 +40,7 @@
 #include <lualib.h>
 #include <lauxlib.h>
 
+#include <X11/extensions/Xrandr.h>
 
 #if (GTK_MAJOR_VERSION >= 3)
 #define HAVE_GTK3
@@ -439,10 +440,28 @@ int c_set_window_size(lua_State *lua)
 	return 0;
 }
 
+
+#define NUM_STRUTS 12
+static gulong *get_default_struts(Display *dpy)
+{
+	int screen = DefaultScreen(dpy);
+	int width, height;
+
+	static gulong struts[NUM_STRUTS];
+	memset (struts, 0, sizeof(struts));
+
+	width = DisplayWidth(dpy, screen);
+	height = DisplayHeight(dpy, screen);
+
+	struts[5] = struts[7] = height;
+	struts[9] = struts[11] = width;
+
+	return struts;
+}
+
 /**
  * Sets the window strut
  */
-#define NUM_STRUTS 12
 int c_set_window_strut(lua_State *lua)
 {
 	int top = lua_gettop(lua);
@@ -456,16 +475,8 @@ int c_set_window_strut(lua_State *lua)
 
 	if (!devilspie2_emulate) {
 		Display *dpy = gdk_x11_get_default_xdisplay();
-		int screen = DefaultScreen(dpy);
-		int width = DisplayWidth(dpy, screen);
-		int height = DisplayHeight(dpy, screen);
 
-		gulong struts[NUM_STRUTS] = {
-			0, 0, 0, 0,
-			0, height, 0, height,
-			0, width, 0, width
-		};
-
+		gulong *struts = get_default_struts(dpy);
 		for (int i = 0; i < top; i++) {
 			struts[i] = lua_tonumber(lua, i + 1);
 		}
@@ -518,12 +529,25 @@ int c_get_window_strut(lua_State *lua)
 		                                 &struts, &len);
 
 	if (len) {
-		lua_createtable(lua, len, 0);
-		for (int i = 0; i < len; ++i) {
+		int i;
+		if (len > NUM_STRUTS)
+			len = NUM_STRUTS;
+
+		lua_createtable(lua, NUM_STRUTS, 0);
+		for (i = 0; i < len; ++i) {
 			lua_pushinteger(lua, struts[i]);
 			lua_rawseti(lua, -2, i + 1);
 		}
 		g_free(struts);
+
+		// pad out with default values if necessary
+		if (len < NUM_STRUTS) {
+			struts = get_default_struts(dpy);
+			for (; i < NUM_STRUTS; ++i) {
+				lua_pushinteger(lua, struts[i]);
+				lua_rawseti(lua, -2, i + 1);
+			}
+		}
 		return 1;
 	}
 	return 0;

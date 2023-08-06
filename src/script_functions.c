@@ -2535,8 +2535,8 @@ static gchar *c_get_process_name_INT_proc(lua_State *lua, pid_t pid)
 	}
 
 	if (fgets(cmdname, sizeof(cmdname), cmdfp) == NULL) {
-		luaL_error(lua, "get_process_name: Failed to read from \"%s\".", cmd);
 		fclose(cmdfp);
+		luaL_error(lua, "get_process_name: Failed to read from \"%s\".", cmd);
 		return NULL;
 	}
 
@@ -2561,8 +2561,8 @@ static gchar *c_get_process_name_INT_ps(lua_State *lua, pid_t pid)
 	}
 
 	if (fgets(cmdname, sizeof(cmdname), cmdfp) == NULL) {
-		luaL_error(lua, "get_process_name: Failed to read output from command \"%s\".", cmd);
 		pclose(cmdfp);
+		luaL_error(lua, "get_process_name: Failed to read output from command \"%s\".", cmd);
 		return 0;
 	}
 

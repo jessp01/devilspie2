@@ -160,7 +160,7 @@ int c_set_adjust_for_decoration(lua_State *lua)
 		int type = lua_type(lua, 1);
 
 		if (type != LUA_TBOOLEAN) {
-			luaL_error(lua, "set_window_above: %s", boolean_expected_as_indata_error);
+			luaL_error(lua, "set_adjust_for_decoration: %s", boolean_expected_as_indata_error);
 			return 0;
 		}
 
@@ -725,7 +725,7 @@ int c_debug_print(lua_State *lua)
 /**
  * "Shades" the window
  */
-int c_shade_window(lua_State *lua)
+int c_shade(lua_State *lua)
 {
 	int top = lua_gettop(lua);
 
@@ -750,7 +750,7 @@ int c_shade_window(lua_State *lua)
 /**
  * "Unshades" the window
  */
-int c_unshade_window(lua_State *lua)
+int c_unshade(lua_State *lua)
 {
 	int top = lua_gettop(lua);
 
@@ -775,7 +775,7 @@ int c_unshade_window(lua_State *lua)
 /**
  * Minimizes the window
  */
-int c_minimize_window(lua_State *lua)
+int c_minimize(lua_State *lua)
 {
 	int top = lua_gettop(lua);
 
@@ -800,7 +800,7 @@ int c_minimize_window(lua_State *lua)
 /**
  * unminimizes window
  */
-int c_unminimize_window(lua_State *lua)
+int c_unminimize(lua_State *lua)
 {
 	int top = lua_gettop(lua);
 
@@ -1051,7 +1051,7 @@ int c_get_workspace_count(lua_State *lua)
 /**
  * Unmaximize window
  */
-int c_unmaximize_window(lua_State *lua)
+int c_unmaximize(lua_State *lua)
 {
 	int top = lua_gettop(lua);
 
@@ -1074,7 +1074,7 @@ int c_unmaximize_window(lua_State *lua)
 /**
  * Maximize Window
  */
-int c_maximize_window(lua_State *lua)
+int c_maximize(lua_State *lua)
 {
 	int top = lua_gettop(lua);
 
@@ -1096,7 +1096,7 @@ int c_maximize_window(lua_State *lua)
 /**
  * Maximize Window Vertically
  */
-int c_maximize_window_vertically(lua_State *lua)
+int c_maximize_vertically(lua_State *lua)
 {
 	int top = lua_gettop(lua);
 
@@ -1119,7 +1119,7 @@ int c_maximize_window_vertically(lua_State *lua)
 /**
  * Maximize the window horizontally
  */
-int c_maximize_window_horizontally(lua_State *lua)
+int c_maximize_horizontally(lua_State *lua)
 {
 	int top = lua_gettop(lua);
 
@@ -1138,10 +1138,10 @@ int c_maximize_window_horizontally(lua_State *lua)
 	return 0;
 }
 
-int c_maximize_window_horisontally(lua_State *lua)
+int c_maximize_horisontally(lua_State *lua)
 {
 	fprintf(stderr, "warning: deprecated function %s called\n", __func__ + 2);
-	return c_maximize_window_horizontally(lua);
+	return c_maximize_horizontally(lua);
 }
 
 
@@ -1271,7 +1271,7 @@ int c_get_window_geometry(lua_State *lua)
  * return the client geometry of the current window to the Lua script
  * this is excluding the window manager frame
  */
-int c_get_client_window_geometry(lua_State *lua)
+int c_get_window_client_geometry(lua_State *lua)
 {
 	int top = lua_gettop(lua);
 
@@ -1618,6 +1618,8 @@ int c_get_class_instance_name(lua_State *lua)
 
 	// one item returned - the window class instance name as a string.
 	lua_pushstring(lua, class_instance_name);
+#else
+	lua_pushnil(lua);
 #endif
 	return 1;
 }
@@ -1642,6 +1644,8 @@ int c_get_class_group_name(lua_State *lua)
 
 	// one item returned - the window class instance name as a string.
 	lua_pushstring(lua, class_group_name);
+#else
+	lua_pushnil(lua);
 #endif
 	return 1;
 }
@@ -1773,7 +1777,7 @@ int c_set_window_property(lua_State *lua)
 /**
  *
  */
-int c_del_window_property(lua_State *lua)
+int c_delete_window_property(lua_State *lua)
 {
 	int top = lua_gettop(lua);
 
@@ -2140,7 +2144,7 @@ int c_center(lua_State *lua)
 /**
  *
  */
-int c_set_opacity(lua_State *lua)
+int c_set_window_opacity(lua_State *lua)
 {
 
 	int top = lua_gettop(lua);

@@ -1589,6 +1589,8 @@ int c_get_class_instance_name(lua_State *lua)
 
 	// one item returned - the window class instance name as a string.
 	lua_pushstring(lua, class_instance_name);
+#else
+	lua_pushnil(lua);
 #endif
 	return 1;
 }
@@ -1613,6 +1615,8 @@ int c_get_class_group_name(lua_State *lua)
 
 	// one item returned - the window class instance name as a string.
 	lua_pushstring(lua, class_group_name);
+#else
+	lua_pushnil(lua);
 #endif
 	return 1;
 }

@@ -71,135 +71,132 @@ init_script()
 /**
  *
  */
+#define DP2_REGISTER(lua, name) lua_register(lua, #name, c_##name)
 void
 register_cfunctions(lua_State *lua)
 {
-	lua_register(lua, "get_window_name", c_get_window_name);
-	lua_register(lua, "get_window_has_name", c_get_window_has_name);
+	DP2_REGISTER(lua, get_window_name);
+	DP2_REGISTER(lua, get_window_has_name);
 
-	lua_register(lua, "set_window_position", c_set_window_position);
-	lua_register(lua, "set_window_position2", c_set_window_position2);
-	lua_register(lua, "set_window_size", c_set_window_size);
-	lua_register(lua, "set_window_strut", c_set_window_strut);
+	DP2_REGISTER(lua, set_window_position);
+	DP2_REGISTER(lua, set_window_position2);
+	DP2_REGISTER(lua, set_window_size);
+	DP2_REGISTER(lua, set_window_strut);
 
-	lua_register(lua, "set_window_geometry", c_set_window_geometry);
-	lua_register(lua, "set_window_geometry2", c_set_window_geometry2);
+	DP2_REGISTER(lua, set_window_geometry);
+	DP2_REGISTER(lua, set_window_geometry2);
 
-	lua_register(lua, "get_application_name", c_get_application_name);
+	DP2_REGISTER(lua, get_application_name);
 
-	lua_register(lua, "debug_print", c_debug_print);
+	DP2_REGISTER(lua, debug_print);
 
-	lua_register(lua, "shade", c_shade_window);
-	lua_register(lua, "unshade", c_unshade_window);
+	DP2_REGISTER(lua, shade);
+	DP2_REGISTER(lua, unshade);
 
-	lua_register(lua, "maximize", c_maximize_window);
-	lua_register(lua, "maximise", c_maximize_window);
-	lua_register(lua, "maximize_horisontally", c_maximize_window_horisontally); // deprecated
-	lua_register(lua, "maximize_horizontally", c_maximize_window_horizontally);
-	lua_register(lua, "maximise_horizontally", c_maximize_window_horizontally);
-	lua_register(lua, "maximize_vertically", c_maximize_window_vertically);
-	lua_register(lua, "maximise_vertically", c_maximize_window_vertically);
-	lua_register(lua, "unmaximize", c_unmaximize_window);
-	lua_register(lua, "unmaximise", c_unmaximize_window);
+	DP2_REGISTER(lua, maximize);
+	lua_register(lua, "maximise", c_maximize);
+	DP2_REGISTER(lua, maximize_horisontally); // deprecated
+	DP2_REGISTER(lua, maximize_horizontally);
+	lua_register(lua, "maximise_horizontally", c_maximize_horizontally);
+	DP2_REGISTER(lua, maximize_vertically);
+	lua_register(lua, "maximise_vertically", c_maximize_vertically);
+	DP2_REGISTER(lua, unmaximize);
+	lua_register(lua, "unmaximise", c_unmaximize);
 
-	lua_register(lua, "minimize", c_minimize_window);
-	lua_register(lua, "minimise", c_minimize_window);
-	lua_register(lua, "unminimize", c_unminimize_window);
-	lua_register(lua, "unminimise", c_unminimize_window);
+	DP2_REGISTER(lua, minimize);
+	lua_register(lua, "minimise", c_minimize);
+	DP2_REGISTER(lua, unminimize);
+	lua_register(lua, "unminimise", c_unminimize);
 
-	lua_register(lua, "decorate_window", c_decorate_window);
-	lua_register(lua, "undecorate_window", c_undecorate_window);
+	DP2_REGISTER(lua, decorate_window);
+	DP2_REGISTER(lua, undecorate_window);
 
-	lua_register(lua, "set_window_workspace", c_set_window_workspace);
-	lua_register(lua, "change_workspace", c_change_workspace);
-	lua_register(lua, "get_workspace_count", c_get_workspace_count);
+	DP2_REGISTER(lua, set_window_workspace);
+	DP2_REGISTER(lua, change_workspace);
+	DP2_REGISTER(lua, get_workspace_count);
 
-	lua_register(lua, "pin_window", c_pin_window);
-	lua_register(lua, "unpin_window", c_unpin_window);
-	lua_register(lua, "stick_window", c_stick_window);
-	lua_register(lua, "unstick_window", c_unstick_window);
+	DP2_REGISTER(lua, pin_window);
+	DP2_REGISTER(lua, unpin_window);
+	DP2_REGISTER(lua, stick_window);
+	DP2_REGISTER(lua, unstick_window);
 
-	lua_register(lua, "close_window", c_close_window);
+	DP2_REGISTER(lua, close_window);
 
-	lua_register(lua, "set_adjust_for_decoration", c_set_adjust_for_decoration);
+	DP2_REGISTER(lua, set_adjust_for_decoration);
 
-	lua_register(lua, "get_window_geometry", c_get_window_geometry);
-	lua_register(lua, "get_window_client_geometry", c_get_client_window_geometry);
+	DP2_REGISTER(lua, get_window_geometry);
+	DP2_REGISTER(lua, get_window_client_geometry);
 
-	lua_register(lua, "set_skip_tasklist", c_set_skip_tasklist);
-	lua_register(lua, "set_skip_pager", c_set_skip_pager);
+	DP2_REGISTER(lua, set_skip_tasklist);
+	DP2_REGISTER(lua, set_skip_pager);
 
-	lua_register(lua, "get_window_is_maximized", c_get_window_is_maximized);
+	DP2_REGISTER(lua, get_window_is_maximized);
 	lua_register(lua, "get_window_is_maximised", c_get_window_is_maximized);
 
-	lua_register(lua, "get_window_is_maximized_vertically",
-	             c_get_window_is_maximized_vertically);
-	lua_register(lua, "get_window_is_maximised_vertically",
-	             c_get_window_is_maximized_vertically);
+	DP2_REGISTER(lua, get_window_is_maximized_vertically);
+	lua_register(lua, "get_window_is_maximised_vertically", c_get_window_is_maximized_vertically);
 
 	lua_register(lua, "get_window_is_maximized_horisontally", // deprecated
 	             c_get_window_is_maximized_horisontally);
-	lua_register(lua, "get_window_is_maximized_horizontally",
-	             c_get_window_is_maximized_horizontally);
+	DP2_REGISTER(lua, get_window_is_maximized_horizontally);
 	lua_register(lua, "get_window_is_maximised_horizontally",
 	             c_get_window_is_maximized_horizontally);
-	lua_register(lua, "get_window_is_pinned",
-	             c_get_window_is_pinned);
+	DP2_REGISTER(lua, get_window_is_pinned);
 
-	lua_register(lua, "get_window_is_decorated", c_get_window_is_decorated);
+	DP2_REGISTER(lua, get_window_is_decorated);
 
-	lua_register(lua, "set_window_below", c_set_window_below);
-	lua_register(lua, "set_window_above", c_set_window_above);
-	lua_register(lua, "set_window_fullscreen", c_set_window_fullscreen);
+	DP2_REGISTER(lua, set_window_below);
+	DP2_REGISTER(lua, set_window_above);
+	DP2_REGISTER(lua, set_window_fullscreen);
 
-	lua_register(lua, "make_always_on_top", c_make_always_on_top);
-	lua_register(lua, "set_on_top", c_set_on_top);
-	lua_register(lua, "set_on_bottom", c_set_on_bottom);
+	DP2_REGISTER(lua, make_always_on_top);
+	DP2_REGISTER(lua, set_on_top);
+	DP2_REGISTER(lua, set_on_bottom);
 
-	lua_register(lua, "get_window_type", c_get_window_type);
+	DP2_REGISTER(lua, get_window_type);
 
-	lua_register(lua, "get_window_property", c_get_window_property);
-	lua_register(lua, "get_window_role", c_get_window_role);
-	lua_register(lua, "get_window_xid", c_get_window_xid);
+	DP2_REGISTER(lua, get_window_property);
+	DP2_REGISTER(lua, get_window_role);
+	DP2_REGISTER(lua, get_window_xid);
 
-	lua_register(lua, "get_window_class", c_get_window_class);
+	DP2_REGISTER(lua, get_window_class);
 
-	lua_register(lua, "set_window_property", c_set_window_property);
-	lua_register(lua, "delete_window_property", c_del_window_property);
+	DP2_REGISTER(lua, set_window_property);
+	DP2_REGISTER(lua, delete_window_property);
 
-	lua_register(lua, "set_viewport", c_set_viewport);
+	DP2_REGISTER(lua, set_viewport);
 
-	lua_register(lua, "center", c_center);
+	DP2_REGISTER(lua, center);
 	lua_register(lua, "centre", c_center);
 
-	lua_register(lua, "set_opacity", c_set_opacity);
-	lua_register(lua, "set_window_opacity", c_set_opacity);
+	DP2_REGISTER(lua, set_window_opacity);
+	lua_register(lua, "set_opacity", c_set_window_opacity);
 
-	lua_register(lua, "set_window_type", c_set_window_type);
+	DP2_REGISTER(lua, set_window_type);
 
-	lua_register(lua, "get_screen_geometry", c_get_screen_geometry);
+	DP2_REGISTER(lua, get_screen_geometry);
 
-	lua_register(lua, "get_window_fullscreen", c_get_window_fullscreen);
+	DP2_REGISTER(lua, get_window_fullscreen);
 	lua_register(lua, "get_fullscreen", c_get_window_fullscreen);
 
-	lua_register(lua, "get_window_strut", c_get_window_strut);
+	DP2_REGISTER(lua, get_window_strut);
 
 	// wnck_window_get_class_{instance,group}_name are only availible on wnck 3 and later
-	lua_register(lua, "get_class_instance_name",c_get_class_instance_name);
-	lua_register(lua, "get_class_group_name", c_get_class_group_name);
+	DP2_REGISTER(lua, get_class_instance_name);
+	DP2_REGISTER(lua, get_class_group_name);
 
-	lua_register(lua, "focus", c_focus);
+	DP2_REGISTER(lua, focus);
 	lua_register(lua, "focus_window", c_focus);
 
-	lua_register(lua, "get_monitor_index", c_get_monitor_index);
-	lua_register(lua, "get_monitor_geometry", c_get_monitor_geometry);
+	DP2_REGISTER(lua, get_monitor_index);
+	DP2_REGISTER(lua, get_monitor_geometry);
 
-	lua_register(lua, "xy", c_xy);
-	lua_register(lua, "xywh", c_xywh);
+	DP2_REGISTER(lua, xy);
+	DP2_REGISTER(lua, xywh);
 
-	lua_register(lua, "on_geometry_changed", c_on_geometry_changed);
+	DP2_REGISTER(lua, on_geometry_changed);
 
-	lua_register(lua, "get_process_name", c_get_process_name);
+	DP2_REGISTER(lua, get_process_name);
 }
 
 

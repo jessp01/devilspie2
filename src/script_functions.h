@@ -41,11 +41,11 @@ int c_get_application_name(lua_State *lua);
 
 int c_debug_print(lua_State *lua);
 
-int c_shade_window(lua_State *lua);
-int c_unshade_window(lua_State *lua);
+int c_shade(lua_State *lua);
+int c_unshade(lua_State *lua);
 
-int c_minimize_window(lua_State *lua);
-int c_unminimize_window(lua_State *lua);
+int c_minimize(lua_State *lua);
+int c_unminimize(lua_State *lua);
 
 int c_decorate_window(lua_State *lua);
 int c_undecorate_window(lua_State *lua);
@@ -55,11 +55,11 @@ int c_set_window_workspace(lua_State *lua);
 int c_change_workspace(lua_State *lua);
 int c_get_workspace_count(lua_State *lua);
 
-int c_unmaximize_window(lua_State *lua);
-int c_maximize_window(lua_State *lua);
-int c_maximize_window_vertically(lua_State *lua);
-int c_maximize_window_horisontally(lua_State *lua); // deprecated
-int c_maximize_window_horizontally(lua_State *lua);
+int c_unmaximize(lua_State *lua);
+int c_maximize(lua_State *lua);
+int c_maximize_vertically(lua_State *lua);
+int c_maximize_horisontally(lua_State *lua); // deprecated
+int c_maximize_horizontally(lua_State *lua);
 
 int c_pin_window(lua_State *lua);
 int c_unpin_window(lua_State *lua);
@@ -74,7 +74,7 @@ WnckWindow *get_current_window();
 int c_set_adjust_for_decoration();
 
 int c_get_window_geometry(lua_State *lua);
-int c_get_client_window_geometry(lua_State *lua);
+int c_get_window_client_geometry(lua_State *lua);
 
 int c_set_skip_tasklist(lua_State *lua);
 int c_set_skip_pager(lua_State *lua);
@@ -108,13 +108,13 @@ int c_get_window_xid(lua_State *lua);
 int c_get_window_class(lua_State *lua);
 
 int c_set_window_property(lua_State *lua);
-int c_del_window_property(lua_State *lua);
+int c_delete_window_property(lua_State *lua);
 
 int c_set_viewport(lua_State *lua);
 
 int c_center(lua_State *lua);
 
-int c_set_opacity(lua_State *lua);
+int c_set_window_opacity(lua_State *lua);
 int c_set_window_type(lua_State *lua);
 
 

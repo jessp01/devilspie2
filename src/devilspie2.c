@@ -165,12 +165,10 @@ void init_screens()
 void devilspie_exit()
 {
 	clear_file_lists();
-
-	if (temp_folder != NULL) g_free(temp_folder);
-
-	if (mon) g_object_unref(mon);
-
-	if (config_filename) g_free(config_filename);
+	g_free(temp_folder);
+	if (mon)
+		g_object_unref(mon);
+	g_free(config_filename);
 }
 
 

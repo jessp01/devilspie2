@@ -513,7 +513,7 @@ void my_window_set_window_type(Window xid, gchar *window_type)
 	                XInternAtom(display, "_NET_WM_WINDOW_TYPE", False), XA_ATOM, 32,
 	                PropModeReplace, (unsigned char *) &atoms, 1);
 
-	if (type) g_free(type);
+	g_free(type);
 }
 
 

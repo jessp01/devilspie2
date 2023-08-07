@@ -257,11 +257,7 @@ void unallocate_file_list(GSList *file_list)
 	if (file_list) {
 
 		while(file_list) {
-
-			gchar *file_name = (gchar*)file_list->data;
-
-			if (file_name) g_free(file_name);
-
+			g_free ((gchar*)file_list->data);
 			file_list = file_list->next;
 		}
 	}

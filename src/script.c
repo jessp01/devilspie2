@@ -126,6 +126,7 @@ register_cfunctions(lua_State *lua)
 
 	DP2_REGISTER(lua, get_window_geometry);
 	DP2_REGISTER(lua, get_window_client_geometry);
+	DP2_REGISTER(lua, get_window_frame_extents);
 
 	DP2_REGISTER(lua, set_skip_tasklist);
 	DP2_REGISTER(lua, set_skip_pager);

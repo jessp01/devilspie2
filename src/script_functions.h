@@ -75,6 +75,7 @@ int c_set_adjust_for_decoration();
 
 int c_get_window_geometry(lua_State *lua);
 int c_get_window_client_geometry(lua_State *lua);
+int c_get_window_frame_extents(lua_State *lua);
 
 int c_set_skip_tasklist(lua_State *lua);
 int c_set_skip_pager(lua_State *lua);

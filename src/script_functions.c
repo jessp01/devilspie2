@@ -1269,6 +1269,63 @@ int c_get_window_client_geometry(lua_State *lua)
 
 
 /**
+ * return the window frame extents
+ */
+int c_get_window_frame_extents(lua_State *lua)
+{
+	int top = lua_gettop(lua);
+
+	if (top != 0) {
+		luaL_error(lua, "get_window_frame_extents: %s", no_indata_expected_error);
+		return 0;
+	}
+
+	int left = 0, right = 0, bottom = 0; // re-use top
+
+	WnckWindow *window = get_current_window();
+	if (window) {
+		// Order of preference:
+		// _NET_FRAME_EXTENTS
+		// Calculation from geometries
+
+		Display *dpy = gdk_x11_get_default_xdisplay();
+		gulong *extents = 0;
+		int len = 0;
+
+		int ret = my_wnck_get_cardinal_list (wnck_window_get_xid(window),
+		                                     XInternAtom(dpy, "_NET_FRAME_EXTENTS", False),
+		                                     &extents, &len);
+		if (len >= 4) {
+			// _NET_FRAME_EXTENTS
+			left = extents[0];
+			right = extents[1];
+			top = extents[2];
+			bottom = extents[3];
+			g_free(extents);
+		}
+		else {
+			// Calculation from geometries
+			int frame[4] = {}, client[4] = {};
+
+			wnck_window_get_geometry(window, frame, frame + 1, frame + 2, frame + 3);
+			wnck_window_get_client_window_geometry(window, client, client + 1, client + 2, client + 3);
+			left = client[0] - frame[0];
+			right = frame[2] - client[2] - left;
+			top = client[1] - frame[1];
+			bottom = frame[3] - client[3] - top;
+		}
+	}
+
+	lua_pushinteger(lua, left);
+	lua_pushinteger(lua, right);
+	lua_pushinteger(lua, top);
+	lua_pushinteger(lua, bottom);
+
+	return 4;
+}
+
+
+/**
  *
  */
 int c_set_skip_tasklist(lua_State *lua)

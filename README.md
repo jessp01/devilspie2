@@ -554,6 +554,7 @@ The rest of the functions are used to modify the properties of the windows:
 
 
 **(Available without parameters from version 0.26)**
+
 **(Parameters and ‘centre’ available from version 0.44)**
 
 

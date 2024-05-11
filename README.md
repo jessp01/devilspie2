@@ -52,7 +52,7 @@ the file, it will be called as a `devilspie2` script file like any other.
 
 For example:
 
-```lue
+```lua
 scripts_window_close = {
    "file1.lua",
    "file2.lua"
@@ -179,7 +179,7 @@ get_window_is_maximised_horizontally()
 
     Returns the type of the window - The result type is a string, and can
     be one of the following:
-```
+
    "WINDOW_TYPE_NORMAL"
    "WINDOW_TYPE_DESKTOP"
    "WINDOW_TYPE_DOCK"
@@ -188,7 +188,7 @@ get_window_is_maximised_horizontally()
    "WINDOW_TYPE_MENU"
    "WINDOW_TYPE_UTILITY"
    "WINDOW_TYPE_SPLASHSCREEN"
-```
+
    or `WINDOW_TYPE_UNRECOGNIZED` if libwnck didn't recognise the type.
 
    If, for whatever reason, the function didn't have a window to work on,  
@@ -256,22 +256,23 @@ get_window_is_maximised_horizontally()
 
 `get_monitor_index()`
 
-   Returns the index of the monitor containing the window centre (or some
-   part of the window).
+    Returns the index of the monitor containing the window centre (or some
+    part of the window).
 
 **(Available from version 0.44)**
 
 
 `get_monitor_geometry()`
 
-   Returns x, y, width, height for the window's monitor.
-   (Available from version 0.44)
+    Returns x, y, width, height for the window's monitor.
+    
+**(Available from version 0.44)**
 
 
 `get_monitor_geometry(index)`
 
-   Returns x, y, width, height for the given monitor.
-   If the index is out of range, nothing is returned.
+    Returns x, y, width, height for the given monitor.
+    If the index is out of range, nothing is returned.
 
 
 The rest of the functions are used to modify the properties of the windows:
@@ -279,306 +280,289 @@ The rest of the functions are used to modify the properties of the windows:
 
 `set_adjust_for_decoration([bool])`
 
-   Allow for situations where moving or resizing the window is done
-   incorrectly, i.e.
-      `set_window_position(0,0)`
-   results in the window decoration being taken into account twice, i.e. 
-   the window (including decoration) is offset from the top left corner by
-   the width of the left side decoration and the height of the title bar.
+    Allow for situations where moving or resizing the window is done
+    incorrectly, i.e.
+        `set_window_position(0,0)`
+    results in the window decoration being taken into account twice, i.e. 
+    the window (including decoration) is offset from the top left corner by
+    the width of the left side decoration and the height of the title bar.
 
-   This is currently off by default, and is sticky: if you do not explicitly
-   set it in your script, its current value is retained.
+    This is currently off by default, and is sticky: if you do not explicitly
+    set it in your script, its current value is retained.
 
-   If used, it should be used at the start of the script.
+    If used, it should be used at the start of the script.
 
-   This affects the following functions:
-```
+    This affects the following functions:
+
       set_window_geometry()
       set_window_position()
       set_window_size()
       xy()
       xywh()
-```
-   (Available from version 0.45)
+
+**(Available from version 0.45)**
 
 
 `set_window_position(xpos, ypos, [index])`
 
-   Set the position of a window.
+    Set the position of a window.
 
-   If index is specified then the co-ordinates are relative to a corner of
-   the specified monitor (counting from 1) on the current workspace. Which
-   corner is determined by the co-ordinates' signs:
-      `+ve X ⇒ left, -ve X ⇒ right;`
-      `+ve Y ⇒ top,  -ve Y ⇒ bottom.`
+    If index is specified then the co-ordinates are relative to a corner of
+    the specified monitor (counting from 1) on the current workspace. Which
+    corner is determined by the co-ordinates' signs:
+        `+ve X ⇒ left, -ve X ⇒ right;`
+        `+ve Y ⇒ top,  -ve Y ⇒ bottom.`
 
-   NOTE: since -0 would have a use here but is equal to +0, ~ (bitwise NOT)
-   is used. To put the window 60px from the right or bottom, use ~60 or -61.
+    NOTE: since -0 would have a use here but is equal to +0, ~ (bitwise NOT)
+    is used. To put the window 60px from the right or bottom, use ~60 or -61.
 
-   If index = 0 then the ‘current’ monitor (with the window's centre point)
-   is used (falling back on then the first monitor showing part of the
-   window then the first monitor).
+    If index = 0 then the ‘current’ monitor (with the window's centre point)
+    is used (falling back on then the first monitor showing part of the
+    window then the first monitor).
 
-   If index = -1 then all monitors are treated as one large virtual monitor.
+    If index = -1 then all monitors are treated as one large virtual monitor.
 
 
 `set_window_position2(xpos, ypos)`
 
-   Set the position of a window - unlike `set_window_position()`, this
-   function uses `XMoveWindow` instead of `wnck_window_set_geometry()` which
-   gives a slightly different result.
-   (Available from version 0.21)
+    Set the position of a window - unlike `set_window_position()`, this
+    function uses `XMoveWindow` instead of `wnck_window_set_geometry()` which
+    gives a slightly different result.
+
+**(Available from version 0.21)**
 
 
 `set_window_property(property, value)`
 
-   Set a property of a window to a string or a cardinal (32-bit integer or
-   boolean).
-   (Available from version 0.44)
+    Set a property of a window to a string or a cardinal (32-bit integer or
+    boolean).
+    
+**(Available from version 0.44)**
 
 
 `delete_window_property(property)`
 
-   Remove a property from a window.
-   (Available from version 0.44)
+    Remove a property from a window.
+   
+**(Available from version 0.44)**
 
 
 `set_window_size (xsize, ysize)`
 
-   Sets the size of a window - takes `xsize` and `ysize` as parameters.
+    Sets the size of a window - takes `xsize` and `ysize` as parameters.
 
 
 `set_window_geometry (xpos, ypos, xsize, ysize)`
 
-   Sets both size and position of a window in one command. Takes four
-   parameters, `xpos`, `ypos`, `xsize` and `ysize`.
+    Sets both size and position of a window in one command. Takes four
+    parameters, `xpos`, `ypos`, `xsize` and `ysize`.
 
 
 `set_window_geometry2 (xpos, ypos, xsize, ysize)`
 
-   Sets the window geometry just as `set_window_geometry()`, using
-   `XMoveResizeWindow()` instead of its `libwnck` alternative. This results in
-   different coordinates than the `set_window_geometry()` function, and results
-   are more similar to the results of the original `devilspie` geometry function.
-   (available from version 0.21)
+    Sets the window geometry just as `set_window_geometry()`, using
+    `XMoveResizeWindow()` instead of its `libwnck` alternative. This results in
+    different coordinates than the `set_window_geometry()` function, and results
+    are more similar to the results of the original `devilspie` geometry function.
+    (available from version 0.21)
 
 
 `shade()`
 
-   "Shades" a window, showing only the title-bar.
+    "Shades" a window, showing only the title-bar.
 
 
 `unshade()`
 
-   Un-shades a window - the opposite of "shade"
+    Un-shades a window - the opposite of "shade"
 
 
-```
-maximize()
-maximise()
-```
+`maximize(), maximise()`
 
     Maximises a window
     (-ise from 0.45)
 
 
-```
-unmaximize()
-unmaximise()
-```
+`unmaximize(), unmaximise()`
     
     Un-maximises a window
     (-ise from 0.45)
 
 
-```
-maximize_vertically()
-maximise_vertically()
-```
+`maximize_vertically(), maximise_vertically()`
 
-   Maximises the current window vertically.
-   (-ise from 0.45)
+    Maximises the current window vertically.
+    (-ise from 0.45)
 
 
-```
-maximize_horizontally()
-maximise_horizontally()
-```
+`maximize_horizontally(), maximise_horizontally()`
 
-   Maximises the current window horizontally.
-   (-ise from 0.45)
+    Maximises the current window horizontally.
+    (-ise from 0.45)
 
 
-```
-minimize()
-minimise()
-```
+`minimize(), minimise()`
 
-   Minimises a window
-   (-ise from 0.45)
+    Minimises a window.
+    (-ise from 0.45)
 
 
-```
-unminimize()
-unminimise()
-```
+`unminimize(), unminimise()`
 
-   Un-minimises a window, that is bringing it back to screen from the minimised
-   position/size.
-   (-ise from 0.45)
+    Un-minimises a window, that is bringing it back to screen from the minimised
+    position/size.
+    (-ise from 0.45)
 
 
 `decorate_window()`
 
-   Shows all window decoration.
+    Shows all window decoration.
 
 
 `undecorate_window()`
 
-   Removes all window decorations.
+    Removes all window decorations.
 
 
 `close_window()`
 
-	Closes the window. (Available from 0.31)
+    Closes the window. (Available from 0.31)
 
 
 `set_window_workspace(number)`
 
-   Moves a window to another workspace. The number variable starts counting at
-   1.
+    Moves a window to another workspace. The number variable starts counting at
+    1.
 
 
 `change_workspace(number)`
 
-   Changes the current workspace to another. The number variable starts counting
-   at 1.
+    Changes the current workspace to another. The number variable starts counting
+    at 1.
 
 
 `pin_window()`
 
-   Asks the window manager to put the window on all workspaces.
+    Asks the window manager to put the window on all workspaces.
 
 
 `unpin_window()`
 
-   Asks the window manager to put window only in the currently active workspace.
+    Asks the window manager to put window only in the currently active workspace.
 
 
 `stick_window()`
 
-   Asks the window manager to keep the window's position fixed on the screen,
-   even when the workspace or viewport scrolls.
+    Asks the window manager to keep the window's position fixed on the screen,
+    even when the workspace or viewport scrolls.
 
 
 `unstick_window()`
 
-   Asks the window manager to not have window's position fixed on the screen
-   when the workspace or viewport scrolls.
+    Asks the window manager to not have window's position fixed on the screen
+    when the workspace or viewport scrolls.
 
 
 `set_skip_tasklist(skip)`
 
-   Set this to true if you would like the window to skip listing in your
-   tasklist. Takes a boolean(true or false) as value. (from version 0.16)
+    Set this to true if you would like the window to skip listing in your
+    tasklist. Takes a boolean(true or false) as value. (from version 0.16)
 
 
 `set_skip_pager(skip)`
 
-   Set this to true if you would like the window to skip listing in your pager.
-   Takes a boolean(true or false) as value. (from version 0.16)
+    Set this to true if you would like the window to skip listing in your pager.
+    Takes a boolean(true or false) as value. (from version 0.16)
 
 
 `set_window_above([above])`
 
-   Set the current window above all normal windows. (available from version
-   0.21)
-   Optionally takes a boolean(true or false) as value.
+    Set the current window above all normal windows. (available from version
+    0.21)
+    Optionally takes a boolean(true or false) as value.
 
-  `make_always_on_top()` is the same as `set_window_above(true)`.
+    `make_always_on_top()` is the same as `set_window_above(true)`.
 
 
 `set_on_top()`
 
-   sets a window on top of the others.
-   Unlike `set_window_above()`, it doesn't lock the window in this position.
-   As of version 0.45, the window's layer (above, between, below) is
-   maintained.
+    sets a window on top of the others.
+    Unlike `set_window_above()`, it doesn't lock the window in this position.
+    As of version 0.45, the window's layer (above, between, below) is
+    maintained.
 
 
 `set_window_below([below])`
 
-   Set the current window below all normal windows. (available from version
-   0.21)
-   Optionally takes a boolean(true or false) as value.
+    Set the current window below all normal windows. 
+    Optionally takes a boolean(true or false) as value.
+
+**(available from version 0.21)**
 
 
 `set_on_bottom()`
 
-   Sets a window below the others.
-   Unlike `set_window_below()`, it doesn't lock the window in this position.
-   (Available from version 0.45.)
+    Sets a window below the others.
+    Unlike `set_window_below()`, it doesn't lock the window in this position.
+
+**(Available from version 0.45.)**
 
 
 `set_window_fullscreen(fullscreen)`
 
-   Asks the window manager to set the fullscreen state of the window according
-   to the fullscreen boolean. (available from version 0.24)
+    Asks the window manager to set the fullscreen state of the window according
+    to the fullscreen boolean. (available from version 0.24)
 
 
 `set_viewport(viewport)`
 
-   Using one indata, moves the window to the requested viewport - Counting
-	starts at number 1. (Available from version 0.25)
-	- Also see the alternative usage of this function below.
+    Using one indata, moves the window to the requested viewport - Counting
+    starts at number 1. (Available from version 0.25)
+    Also see the alternative usage of this function below.
 
 `set_viewport(x, y)`
 
-	If you are using two indata to the set_viewport function, you can decide
-	where in the viewport the window will be placed.
-	(Available from version 0.40)
+    If you are using two indata to the set_viewport function, you can decide
+    where in the viewport the window will be placed.
 
-```
-center([index,] [direction])
-centre([index,] [direction])
-```
+**(Available from version 0.40)**
 
-   With no parameters, centres the current window on the current workspace.
-   May place the window across multiple monitors.
+`center([index,] [direction]), centre([index,] [direction])`
 
-   If index is specified, centres the current window on the specified
-   monitor (counting from 1) on the current workspace.
+    With no parameters, centres the current window on the current workspace.
+    May place the window across multiple monitors.
 
-   If index = 0 then the ‘current’ monitor (with the window's centre point)
-   is used (falling back on then the first monitor showing part of the
-   window then the first monitor).
+    If index is specified, centres the current window on the specified
+    monitor (counting from 1) on the current workspace.
 
-   If index = -1 then all monitors are treated as one large virtual monitor.
+    If index = 0 then the ‘current’ monitor (with the window's centre point)
+    is used (falling back on then the first monitor showing part of the
+    window then the first monitor).
 
-   If index is out of range then the first monitor is used.
+    If index = -1 then all monitors are treated as one large virtual monitor.
 
-   If direction begins with 'H' or 'h', the window is horizontally centred only.
+    If index is out of range then the first monitor is used.
 
-   If direction begins with 'V' or 'v', the window is vertically centred only.
+    If direction begins with 'H' or 'h', the window is horizontally centred only.
 
-   If centring only along one axis, the window may be moved along the other
-   axis to ensure that it is on the specified monitor.
+    If direction begins with 'V' or 'v', the window is vertically centred only.
 
-   The defaults are index = -1 (all monitors), direction = '' (both axes).
+    If centring only along one axis, the window may be moved along the other
+    axis to ensure that it is on the specified monitor.
 
-   (Available without parameters from version 0.26)
-   (Parameters and ‘centre’ available from version 0.44)
+    The defaults are index = -1 (all monitors), direction = '' (both axes).
 
 
-```
-set_opacity(value)
-set_window_opacity(value)
-```
+**(Available without parameters from version 0.26)**
+**(Parameters and ‘centre’ available from version 0.44)**
 
-	Sets the window opacity, takes a float value, 1.0 = completely opaque,
-	0.0, completely see-through. Both set_opacity and set_window_opacity
-	will do the same thing.
-	(Available from version 0.28, set_window_opacity from 0.29)
+
+`set_opacity(value), set_window_opacity(value)`
+
+    Sets the window opacity, takes a float value, 1.0 = completely opaque,
+    0.0, completely see-through. Both set_opacity and set_window_opacity
+    will do the same thing.
+    (Available from version 0.28, set_window_opacity from 0.29)
 
 
 `set_window_type(type)`
@@ -608,10 +592,7 @@ set_window_opacity(value)
 	
 **(Available from version 0.28)**
 
-```
-focus()
-focus_window()
-```
+`focus(), focus_window()`
 
 	Focuses the current window. (Function is available from version 0.30)
 
@@ -639,11 +620,13 @@ focus_window()
 	(Available from version 0.45)
 
 `xy(x, y), xy()`
+
     Set the position of a window, or if you don't give any input, get the
-    position of a window
+    position of a window.
 
 
 `xywh(x, y, w, h), xywh()`
+
     Set the position and size of a window, or if you don't give any input, get
     the position and size of a window.
 

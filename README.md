@@ -84,9 +84,9 @@ First, a function to show some debug info
 
 `debug_print(string)`
 
-   Debug helper that prints a string to stdout. The string is only printed to
-   stdout if `devilspie2` is run with the `--debug` option, otherwise nothing will
-   be printed.
+    Debug helper that prints a string to stdout. The string is only printed to
+    stdout if `devilspie2` is run with the `--debug` option, otherwise nothing will
+    be printed.
 
 
 
@@ -97,81 +97,88 @@ information:
 
 `get_window_name()`
 
-   Returns a string containing the name of the current window.
+    Returns a string containing the name of the current window.
 
 
 `get_window_has_name()`
 
-   Return true or false depending on if the window has a name or not
-   (Available from version 0.20)
+    Return true or false depending on if the window has a name or not
+**(Available from version 0.20)**
 
 
 `get_application_name()`
 
-   Returns the application name of the current window.
+    Returns the application name of the current window.
 
 
 `get_process_name()`
 
-   Returns the name of the process owning the current window.
+    Returns the name of the process owning the current window.
 
-   On (at least) Linux, the process name is read from /proc/<pid>/comm. If
-   that's not possible, 'ps' is launched in a shell. For this reason, you
-   should avoid calling get_process_name() more than necessary.
+    On (at least) Linux, the process name is read from /proc/<pid>/comm. If
+    that's not possible, 'ps' is launched in a shell. For this reason, you
+    should avoid calling get_process_name() more than necessary.
 
-   This function is not compatible with busybox ps.
+    This function is not compatible with busybox ps.
 
-   (Available from version 0.44)
+**(Available from version 0.44)**
 
 
 `get_window_geometry()`
 
-   Returns the window geometry as four numbers - x-position, y-position,
-   width and height. (from version 0.16) - for example you can do something
-	like this:
+    Returns the window geometry as four numbers - x-position, y-position,
+    width and height. (from version 0.16) - for example you can do something
+    like this:
 
-	x, y, width, height = get_window_geometry();
-	print("X: "..x..", Y: "..y..", width: "..width..", height: "..height);
+    x, y, width, height = get_window_geometry();
+    print("X: "..x..", Y: "..y..", width: "..width..", height: "..height);
 
 
 `get_window_client_geometry()`
 
-   Returns the window geometry excluding the window manager borders as four
-   numbers, x-position, y-position, width and height. (from version 0.16) -
-	see `get_window_geometry()` for an example on how to use this function.
+    Returns the window geometry excluding the window manager borders as four
+    numbers, x-position, y-position, width and height. (from version 0.16) -
+    see `get_window_geometry()` for an example on how to use this function.
 
 
-`get_window_is_maximized()`
-`get_window_is_maximised()`
+```
+get_window_is_maximized()
+get_window_is_maximised()
+```
 
-   Returns true if the window is maximised, false otherwise. (available from
-   version 0.21; -ise from 0.45)
-
-
-`get_window_is_maximized_vertically()`
-`get_window_is_maximised_vertically()`
-
-   Returns true if the window is vertically maximised, false otherwise.
-   (available from version 0.21; -ise from 0.45)
+    Returns true if the window is maximised, false otherwise. 
+**(Available from version 0.21; -ise from 0.45)**
 
 
-`get_window_is_maximized_horizontally()`
-`get_window_is_maximised_horizontally()`
+```
+get_window_is_maximized_vertically()
+get_window_is_maximised_vertically()
+```
 
-   Returns true if the window is horizontally maximised, false otherwise.
-   (available from version 0.21; -ise from 0.45)
+    Returns true if the window is vertically maximised, false otherwise.
+**(Available from version 0.21; -ise from 0.45)**
+
+
+```
+get_window_is_maximized_horizontally()
+get_window_is_maximised_horizontally()
+```
+
+    Returns true if the window is horizontally maximised, false otherwise.
+**(Available from version 0.21; -ise from 0.45)**
 
 
 `get_window_is_decorated()`
 
-   Returns true if the window is decorated, false otherwise.
-   (Available from version 0.44.)
+    Returns true if the window is decorated, false otherwise.
+    
+**(Available from version 0.44)**
 
 
 `get_window_type()`
 
-   Returns the type of the window - The result type is a string, and can
-   be one of the following:
+    Returns the type of the window - The result type is a string, and can
+    be one of the following:
 ```
    "WINDOW_TYPE_NORMAL"
    "WINDOW_TYPE_DESKTOP"
@@ -187,7 +194,7 @@ information:
    If, for whatever reason, the function didn't have a window to work on,  
    `WINDOW_ERROR` will be returned.
 
-   (Available from version 0.21)
+**(Available from version 0.21)**
 
 
 `get_class_instance_name()`
@@ -210,7 +217,7 @@ information:
 
    From 0.45, returns nil if the property doesn't exist.
 
-   (Available from version 0.21)
+**(Available from version 0.21)**
 
 
 `get_window_role()`
@@ -251,7 +258,8 @@ information:
 
    Returns the index of the monitor containing the window centre (or some
    part of the window).
-   (Available from version 0.44)
+
+**(Available from version 0.44)**
 
 
 `get_monitor_geometry()`
@@ -365,43 +373,55 @@ The rest of the functions are used to modify the properties of the windows:
    Un-shades a window - the opposite of "shade"
 
 
-`maximize()`
-`maximise()`
+```
+maximize()
+maximise()
+```
 
-   Maximises a window
-   (-ise from 0.45)
-
-
-`unmaximize()`
-`unmaximise()`
-
-   Un-maximises a window
-   (-ise from 0.45)
+    Maximises a window
+    (-ise from 0.45)
 
 
-`maximize_vertically()`
-`maximise_vertically()`
+```
+unmaximize()
+unmaximise()
+```
+    
+    Un-maximises a window
+    (-ise from 0.45)
+
+
+```
+maximize_vertically()
+maximise_vertically()
+```
 
    Maximises the current window vertically.
    (-ise from 0.45)
 
 
-`maximize_horizontally()`
-`maximise_horizontally()`
+```
+maximize_horizontally()
+maximise_horizontally()
+```
 
    Maximises the current window horizontally.
    (-ise from 0.45)
 
 
-`minimize()`
-`minimise()`
+```
+minimize()
+minimise()
+```
 
    Minimises a window
    (-ise from 0.45)
 
 
-`unminimize()`
-`unminimise()`
+```
+unminimize()
+unminimise()
+```
 
    Un-minimises a window, that is bringing it back to screen from the minimised
    position/size.
@@ -518,8 +538,10 @@ The rest of the functions are used to modify the properties of the windows:
 	where in the viewport the window will be placed.
 	(Available from version 0.40)
 
-`center([index,] [direction])`
-`centre([index,] [direction])`
+```
+center([index,] [direction])
+centre([index,] [direction])
+```
 
    With no parameters, centres the current window on the current workspace.
    May place the window across multiple monitors.
@@ -548,8 +570,10 @@ The rest of the functions are used to modify the properties of the windows:
    (Parameters and ‘centre’ available from version 0.44)
 
 
-`set_opacity(value)`
-`set_window_opacity(value)`
+```
+set_opacity(value)
+set_window_opacity(value)
+```
 
 	Sets the window opacity, takes a float value, 1.0 = completely opaque,
 	0.0, completely see-through. Both set_opacity and set_window_opacity
@@ -561,7 +585,7 @@ The rest of the functions are used to modify the properties of the windows:
 
 	Sets the window type, according to `_NET_WM_WINDOW_TYPE`. The allowed types
 	are the standard `_NET_WM` ones (formatted as a string):
-```
+
 	"_NET_WM_WINDOW_TYPE_DESKTOP"
 	"_NET_WM_WINDOW_TYPE_DOCK"
 	"_NET_WM_WINDOW_TYPE_TOOLBAR"
@@ -570,9 +594,9 @@ The rest of the functions are used to modify the properties of the windows:
 	"_NET_WM_WINDOW_TYPE_SPLASH"
 	"_NET_WM_WINDOW_TYPE_DIALOG"
 	"_NET_WM_WINDOW_TYPE_NORMAL"
-```
+
 	or shorter versions of the same values
-```
+
 	"WINDOW_TYPE_DESKTOP"
 	"WINDOW_TYPE_DOCK"
 	"WINDOW_TYPE_TOOLBAR"
@@ -581,11 +605,13 @@ The rest of the functions are used to modify the properties of the windows:
 	"WINDOW_TYPE_SPLASH"
 	"WINDOW_TYPE_DIALOG"
 	"WINDOW_TYPE_NORMAL"
-```
-	(Function is available from version 0.28)
+	
+**(Available from version 0.28)**
 
-`focus()`
-`focus_window()`
+```
+focus()
+focus_window()
+```
 
 	Focuses the current window. (Function is available from version 0.30)
 

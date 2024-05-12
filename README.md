@@ -45,7 +45,8 @@ by the `--folder` option. By default this folder is `~/.config/devilspie2/`.
 
 If there is a file named `devilspie2.lua` in this folder, it is read and it is
 searched for a variable (a Lua table of strings) named 
-`scripts_window_close`, `scripts_window_focus` or `scripts_window_blur`.
+`scripts_window_close`, `scripts_window_focus`, `scripts_window_blur` 
+or `scripts_window_title_change`. 
 The filenames in the strings in this table will be called when windows are
 closed, focused or blurred respectively. If these variables aren't present in
 the file, it will be called as a `devilspie2` script file like any other.
@@ -59,8 +60,17 @@ scripts_window_close = {
 }
 ```
 
-This would make the files `file1.lua` and `file2.lua` interpreted when windows are
+The above would make the files `file1.lua` and `file2.lua` interpreted when windows are
 closing.
+
+```lua
+scripts_window_title_change = {
+    "window_title_change.lua"
+}
+```
+
+This will invoke `window_title_change.lua` when the window's title changes.
+
 
 
 ## Scripting

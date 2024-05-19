@@ -197,6 +197,8 @@ register_cfunctions(lua_State *lua)
 	DP2_REGISTER(lua, on_geometry_changed);
 
 	DP2_REGISTER(lua, get_process_name);
+
+	DP2_REGISTER(lua, get_process_owner);
 }
 
 

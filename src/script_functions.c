@@ -20,6 +20,10 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <errno.h>
+#include <pwd.h>
+#include <grp.h>
+#include <sys/stat.h>
+
 
 #define WNCK_I_KNOW_THIS_IS_UNSTABLE
 #include <libwnck/libwnck.h>
@@ -2482,6 +2486,7 @@ int c_on_geometry_changed(lua_State *lua)
  */
 static ATTR_MALLOC gchar *c_get_process_name_INT_proc(lua_State *, pid_t);
 static ATTR_MALLOC gchar *c_get_process_name_INT_ps(lua_State *, pid_t);
+static ATTR_MALLOC gchar *c_get_process_owner_INT_proc(lua_State *, pid_t);
 
 int c_get_process_name(lua_State *lua)
 {
@@ -2499,14 +2504,14 @@ int c_get_process_name(lua_State *lua)
 
 		if (pid != 0) {
 			gchar *cmdname = c_get_process_name_INT_proc(lua, pid);
-			if (!cmdname)
+			if (!cmdname){
 				cmdname = c_get_process_name_INT_ps(lua, pid);
-
+			}
 			/* chop off any trailing LF */
 			gchar *lf = cmdname + strlen(cmdname) - 1;
-			if (lf >= cmdname && *lf == '\n')
+			if (lf >= cmdname && *lf == '\n'){
 				*lf = 0;
-
+			}
 			lua_pushstring(lua, cmdname ? cmdname : "");
 			g_free(cmdname);
 			return 1;
@@ -2515,6 +2520,48 @@ int c_get_process_name(lua_State *lua)
 
 	lua_pushstring(lua, "");
 	return 1;
+}
+
+int c_get_process_owner(lua_State *lua)
+{
+	int top = lua_gettop(lua);
+
+	if (top != 0) {
+		luaL_error(lua, "get_process_owner: %s", no_indata_expected_error);
+		return 0;
+	}
+
+	WnckWindow *window = get_current_window();
+
+	if (window) {
+		pid_t pid = wnck_window_get_pid(window);
+
+		if (pid != 0) {
+			gchar *ownername = c_get_process_owner_INT_proc(lua, pid);
+			lua_pushstring(lua, ownername ? ownername : "");
+			g_free(ownername);
+			return 1;
+		}
+	}
+
+	lua_pushstring(lua, "");
+	return 1;
+}
+
+static gchar *c_get_process_owner_INT_proc(lua_State *lua, pid_t pid)
+{
+	char proc_comm_file[1024]; 
+	snprintf(proc_comm_file, sizeof(proc_comm_file), "/proc/%lu/comm", (unsigned long)pid);
+	struct stat info;
+	if (stat(proc_comm_file, &info) < 0){
+	    perror("stat");
+	    return NULL;
+	}
+	struct passwd *pw = getpwuid(info.st_uid);
+	if (pw != NULL){
+	    return g_strdup(pw->pw_name);
+	}
+	return NULL;
 }
 
 static gchar *c_get_process_name_INT_proc(lua_State *lua, pid_t pid)

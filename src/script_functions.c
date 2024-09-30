@@ -17,7 +17,9 @@
  *	along with devilspie2.
  *	If not, see <http://www.gnu.org/licenses/>.
  */
+#include "glib.h"
 #include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
 #include <errno.h>
 
@@ -906,6 +908,33 @@ int c_get_window_is_decorated(lua_State *lua)
 	return 1;
 }
 
+/**
+ Given a workspace name, perform a linear, case-sensitive search for
+ a workspace with with said name.
+ 
+ Returns the first found or -1
+ */
+int find_workspace_with_name(gchar *in_workspace_name, WnckWindow *window){
+	if(window == NULL) {
+		window = get_current_window();
+	}
+	if(window == NULL || in_workspace_name == NULL || strlen(in_workspace_name) <= 0) {
+		return -1;
+	}
+	
+	WnckScreen *screen = wnck_window_get_screen(window);
+
+	for (int space = 0; space < wnck_screen_get_workspace_count(screen); space++) {
+		WnckWorkspace *workspace = wnck_screen_get_workspace(screen, space);
+		if(workspace == NULL) //Theoretically possible
+			continue;
+		if(0 == g_strcmp0(in_workspace_name, wnck_workspace_get_name(workspace))){
+			return space;
+		}
+	}
+
+	return -1;
+}
 
 /**
  * Move a window to a specific workspace
@@ -921,22 +950,37 @@ int c_set_window_workspace(lua_State *lua)
 
 	int type = lua_type(lua, 1);
 
-	if (type!=LUA_TNUMBER) {
+	if (type != LUA_TNUMBER && type != LUA_TSTRING ) {
 		luaL_error(lua, "set_window_workspace: %s",
-		           number_expected_as_indata_error);
+		           number_or_string_expected_as_indata_error);
 		return 0;
 	}
 
-	int number = lua_tonumber(lua, 1);
+	int workspace_idx0 = -1;
+	gchar *workspace_name = NULL;
+	
+	switch (type) {
+		case LUA_TNUMBER:
+			workspace_idx0 = lua_tonumber(lua, 1) - 1;
+			break;
+		case LUA_TSTRING:
+			workspace_name = (gchar*)lua_tostring(lua, 1);
+			workspace_idx0 = find_workspace_with_name(workspace_name, get_current_window());
+			if(workspace_idx0 == -1) {
+				g_warning(_("A Workspace with the name '%s' does not exist!"), workspace_name);
+			}
+			break;
+		default: break;
+	}
 
 	WnckWindow *window = get_current_window();
 
-	if (window) {
+	if (window && workspace_idx0 > -1) {
 		WnckScreen *screen = wnck_window_get_screen(window);
-		WnckWorkspace *workspace = wnck_screen_get_workspace(screen, number-1);
+		WnckWorkspace *workspace = wnck_screen_get_workspace(screen, workspace_idx0);
 
 		if (!workspace) {
-			g_warning(_("Workspace number %d does not exist!"), number);
+			g_warning(_("Workspace number %d does not exist!"), workspace_idx0+1);
 		}
 		if (!devilspie2_emulate) {
 			wnck_window_move_to_workspace(window, workspace);
@@ -947,8 +991,6 @@ int c_set_window_workspace(lua_State *lua)
 
 	return 1;
 }
-
-
 
 
 /**
@@ -965,20 +1007,35 @@ int c_change_workspace(lua_State *lua)
 
 	int type = lua_type(lua, 1);
 
-	if (type!=LUA_TNUMBER) {
-		luaL_error(lua,"change_workspace: %s", number_expected_as_indata_error);
+	if (type != LUA_TNUMBER && type != LUA_TSTRING) {
+		luaL_error(lua,"change_workspace: %s", number_or_string_expected_as_indata_error);
 		return 0;
 	}
 
-	int number = lua_tonumber(lua, 1);
+	int workspace_idx0 = -1;
+	gchar *workspace_name = NULL;
+
+	switch (type) {
+		case LUA_TNUMBER:
+			workspace_idx0 = lua_tonumber(lua, 1) - 1;
+			break;
+		case LUA_TSTRING:
+			workspace_name = (gchar*)lua_tostring(lua, 1);
+			workspace_idx0 = find_workspace_with_name(workspace_name, get_current_window());
+			if(workspace_idx0 == -1) {
+				g_warning(_("A Workspace with the name '%s' does not exist!"), workspace_name);
+			}
+			break;
+		default: break;
+	}
 
 	WnckWindow *window = get_current_window();
-	if (window) {
+	if (window && workspace_idx0 > -1) {
 		WnckScreen *screen = wnck_window_get_screen(window);
-		WnckWorkspace *workspace = wnck_screen_get_workspace(screen, number-1);
+		WnckWorkspace *workspace = wnck_screen_get_workspace(screen, workspace_idx0);
 
 		if (!workspace) {
-			g_warning(_("Workspace number %d does not exist!"), number);
+			g_warning(_("Workspace number %d does not exist!"), workspace_idx0+1);
 		}
 
 		gint64 timestamp = g_get_real_time();

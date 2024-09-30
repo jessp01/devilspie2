@@ -101,12 +101,25 @@ static void load_list_of_scripts(WnckScreen *screen G_GNUC_UNUSED, WnckWindow *w
 }
 
 
+static void window_name_changed_cb(WnckWindow *window)
+{
+	WnckScreen * screen = wnck_window_get_screen(window);
+	if(screen == NULL) return;
+
+	load_list_of_scripts(screen, window, event_lists[W_NAME_CHANGED]);
+}
+
 /**
  *
  */
 static void window_opened_cb(WnckScreen *screen, WnckWindow *window)
 {
 	load_list_of_scripts(screen, window, event_lists[W_OPEN]);
+	/*
+	Attach a listener to each window for window-specific changes
+	Safe to do this way as long as the 'user data' parameter is NULL
+	*/
+	g_signal_connect(window, "name-changed", (GCallback)window_name_changed_cb, NULL);
 }
 
 

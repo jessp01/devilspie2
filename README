@@ -423,16 +423,14 @@ close_window()
 	Closes the window. (Available from 0.31)
 
 
-set_window_workspace(number)
+set_window_workspace(number or string)
 
-   Moves a window to another workspace. The number variable starts counting at
-   1.
+   Moves a window to another workspace, Indicated as a 1-based number, or a workspace name.
 
 
-change_workspace(number)
+change_workspace(number or string)
 
-   Changes the current workspace to another. The number variable starts counting
-   at 1.
+   Changes the current workspace to another, Indicated as a 1-based number, or a workspace name.
 
 
 pin_window()

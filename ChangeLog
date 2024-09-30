@@ -14,6 +14,9 @@ ChangeLog:
 	* Visibly deprecate function names containing 'horisontally'
 	* Add set_adjust_for_decoration(), useful if you have problems with
 	  positioning & resizing of decorated windows [note: experimental]
+	* Add get_window_frame_extents()
+	* Allow workspaces to be referenced by name
+	* Extra event type for running rules on window name/title changes
 
 0.44
 	* Default to Lua 5.3, and permit use of other versions

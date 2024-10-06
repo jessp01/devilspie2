@@ -102,7 +102,7 @@ static guint32 current_time(void)
 	XEvent xevent;
 
 	window = get_current_window();
-	if (window == NULL)
+	if (!window)
 		return GDK_CURRENT_TIME;
 
 	dpy = gdk_x11_get_default_xdisplay();
@@ -158,7 +158,7 @@ int c_get_window_name(lua_State *lua)
 	}
 
 	WnckWindow *window = get_current_window();
-	char *test = window ? (char*)wnck_window_get_name(window) : "";
+	const char *test = window ? wnck_window_get_name(window) : "";
 
 	lua_pushstring(lua, test);
 
@@ -225,7 +225,9 @@ int c_set_window_geometry(lua_State *lua)
 
 	if (!devilspie2_emulate) {
 		WnckWindow *window = get_current_window();
-		set_window_geometry(window, x, y, xsize, ysize, adjusting_for_decoration);
+		if (window) {
+			set_window_geometry(window, x, y, xsize, ysize, adjusting_for_decoration);
+		}
 	}
 
 	return 0;
@@ -648,7 +650,6 @@ int c_get_application_name(lua_State *lua)
 	WnckWindow *window = get_current_window();
 
 	if (window) {
-
 		WnckApplication *application=
 		    wnck_window_get_application(get_current_window());
 		if (application)
@@ -711,7 +712,6 @@ int c_shade(lua_State *lua)
 		WnckWindow *window = get_current_window();
 
 		if (window) {
-
 			wnck_window_shade(window);
 		}
 	}
@@ -736,7 +736,6 @@ int c_unshade(lua_State *lua)
 		WnckWindow *window = get_current_window();
 
 		if (window) {
-
 			wnck_window_unshade(window);
 		}
 	}
@@ -761,7 +760,6 @@ int c_minimize(lua_State *lua)
 		WnckWindow *window = get_current_window();
 
 		if (window) {
-
 			wnck_window_minimize(window);
 		}
 	}
@@ -829,13 +827,10 @@ int c_undecorate_window(lua_State *lua)
 		WnckWindow *window = get_current_window();
 
 		if (window) {
-			if (!devilspie2_emulate) {
+			gulong xid = wnck_window_get_xid(window);
 
-				gulong xid = wnck_window_get_xid(window);
-
-				if (!undecorate_window(xid)) {
-					result=FALSE;
-				}
+			if (!undecorate_window(xid)) {
+				result=FALSE;
 			}
 		}
 	}
@@ -863,14 +858,10 @@ int c_decorate_window(lua_State *lua)
 		WnckWindow *window = get_current_window();
 
 		if (window) {
+			gulong xid = wnck_window_get_xid(window);
 
-			if (!devilspie2_emulate) {
-
-				gulong xid = wnck_window_get_xid(window);
-
-				if (!decorate_window(xid)) {
-					result=FALSE;
-				}
+			if (!decorate_window(xid)) {
+				result=FALSE;
 			}
 		}
 	}
@@ -1349,9 +1340,9 @@ int c_get_window_frame_extents(lua_State *lua)
 		gulong *extents = 0;
 		int len = 0;
 
-		int ret = my_wnck_get_cardinal_list (wnck_window_get_xid(window),
-		                                     XInternAtom(dpy, "_NET_FRAME_EXTENTS", False),
-		                                     &extents, &len);
+		my_wnck_get_cardinal_list (wnck_window_get_xid(window),
+		                           XInternAtom(dpy, "_NET_FRAME_EXTENTS", False),
+		                           &extents, &len);
 		if (len >= 4) {
 			// _NET_FRAME_EXTENTS
 			left = extents[0];
@@ -1799,19 +1790,19 @@ int c_set_window_property(lua_State *lua)
 
 	switch (type) {
 	case LUA_TSTRING:
-		if (!devilspie2_emulate)
+		if (!devilspie2_emulate && window)
 			my_wnck_set_string_property_latin1(wnck_window_get_xid(window), my_wnck_atom_get(property),
 			                                   lua_tostring(lua, 2));
 		break;
 
 	case LUA_TNUMBER:
-		if (!devilspie2_emulate)
+		if (!devilspie2_emulate && window)
 			my_wnck_set_cardinal_property(wnck_window_get_xid(window), my_wnck_atom_get(property),
 			                              (int32_t) lua_tonumber(lua, 2));
 		break;
 
 	case LUA_TBOOLEAN:
-		if (!devilspie2_emulate)
+		if (!devilspie2_emulate && window)
 			my_wnck_set_cardinal_property(wnck_window_get_xid(window), my_wnck_atom_get(property),
 			                              (int32_t) lua_toboolean(lua, 2));
 		break;
@@ -1961,10 +1952,8 @@ int c_set_window_fullscreen(lua_State *lua)
 
 	gboolean fullscreen = lua_toboolean(lua, 1);
 
-	if (window) {
-		if (!devilspie2_emulate) {
-			wnck_window_set_fullscreen(window, fullscreen);
-		}
+	if (!devilspie2_emulate && window) {
+		wnck_window_set_fullscreen(window, fullscreen);
 	}
 
 
@@ -2255,7 +2244,7 @@ int c_set_window_type(lua_State *lua)
 
 
 /**
- * return the geometry of the screen  to the Lua script
+ * return the geometry of the screen to the Lua script
  */
 int c_get_screen_geometry(lua_State *lua)
 {
@@ -2316,6 +2305,7 @@ int c_close_window(lua_State *lua)
 	}
 
 	WnckWindow *window = get_current_window();
+
 	if (!devilspie2_emulate && window) {
 		wnck_window_close(window, current_time());
 	}
@@ -2427,7 +2417,7 @@ int c_xy(lua_State *lua)
 		// return the xy coordinates of the window
 
 		WnckWindow *window = get_current_window();
-		if (window != NULL) {
+		if (window) {
 
 			int x, y, width, height;
 
@@ -2487,7 +2477,7 @@ int c_xywh(lua_State *lua)
 		// Return the xywh settings of the window
 
 		WnckWindow *window = get_current_window();
-		if (window != NULL) {
+		if (window) {
 
 			int x, y, width, height;
 
@@ -2525,7 +2515,9 @@ int c_xywh(lua_State *lua)
 
 		if (!devilspie2_emulate) {
 			WnckWindow *window = get_current_window();
-			set_window_geometry(window, x, y, xsize, ysize, adjusting_for_decoration);
+			if (window) {
+				set_window_geometry(window, x, y, xsize, ysize, adjusting_for_decoration);
+			}
 		}
 
 		return 0;

@@ -43,11 +43,14 @@ A config is read from the folder where we read all scripts, and is customizable
 by the --folder option. By default this folder is ~/.config/devilspie2/.
 
 If there is a file named devilspie2.lua in this folder, it is read and it is
-searched for a variable (a lua table of strings) named either
-scripts_window_close, scripts_window_focus or scripts_window_blur -
-The filenames in the strings in this table will be called when windows are
-closed, focused or blurred respectively. If these variables isn't present in
-this file, it will be called as a devilspie2 script file like any other.
+searched for a variable (a lua table of strings) named:
+* scripts_window_close
+* scripts_window_focus
+* scripts_window_blur
+* scripts_window_name_change
+The filenames in the strings in this table will be called when the respective
+events occur. If these variables aren't present in this file, it will be called
+as a devilspie2 script file like any other.
 
 For example:
 
@@ -138,6 +141,12 @@ get_window_client_geometry()
    returns the window geometry excluding the window manager borders as four
    numbers, x-position, y-position, width and height. (from version 0.16) -
 	see get_window_geometry for an example on how to use this function.
+
+
+get_window_frame_extents()
+
+   Returns the window frame extents as four numbers: left, right, top, bottom.
+   (Available from version 0.45.)
 
 
 get_window_is_maximized()
@@ -448,16 +457,14 @@ close_window()
 	Closes the window. (Available from 0.31)
 
 
-set_window_workspace(number)
+set_window_workspace(number or string)
 
-   Moves a window to another workspace. The number variable starts counting at
-   1.
+   Moves a window to another workspace, Indicated as a 1-based number, or a workspace name.
 
 
-change_workspace(number)
+change_workspace(number or string)
 
-   Changes the current workspace to another. The number variable starts counting
-   at 1.
+   Changes the current workspace to another, Indicated as a 1-based number, or a workspace name.
 
 
 pin_window()

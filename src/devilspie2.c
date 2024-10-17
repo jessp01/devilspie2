@@ -67,6 +67,8 @@ GFileMonitor *mon = NULL;
 
 gchar *config_filename = NULL;
 
+WnckHandle *my_wnck_handle = NULL;
+
 /**
  *
  */
@@ -101,12 +103,25 @@ static void load_list_of_scripts(WnckScreen *screen G_GNUC_UNUSED, WnckWindow *w
 }
 
 
+static void window_name_changed_cb(WnckWindow *window)
+{
+	WnckScreen * screen = wnck_window_get_screen(window);
+	if(screen == NULL) return;
+
+	load_list_of_scripts(screen, window, event_lists[W_NAME_CHANGED]);
+}
+
 /**
  *
  */
 static void window_opened_cb(WnckScreen *screen, WnckWindow *window)
 {
 	load_list_of_scripts(screen, window, event_lists[W_OPEN]);
+	/*
+	Attach a listener to each window for window-specific changes
+	Safe to do this way as long as the 'user data' parameter is NULL
+	*/
+	g_signal_connect(window, "name-changed", (GCallback)window_name_changed_cb, NULL);
 }
 
 
@@ -147,7 +162,7 @@ void init_screens()
 #endif
 
 	for (i=0; i<num_screens; i++) {
-		WnckScreen *screen = wnck_screen_get(i);
+		WnckScreen *screen = wnck_handle_get_screen(my_wnck_handle, i);
 
 		g_signal_connect(screen, "window-opened",
 		                 (GCallback)window_opened_cb, NULL);
@@ -165,12 +180,10 @@ void init_screens()
 void devilspie_exit()
 {
 	clear_file_lists();
-
-	if (temp_folder != NULL) g_free(temp_folder);
-
-	if (mon) g_object_unref(mon);
-
-	if (config_filename) g_free(config_filename);
+	g_free(temp_folder);
+	if (mon)
+		g_object_unref(mon);
+	g_free(config_filename);
 }
 
 
@@ -469,6 +482,7 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
+	my_wnck_handle = wnck_handle_new(WNCK_CLIENT_TYPE_PAGER);
 	init_screens();
 
 	loop=g_main_loop_new(NULL, TRUE);

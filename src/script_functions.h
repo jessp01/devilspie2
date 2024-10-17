@@ -23,6 +23,10 @@
 /**
  *
  */
+#include "lua.h"
+#define WNCK_I_KNOW_THIS_IS_UNSTABLE
+#include "libwnck/libwnck.h"
+
 int c_use_utf8(lua_State *lua);
 
 int c_get_window_name(lua_State *lua);
@@ -73,10 +77,11 @@ int c_close_window(lua_State *lua);
 void set_current_window(WnckWindow *window);
 WnckWindow *get_current_window();
 
-int c_set_adjust_for_decoration();
+int c_set_adjust_for_decoration(lua_State *lua);
 
 int c_get_window_geometry(lua_State *lua);
 int c_get_window_client_geometry(lua_State *lua);
+int c_get_window_frame_extents(lua_State *lua);
 
 int c_set_skip_tasklist(lua_State *lua);
 int c_set_skip_pager(lua_State *lua);

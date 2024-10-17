@@ -38,12 +38,13 @@
 /**
  *
  */
-GSList *event_lists[W_NUM_EVENTS] = { NULL, NULL, NULL, NULL };
+GSList *event_lists[W_NUM_EVENTS] = { NULL, NULL, NULL, NULL, NULL };
 const char *const event_names[W_NUM_EVENTS] = {
 	"window_open",
 	"window_close",
 	"window_focus",
 	"window_blur",
+	"window_name_change",
 };
 
 
@@ -216,6 +217,9 @@ int load_config(gchar *filename)
 		event_lists[W_BLUR]  = get_table_of_strings(config_lua_state,
 		                         script_folder,
 		                         "scripts_window_blur");
+		event_lists[W_NAME_CHANGED] = get_table_of_strings(config_lua_state,
+		                         script_folder,
+		                         "scripts_window_name_change");
 	}
 
 	// add the files in the folder to our linked list
@@ -257,11 +261,7 @@ void unallocate_file_list(GSList *file_list)
 	if (file_list) {
 
 		while(file_list) {
-
-			gchar *file_name = (gchar*)file_list->data;
-
-			if (file_name) g_free(file_name);
-
+			g_free ((gchar*)file_list->data);
 			file_list = file_list->next;
 		}
 	}

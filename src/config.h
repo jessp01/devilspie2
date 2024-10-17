@@ -19,9 +19,8 @@
 #ifndef __HEADER_CONFIG_
 #define __HEADER_CONFIG_
 
-/**
- *
- */
+#include "glib.h"
+
 int load_config(gchar *config_filename);
 
 void clear_file_lists();
@@ -31,6 +30,7 @@ typedef enum {
 	W_CLOSE,
 	W_FOCUS,
 	W_BLUR,
+	W_NAME_CHANGED,
 	W_NUM_EVENTS /* keep this at the end */
 } win_event_type;
 

@@ -231,8 +231,8 @@ int load_config(gchar *filename)
 		                                    NULL);
 
 		// we only bother with *.lua in the folder
-		if (g_str_has_suffix(current_file, ".lua")) {
-
+		// we also ignore dot files
+		if (current_file[0] != '.' && g_str_has_suffix(current_file, ".lua")) {
 			if (!is_in_any_list(temp_filename)) {
 				temp_window_open_file_list =
 				    add_lua_file_to_list(temp_window_open_file_list, temp_filename);

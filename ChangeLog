@@ -17,6 +17,7 @@ ChangeLog:
 	* Add get_window_frame_extents()
 	* Allow workspaces to be referenced by name
 	* Extra event type for running rules on window name/title changes
+	* Ignore dot files in the scripts directory.
 
 0.44
 	* Default to Lua 5.3, and permit use of other versions

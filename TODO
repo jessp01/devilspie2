@@ -1,12 +1,13 @@
 #
-# Copyright © 2011-2021 devilspie2 developers
+# Copyright © 2011-2024 devilspie2 developers
 # This file is distributed under the same license
 # as the devilspie2 package, see COPYING file.
 #
 
-Implement on-title-change
-- see https://gist.github.com/ssokolow/e7c9aae63fb7973e4d64cff969a78ae8
-
 Optionally use GTK+4
 
+Handle CSD windows with overdraw (shadows etc.?)
+- https://github.com/dsalt/devilspie2/issues/18 seems related
+
 Support for Wayland? XWayland?
+- https://github.com/dsalt/devilspie2/issues/7

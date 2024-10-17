@@ -8,49 +8,51 @@
 Devilspie 2
 -----------
 
-Devilspie 2 is based on the excellent program Devil's Pie by Ross Burton, and
-takes a folder as indata, and checks that folder for Lua scripts. These
-scripts are run each time a window is opened or closed, and the rules in them
-are applied on the window.
+Devilspie 2 is based on the excellent program Devil's Pie by Ross Burton. 
+It will read Lua scripts from a folder and run them whenever a window is
+opened, and the rules in them are applied on the window. (See the Config
+section for more details.)
 
 Unfortunately the rules of the original Devils Pie are not supported.
 
-If you don't give devilspie2 any folder with --folder, it will read Lua scripts
-from the folder that it gets from the GLib function g_get_user_config_dir with
-devilspie2/ added to the end - g_get_user_config_dir returns the config
-directory as defined in the XDG Base Directory Specification. In most cases
-would be the ~/.config/devilspie2/ folder, and this folder will be created if
-it doesn't already exist. This folder is changeable with the --folder option.
-If devilspie2 doesn't find any Lua files in the folder, it will stop execution.
-
 Devilspie2 will load all the Lua files in this folder in alphabetical order.
 
-Devilspie2 takes some options:
+Devilspie2 accepts the following options:
 
 -h, --help          Show help options
 
 -d, --debug         Print debug information to stdout
--e, --emulate       Don't apply any rules, but only emulate execution
--f, --folder        From which folder should we load our Lua scripts
--v, --version       Print program version and quit
--w, --wnck-version  Show version of libwnck and quit
+-e, --emulate       Don't apply any rules, only emulate execution
+-f, --folder        Search for scripts in this folder
+-v, --version       Print program version then quit
+-w, --wnck-version  Show libwnck version then quit
+-l, --lua-version   Show Lua version then quit
 
 
 Config
 -------
 
-A config is read from the folder where we read all scripts, and is customizable
-by the --folder option. By default this folder is ~/.config/devilspie2/.
+A configuration file is read from the scripts folder, which is customisable
+by using the --folder option. By default, this folder is
+~/.config/devilspie2/. (~/.config is the default location as defined in the
+XDG Base Directory Specification and returned by the GLib function
+g_get_user_config_dir. As such, it can also be overridden by the environment.)
+
+This folder will be created if it doesn't already exist.
+
+If devilspie2 doesn't find any Lua files in the folder, it will stop execution.
 
 If there is a file named devilspie2.lua in this folder, it is read and it is
-searched for a variable (a lua table of strings) named:
+searched for variables named:
 * scripts_window_close
 * scripts_window_focus
 * scripts_window_blur
 * scripts_window_name_change
-The filenames in the strings in this table will be called when the respective
-events occur. If these variables aren't present in this file, it will be called
-as a devilspie2 script file like any other.
+It is expected that these variables are tables containing strings. The
+files named in these tables are expected to be in the scripts folder and
+will only be called when the respective events occur.
+
+All other files in the scripts folder will be called whenever a window is opened.
 
 For example:
 
@@ -60,17 +62,16 @@ scripts_window_close = {
    "file2.lua"
 }
 
-This would make the files file1.lua and file2.lua interpreted when windows are
-closing instead of when windows are opening.
+With this, both file1.lua and file2.lua will be called whenever a window is
+closed.
 
 
 Scripting
 ---------
 
 You can choose to have all script functionality in one file, or you can split
-it up into several, Devilspie2 runs on all Lua files in your requested
-devilspie2 folder, by default ~/.config/devilspie2 - that is all files with a
-.lua extension.
+it up into several, Devilspie2 runs on all Lua files (*.lua) in your requested
+devilspie2 scripts folder.
 
 The scripting language used is Lua; https://see www.lua.org/
 
@@ -92,30 +93,30 @@ debug_print(string)
 
 
 
-
 Then, there are the functions to get the properties of a window, and related
 information:
 
 
 get_window_name()
 
-   returns a string containing the name of the current window.
+   Returns a string containing the name of the current window.
 
 
 get_window_has_name()
 
-   return true or false depending on if the window has a name or not
-   (from version 0.20)
+   Return true or false depending on if the window has a name or not
+
+   (Available from version 0.20)
 
 
 get_application_name()
 
-   returns the application name of the current window.
+   Returns the application name of the current window.
 
 
 get_process_name()
 
-   returns the name of the process owning the current window.
+   Returns the name of the process owning the current window.
 
    On (at least) Linux, the process name is read from /proc/<pid>/comm. If
    that's not possible, 'ps' is launched in a shell. For this reason, you
@@ -129,18 +130,21 @@ get_process_name()
 get_window_geometry()
 
    Returns the window geometry as four numbers - x-position, y-position,
-   width and height. (from version 0.16) - for example you can do something
-	like this:
+   width and height. For example, you can do something like this:
 
 	x, y, width, height = get_window_geometry();
 	print("X: "..x..", Y: "..y..", width: "..width..", height: "..height);
+
+   (Available from version 0.16)
 
 
 get_window_client_geometry()
 
    returns the window geometry excluding the window manager borders as four
-   numbers, x-position, y-position, width and height. (from version 0.16) -
-	see get_window_geometry for an example on how to use this function.
+   numbers, x-position, y-position, width and height.
+   See get_window_geometry for an example on how to use this function.
+
+   (Available from version 0.16)
 
 
 get_window_frame_extents()
@@ -152,27 +156,31 @@ get_window_frame_extents()
 get_window_is_maximized()
 get_window_is_maximised()
 
-   Returns true if the window is maximised, false otherwise. (available from
-   version 0.21; -ise from 0.45)
+   Returns true if the window is maximised, false otherwise.
+
+   (Available from version 0.21; -ise from 0.45)
 
 
 get_window_is_maximized_vertically()
 get_window_is_maximised_vertically()
 
    Returns true if the window is vertically maximised, false otherwise.
-   (available from version 0.21; -ise from 0.45)
+
+   (Available from version 0.21; -ise from 0.45)
 
 
 get_window_is_maximized_horizontally()
 get_window_is_maximised_horizontally()
 
    Returns true if the window is horizontally maximised, false otherwise.
-   (available from version 0.21; -ise from 0.45)
+
+   (Available from version 0.21; -ise from 0.45)
 
 
 get_window_is_decorated()
 
    Returns true if the window is decorated, false otherwise.
+
    (Available from version 0.44.)
 
 
@@ -192,24 +200,26 @@ get_window_type()
 
    or "WINDOW_TYPE_UNRECOGNIZED" if libwnck didn't recognise the type.
 
-   If the function for some reason didn't have a window to work on the string
-   result is "WINDOW_ERROR".
+   If the function didn't have a window to work on, "WINDOW_ERROR" will be
+   returned.
 
-   (available from version 0.21)
+   (Available from version 0.21)
 
 
 get_class_instance_name()
 
-   Gets the class instance name from the WM_CLASS Property for the current
-   window. Only available on libwnck 3+, and in devilspie2 version 0.21 or
-   later.
+   Gets the class instance name from the WM_CLASS property for the current
+   window.
+
+   (Available from version 0.21; requires libwnck 3+)
 
 
 get_class_group_name()
 
    Gets the class group name from the WM_CLASS Property for the current
-   window. Only available on libwnck 3+, and in devilspie2 version 0.45 or
-   later.
+   window.
+
+   (Available from version 0.21; requires libwnck 3+)
 
 
 get_window_property(property)
@@ -246,7 +256,7 @@ get_window_property_full(property)
 get_window_role
 
    Returns a string describing the current window role of the matched window as
-   defined by it's WM_WINDOW_ROLE hint.
+   defined by its WM_WINDOW_ROLE hint.
 
 
 get_window_xid
@@ -261,32 +271,39 @@ get_window_class
 
 get_workspace_count
 
-	Return the number of workspaces available (available from version 0.27)
+   Returns the number of workspaces available.
+
+   (Available from version 0.27)
 
 
 get_screen_geometry
 
-	Returns the screen geometry (two numbers) for the screen of the
-	current window (available from version 0.29)
+   Returns the screen geometry (two numbers) for the screen of the
+   current window.
+
+   (Available from version 0.29)
 
 
 get_window_fullscreen
 get_fullscreen
 
-	Returns TRUE if the window is fullscreen, FALSE otherwise
-	(available from version 0.32)
+   Returns true if the window is fullscreen, false otherwise.
+
+   (Available from version 0.32)
 
 
 get_monitor_index
 
    Returns the index of the monitor containing the window centre (or some
    part of the window).
+
    (Available from version 0.44)
 
 
 get_monitor_geometry
 
    Returns x, y, width, height for the window's monitor.
+
    (Available from version 0.44)
 
 
@@ -345,9 +362,10 @@ set_window_position(xpos, ypos, [index])
 
 set_window_position2(xpos, ypos)
 
-   Set the position of a window - Compared to set_window_position, this
-   function uses XMoveWindow instead of wnck_window_set_geometry which
+   Set the position of a window. Unlike set_window_position, this
+   function uses XMoveWindow instead of wnck_window_set_geometry; this
    gives a slightly different result.
+
    (Available from version 0.21)
 
 
@@ -366,6 +384,7 @@ set_window_property(property, value, [utf8])
 delete_window_property(property)
 
    Remove a property from a window.
+
    (Available from version 0.44)
 
 
@@ -382,11 +401,12 @@ set_window_geometry (xpos, ypos, xsize, ysize)
 
 set_window_geometry2 (xpos, ypos, xsize, ysize)
 
-   Sets the window geometry just as set_window_geometry, using
+   Sets the window geometry just as set_window_geometry, but using
    XMoveResizeWindow instead of its libwnck alternative. This results in
    different coordinates than the set_window_geometry function, and results
    are more similar to the results of the original devilspie geometry function.
-   (available from version 0.21)
+
+   (Available from version 0.21)
 
 
 shade()
@@ -396,49 +416,55 @@ shade()
 
 unshade()
 
-   Unshades a window - the opposite of "shade"
+   Unshades a window; the opposite of "shade".
 
 
 maximize()
 maximise()
 
-   maximises a window
+   Maximises a window.
+
    (-ise from 0.45)
 
 
 unmaximize()
 unmaximise()
 
-   unmaximises a window
+   Unmaximises a window.
+
    (-ise from 0.45)
 
 
 maximize_vertically()
 maximise_vertically()
 
-   maximises the current window vertically.
+   Maximises the current window vertically.
+
    (-ise from 0.45)
 
 
 maximize_horizontally()
 maximise_horizontally()
 
-   maximises the current window horizontally.
+   Maximises the current window horizontally.
+
    (-ise from 0.45)
 
 
 minimize()
 minimise()
 
-   minimises a window
+   Minimises a window.
+
    (-ise from 0.45)
 
 
 unminimize()
 unminimise()
 
-   unminimises a window, that is bringing it back to screen from the minimised
+   Unminimises a window: brings it back to screen from the minimised
    position/size.
+
    (-ise from 0.45)
 
 
@@ -454,7 +480,9 @@ undecorate_window()
 
 close_window()
 
-	Closes the window. (Available from 0.31)
+   Closes the window.
+
+   (Available from 0.31)
 
 
 set_window_workspace(number or string)
@@ -469,7 +497,7 @@ change_workspace(number or string)
 
 pin_window()
 
-   asks the window manager to put the window on all workspaces.
+   Asks the window manager to put the window on all workspaces.
 
 
 unpin_window()
@@ -492,27 +520,32 @@ unstick_window()
 set_skip_tasklist(skip)
 
    Set this to true if you would like the window to skip listing in your
-   tasklist. Takes a boolean(true or false) as value. (from version 0.16)
+   tasklist. Takes a boolean(true or false) as value.
+
+   (Available from version 0.16)
 
 
 set_skip_pager(skip)
 
    Set this to true if you would like the window to skip listing in your pager.
-   Takes a boolean(true or false) as value. (from version 0.16)
+   Takes a boolean(true or false) as value.
+
+   (Available from version 0.16)
 
 
 set_window_above([above])
 
-   Set the current window above all normal windows. (available from version
-   0.21)
+   Set the current window above all normal windows.
    Optionally takes a boolean(true or false) as value.
 
    make_always_on_top() is the same as set_window_above(true).
 
+   (Available from version 0.21)
+
 
 set_on_top()
 
-   sets a window on top of the others.
+   Sets a window on top of the others.
    Unlike set_window_above, it doesn't lock the window in this position.
    As of version 0.45, the window's layer (above, between, below) is
    maintained.
@@ -520,35 +553,43 @@ set_on_top()
 
 set_window_below([below])
 
-   Set the current window below all normal windows. (available from version
-   0.21)
+   Sets the current window below all normal windows.
    Optionally takes a boolean(true or false) as value.
+
+   (Available from version 0.21)
 
 
 set_on_bottom()
 
-   sets a window below the others.
+   Sets a window below the others.
    Unlike set_window_below, it doesn't lock the window in this position.
+
    (Available from version 0.45.)
 
 
 set_window_fullscreen(fullscreen)
 
-   Asks the window manager to set the fullscreen state of the window according
-   to the fullscreen boolean. (available from version 0.24)
+   Asks the window manager to set or clear the fullscreen state of the
+   window according to the fullscreen boolean.
+
+   (Available from version 0.24)
 
 
 set_viewport(viewport)
 
-   Using one indata, moves the window to the requested viewport - Counting
-	starts at number 1. (Available from version 0.25)
-	- Also see the alternative usage of this function below.
+   Using one indata, moves the window to the requested viewport. Counting
+   starts at number 1.
+
+   Also see the alternative usage of this function below.
+
+   (Available from version 0.25)
 
 set_viewport(x, y)
 
-	If you are using two indata to the set_viewport function, you can decide
-	where in the viewport the window will be placed.
-	(Available from version 0.40)
+   If you are using two indata to the set_viewport function, you can decide
+   where in the viewport the window will be placed.
+
+   (Available from version 0.40)
 
 center([index,] [direction])
 centre([index,] [direction])
@@ -586,6 +627,7 @@ set_window_opacity(value)
 	Sets the window opacity, takes a float value, 1.0 = completely opaque,
 	0.0, completely see-through. Both set_opacity and set_window_opacity
 	will do the same thing.
+
 	(Available from version 0.28, set_window_opacity from 0.29)
 
 
@@ -603,18 +645,10 @@ set_window_type(type)
 	"_NET_WM_WINDOW_TYPE_DIALOG"
 	"_NET_WM_WINDOW_TYPE_NORMAL"
 
-	or shorter versions of the same values
+	You may omit "_NET_WM".
 
-	"WINDOW_TYPE_DESKTOP"
-	"WINDOW_TYPE_DOCK"
-	"WINDOW_TYPE_TOOLBAR"
-	"WINDOW_TYPE_MENU"
-	"WINDOW_TYPE_UTILITY"
-	"WINDOW_TYPE_SPLASH"
-	"WINDOW_TYPE_DIALOG"
-	"WINDOW_TYPE_NORMAL"
+	(Available from version 0.28)
 
-	(Function is available from version 0.28)
 
 focus()
 focus_window()
@@ -633,6 +667,7 @@ set_window_strut(left, right, top, bottom, ...)
 
 	(Available from version 0.32)
 
+
 get_window_strut()
 
 	Get the reserved area at the borders of the desktop for a docking
@@ -643,6 +678,7 @@ get_window_strut()
 	set_window_strut().
 
 	(Available from version 0.45)
+
 
 xy(x, y), xy()
     Set the position of a window, or if you don't give any input, get the
@@ -660,7 +696,7 @@ use_utf8([bool])
     Returns the previous value.
 
 
-Please note that strings comparisons are case sensitive, comparing
+Please note that string comparison is case sensitive. Comparing
 "SomeProgram" with "someprogram" will not report equality.
 
 

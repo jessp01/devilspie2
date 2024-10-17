@@ -278,6 +278,8 @@ void clear_file_lists()
 	for (i = 0; i < W_NUM_EVENTS; i++) {
 		if (event_lists[i]) {
 			unallocate_file_list(event_lists[i]);
+			g_slist_free(event_lists[i]);
+			event_lists[i] = NULL;
 		}
 	}
 }

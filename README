@@ -8,20 +8,12 @@
 Devilspie 2
 -----------
 
-Devilspie 2 is based on the excellent program Devil's Pie by Ross Burton.
-It takes a folder as indata, and checks that folder for Lua scripts. These
-scripts are run each time a window is opened or closed, and the rules in them
-are applied on the window.
+Devilspie 2 is based on the excellent program Devil's Pie by Ross Burton. 
+It will read Lua scripts from a folder and run them whenever a window is
+opened, and the rules in them are applied on the window. (See the Config
+section for more details.)
 
 Unfortunately the rules of the original Devils Pie are not supported.
-
-If you don't give devilspie2 any folder with --folder, it will read Lua scripts
-from the folder that it gets from the GLib function g_get_user_config_dir with
-devilspie2/ added to the end - g_get_user_config_dir returns the config
-directory as defined in the XDG Base Directory Specification. In most cases
-would be the ~/.config/devilspie2/ folder, and this folder will be created if
-it doesn't already exist. This folder is changeable with the --folder option.
-If devilspie2 doesn't find any Lua files in the folder, it will stop execution.
 
 Devilspie2 will load all the Lua files in this folder in alphabetical order.
 
@@ -30,27 +22,36 @@ Devilspie2 accepts the following options:
 -h, --help          Show help options
 
 -d, --debug         Print debug information to stdout
--e, --emulate       Don't apply any rules, but only emulate execution
--f, --folder        From which folder should we load our Lua scripts
--v, --version       Print program version and quit
--w, --wnck-version  Show version of libwnck and quit
+-e, --emulate       Don't apply any rules, only emulate execution
+-f, --folder        Search for scripts in this folder
+-v, --version       Print program version then quit
+-w, --wnck-version  Show libwnck version then quit
 
 
 Config
 -------
 
 A configuration file is read from the scripts folder, which is customisable
-by the --folder option. By default this folder is ~/.config/devilspie2/.
+by using the --folder option. By default, this folder is
+~/.config/devilspie2/. (~/.config is the default location as defined in the
+XDG Base Directory Specification and returned by the GLib function
+g_get_user_config_dir. As such, it can also be overridden by the environment.)
+
+This folder will be created if it doesn't already exist.
+
+If devilspie2 doesn't find any Lua files in the folder, it will stop execution.
 
 If there is a file named devilspie2.lua in this folder, it is read and it is
-searched for a variable (a lua table of strings) named:
+searched for variables named:
 * scripts_window_close
 * scripts_window_focus
 * scripts_window_blur
 * scripts_window_name_change
-The filenames in the strings in this table will be called when the respective
-events occur. If these variables aren't present in this file, it will be called
-as a devilspie2 script file like any other.
+It is expected that these variables are tables containing strings. The
+files named in these tables are expected to be in the scripts folder and
+will only be called when the respective events occur.
+
+All other files in the scripts folder will be called whenever a window is opened.
 
 For example:
 
@@ -60,17 +61,16 @@ scripts_window_close = {
    "file2.lua"
 }
 
-This would make the files file1.lua and file2.lua interpreted when windows are
-closing.
+With this, both file1.lua and file2.lua will be called whenever a window is
+closed.
 
 
 Scripting
 ---------
 
 You can choose to have all script functionality in one file, or you can split
-it up into several, Devilspie2 runs on all Lua files in your requested
-devilspie2 folder, by default ~/.config/devilspie2 - that is all files with a
-.lua extension.
+it up into several, Devilspie2 runs on all Lua files (*.lua) in your requested
+devilspie2 scripts folder.
 
 The scripting language used is Lua; https://see www.lua.org/
 

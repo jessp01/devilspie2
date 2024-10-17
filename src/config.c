@@ -53,7 +53,7 @@ const char *const event_names[W_NUM_EVENTS] = {
  *   function to sort the inserted filenames, to be able to determine
  *   which order files are loaded.
  */
-gint filename_list_sortfunc(gconstpointer a,gconstpointer b)
+static gint filename_list_sortfunc(gconstpointer a,gconstpointer b)
 {
 	gchar *file1 = (gchar*)a;
 	gchar *file2 = (gchar*)b;
@@ -65,7 +65,7 @@ gint filename_list_sortfunc(gconstpointer a,gconstpointer b)
 /**
  *
  */
-GSList *add_lua_file_to_list(GSList *list, gchar *filename)
+static GSList *add_lua_file_to_list(GSList *list, gchar *filename)
 {
 	gchar *temp_filename = g_strdup(filename);
 
@@ -81,9 +81,9 @@ GSList *add_lua_file_to_list(GSList *list, gchar *filename)
 /**
  *
  */
-GSList *get_table_of_strings(lua_State *luastate,
-                             gchar *script_folder,
-                             gchar *table_name)
+static GSList *get_table_of_strings(lua_State *luastate,
+                                    gchar *script_folder,
+                                    gchar *table_name)
 {
 	GSList *list = NULL;
 
@@ -129,7 +129,7 @@ EXITPOINT:
  *  is_in_list
  * Go through _one_ list, and check if the filename is in this list
  */
-gboolean is_in_list(GSList *list, gchar *filename)
+static gboolean is_in_list(GSList *list, gchar *filename)
 {
 	gboolean result = FALSE;
 
@@ -156,7 +156,7 @@ gboolean is_in_list(GSList *list, gchar *filename)
  *  is_in_any_list
  * Go through our lists, and check if the file is already in any of them
  */
-gboolean is_in_any_list(gchar *filename)
+static gboolean is_in_any_list(gchar *filename)
 {
 	win_event_type i;
 
@@ -256,10 +256,9 @@ EXITPOINT:
 /**
  *
  */
-void unallocate_file_list(GSList *file_list)
+static void unallocate_file_list(GSList *file_list)
 {
 	if (file_list) {
-
 		while(file_list) {
 			g_free ((gchar*)file_list->data);
 			file_list = file_list->next;

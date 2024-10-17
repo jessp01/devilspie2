@@ -1751,7 +1751,7 @@ int c_get_window_property_full(lua_State *lua)
  */
 int c_set_window_property(lua_State *lua)
 {
-	if (!check_param_count(lua, "set_window_property", 2)) {
+	if (!check_param_counts(lua, "set_window_property", 2, 3)) {
 		return 0;
 	}
 

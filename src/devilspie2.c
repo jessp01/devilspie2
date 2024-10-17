@@ -60,6 +60,8 @@ static gboolean show_version = FALSE;
 // libwnck 3.0 or later
 static gboolean show_wnck_version = FALSE;
 
+static gboolean show_lua_version = FALSE;
+
 static gchar *script_folder = NULL;
 static gchar *temp_folder = NULL;
 
@@ -332,6 +334,9 @@ int main(int argc, char *argv[])
 		{ "wnck-version", 'w', 0, G_OPTION_ARG_NONE,   &show_wnck_version,
 		  N_("Show libwnck version and quit"), NULL
 		},
+		{ "lua-version",  'l', 0, G_OPTION_ARG_NONE,   &show_lua_version,
+		  N_("Show Lua version and quit"), NULL
+		},
 		{ NULL }
 	};
 
@@ -383,6 +388,7 @@ int main(int argc, char *argv[])
 		script_folder = temp_folder;
 	}
 
+	gboolean shown = FALSE;
 	if (show_version) {
 		printf("Devilspie2 v%s\n", DEVILSPIE2_VERSION);
 		shown = TRUE;
@@ -404,8 +410,15 @@ int main(int argc, char *argv[])
 #else
 		printf("libwnck v2.x\n");
 #endif
-		exit(EXIT_SUCCESS);
+		shown = TRUE;
 	}
+	if (show_lua_version) {
+		lua_State *lua = init_script();
+		if (luaL_dostring(lua, "print(_VERSION)")) {};
+		shown = TRUE;
+	}
+	if (shown)
+		exit(0);
 
 #if (GTK_MAJOR_VERSION >= 3)
 	if (!GDK_IS_X11_DISPLAY(gdk_display_get_default())) {

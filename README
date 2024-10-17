@@ -26,6 +26,7 @@ Devilspie2 accepts the following options:
 -f, --folder        Search for scripts in this folder
 -v, --version       Print program version then quit
 -w, --wnck-version  Show libwnck version then quit
+-l, --lua-version   Show Lua version then quit
 
 
 Config

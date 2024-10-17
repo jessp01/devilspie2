@@ -413,8 +413,7 @@ int main(int argc, char *argv[])
 		shown = TRUE;
 	}
 	if (show_lua_version) {
-		lua_State *lua = init_script();
-		if (luaL_dostring(lua, "print(_VERSION)")) {};
+		puts(LUA_VERSION);
 		shown = TRUE;
 	}
 	if (shown)

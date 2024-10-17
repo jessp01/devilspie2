@@ -315,22 +315,22 @@ void folder_changed_callback(GFileMonitor *mon G_GNUC_UNUSED,
 int main(int argc, char *argv[])
 {
 	static const GOptionEntry options[]= {
-		{	"debug",			'd',	0,	G_OPTION_ARG_NONE,		&debug,
-			N_("Print debug info to stdout"), NULL
+		{ "debug",        'd', 0, G_OPTION_ARG_NONE,   &debug,
+		  N_("Print debug info to stdout"), NULL
 		},
-		{	"emulate",		'e',	0,	G_OPTION_ARG_NONE,		&emulate,
-			N_("Don't apply any rules, only emulate execution"), NULL
+		{ "emulate",      'e', 0, G_OPTION_ARG_NONE,   &emulate,
+		  N_("Don't apply any rules, only emulate execution"), NULL
 		},
-		{	"folder",			'f',	0,	G_OPTION_ARG_STRING,		&script_folder,
-			N_("Search for scripts in this folder"),N_("FOLDER")
+		{ "folder",       'f', 0, G_OPTION_ARG_STRING, &script_folder,
+		  N_("Search for scripts in this folder"), N_("FOLDER")
 		},
-		{	"version",		'v',	0,	G_OPTION_ARG_NONE,		&show_version,
-			N_("Show Devilspie2 version and quit"), NULL
+		{ "version",      'v', 0, G_OPTION_ARG_NONE,   &show_version,
+		  N_("Show Devilspie2 version and quit"), NULL
 		},
 		// libwnck Version Information is only availible if you have
 		// libwnck 3.0 or later
-		{	"wnck-version",	'w',	0,	G_OPTION_ARG_NONE,		&show_wnck_version,
-			N_("Show libwnck version and quit"), NULL
+		{ "wnck-version", 'w', 0, G_OPTION_ARG_NONE,   &show_wnck_version,
+		  N_("Show libwnck version and quit"), NULL
 		},
 		{ NULL }
 	};

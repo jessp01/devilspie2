@@ -266,7 +266,7 @@ get_screen_geometry
 get_window_fullscreen
 get_fullscreen
 
-   Returns TRUE if the window is fullscreen, FALSE otherwise
+   Returns true if the window is fullscreen, false otherwise.
 
    (Available from version 0.32)
 

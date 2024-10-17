@@ -695,6 +695,10 @@ use_utf8([bool])
     If no value is supplied, the setting is left unchanged.
     Returns the previous value.
 
+    This is initially false.
+
+    (Available from version 0.45)
+
 
 Please note that string comparison is case sensitive. Comparing
 "SomeProgram" with "someprogram" will not report equality.

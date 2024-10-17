@@ -384,8 +384,8 @@ int main(int argc, char *argv[])
 	}
 
 	if (show_version) {
-		printf("Devilspie2 v%s\n\n", DEVILSPIE2_VERSION);
-		exit(EXIT_SUCCESS);
+		printf("Devilspie2 v%s\n", DEVILSPIE2_VERSION);
+		shown = TRUE;
 	}
 	// libwnck Version Information is only availible if you have
 	// libwnck 3.0 or later
@@ -397,12 +397,12 @@ int main(int argc, char *argv[])
 		       GTK_MICRO_VERSION);
 #endif
 #ifdef HAVE_GTK3
-		printf("libwnck v%d.%d.%d\n\n",
+		printf("libwnck v%d.%d.%d\n",
 		       WNCK_MAJOR_VERSION,
 		       WNCK_MINOR_VERSION,
 		       WNCK_MICRO_VERSION);
 #else
-		printf("libwnck v2.x\n\n");
+		printf("libwnck v2.x\n");
 #endif
 		exit(EXIT_SUCCESS);
 	}

@@ -67,3 +67,7 @@ Klaus Ethgen <Klaus@Ethgen.ch>
 
 Longoon12000 <longoon12000@gmail.com>
 - Initial version of get_process_name
+
+Mark Cooke <markcooke666 (at) yahoo (dot) co (dot) uk>
+- Allow use of workspace names
+- Running rules on window name/title change

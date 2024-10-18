@@ -115,7 +115,6 @@ static void window_name_changed_cb(WnckWindow *window)
 	static WnckWindow *previous = NULL;
 	static char *prevname = NULL;
 
-	gint64 now = g_get_real_time();
 	const char *newname = wnck_window_get_name(window);
 	if (window == previous && prevname && !strcmp (prevname, newname))
 		return;

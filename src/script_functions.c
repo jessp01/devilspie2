@@ -1043,7 +1043,7 @@ int c_change_workspace(lua_State *lua)
 			workspace_name = (gchar*)lua_tostring(lua, 1);
 			workspace_idx0 = find_workspace_with_name(workspace_name, get_current_window());
 			if(workspace_idx0 == -1) {
-				g_warning(_("A Workspace with the name '%s' does not exist!"), workspace_name);
+				g_warning(_("A workspace with the name '%s' does not exist!"), workspace_name);
 			}
 			break;
 		default: break;

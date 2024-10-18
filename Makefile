@@ -153,3 +153,18 @@ $(DEPEND):
 	$(CC) -MM $(LOCAL_CFLAGS) $(SRC)/*.c | sed -e "s/\([A-Za-z0-9+-0._&+-]*:\)/\$(OBJ)\/\1/g" > $(DEPEND)
 
 -include $(DEPEND)
+
+.PHONY: release
+VERSION = $(subst /,_,$(file <VERSION))
+TARFORMAT = tar.gz
+TARBALL = $(NAME)_$(VERSION)-src.$(TARFORMAT)
+TARPREFIX = $(NAME)-$(VERSION)/
+.PRECIOUS: $(TARBALL)
+release: $(TARBALL)
+$(TARBALL): .FORCE po/devilspie2.pot
+	git archive --format=$(TARFORMAT) --prefix=$(TARPREFIX) -o $@ $(VERSION)
+
+po/devilspie2.pot:
+	make -C po update-pot
+
+.FORCE:

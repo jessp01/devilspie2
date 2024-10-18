@@ -260,7 +260,7 @@ Screen *devilspie2_window_get_xscreen(Window xid)
 /**
  *
  */
-char* my_wnck_get_string_property_latin1(Window xwindow, Atom atom)
+char* my_wnck_get_string_property(Window xwindow, Atom atom, gboolean *utf8)
 {
 	Atom type;
 	int format;
@@ -270,6 +270,10 @@ char* my_wnck_get_string_property_latin1(Window xwindow, Atom atom)
 	int err, result;
 	char *retval;
 	Atom XA_UTF8_STRING;
+	gboolean is_utf8 = True;
+
+	if (utf8)
+		*utf8 = False;
 
 	devilspie2_error_trap_push();
 	property = NULL;
@@ -287,7 +291,11 @@ char* my_wnck_get_string_property_latin1(Window xwindow, Atom atom)
 	retval = NULL;
 	XA_UTF8_STRING = XInternAtom(gdk_x11_get_default_xdisplay(), "UTF8_STRING", False);
 
+	if (utf8)
+		*utf8 = False;
+
 	if (type == XA_STRING) {
+		is_utf8 = False;
 		retval = g_strdup ((char*)property);
 	} else if (type == XA_UTF8_STRING) {
 		retval = g_strdup ((char*)property);
@@ -338,6 +346,8 @@ char* my_wnck_get_string_property_latin1(Window xwindow, Atom atom)
 	}
 
 	XFree (property);
+	if (utf8)
+		*utf8 = is_utf8;
 	return retval;
 }
 
@@ -345,14 +355,14 @@ char* my_wnck_get_string_property_latin1(Window xwindow, Atom atom)
 /**
  *
  */
-void my_wnck_set_string_property_latin1(Window xwindow, Atom atom, const gchar *const string)
+void my_wnck_set_string_property(Window xwindow, Atom atom, const gchar *const string, gboolean utf8)
 {
 	const unsigned char *const str = (const unsigned char *)string;
+	Display *display = gdk_x11_get_default_xdisplay();
+	Atom type = utf8 ? XInternAtom(display, "UTF8_STRING", False) : XA_STRING;
 
 	devilspie2_error_trap_push();
-	XChangeProperty (gdk_x11_get_default_xdisplay (),
-	                 xwindow, atom, XA_STRING, 8,
-	                 PropModeReplace, str, strlen(string));
+	XChangeProperty (display, xwindow, atom, type, 8, PropModeReplace, str, strlen(string));
 	devilspie2_error_trap_pop ();
 }
 

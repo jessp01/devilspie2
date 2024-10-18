@@ -65,7 +65,6 @@
  */
 WnckWindow *current_window = NULL;
 
-
 static Bool current_time_cb(Display *display, XEvent *xevent, XPointer arg)
 {
 	Window wnd = GPOINTER_TO_UINT(arg);
@@ -113,6 +112,36 @@ static guint32 current_time(void)
 	/* Wait for the event to succeed */
 	XIfEvent(dpy, &xevent, current_time_cb, GUINT_TO_POINTER(wnd));
 	return xevent.xproperty.time;
+}
+
+
+static gboolean default_use_utf8 = False;
+
+gboolean c_use_utf8(lua_State *lua)
+{
+	gboolean v = default_use_utf8;
+	int top = lua_gettop(lua);
+
+	if (top > 1) {
+		luaL_error(lua, "use_utf8: %s", one_indata_expected_error);
+		return 0;
+	}
+
+	if (top) {
+		int type = lua_type(lua, 1);
+
+		if (type != LUA_TBOOLEAN) {
+			luaL_error(lua, "use_utf8: %s", boolean_expected_as_indata_error);
+			return 0;
+		}
+
+		int value = lua_toboolean(lua, 1);
+		v = (gboolean)(value);
+	}
+
+	lua_pushboolean(lua, default_use_utf8);
+	default_use_utf8 = v;
+	return 1;
 }
 
 
@@ -1730,20 +1759,21 @@ int c_get_class_group_name(lua_State *lua)
 /**
  *
  */
-int c_get_window_property(lua_State *lua)
+static int c_get_window_property_internal(lua_State *lua, const char *func, gboolean report)
 {
 	int top = lua_gettop(lua);
 
 	if (top != 1) {
-		luaL_error(lua, "get_window_property: %s", one_indata_expected_error);
+		luaL_error(lua, "%s: %s", func, one_indata_expected_error);
 		return 0;
 	}
 
 	//	gchar *property=
+	int ret = 0;
 	int type = lua_type(lua, 1);
 
 	if (type != LUA_TSTRING) {
-		luaL_error(lua, "get_window_property: %s", string_expected_as_indata_error);
+		luaL_error(lua, "%s: %s", func, string_expected_as_indata_error);
 		return 0;
 	}
 
@@ -1751,15 +1781,40 @@ int c_get_window_property(lua_State *lua)
 	WnckWindow *window = get_current_window();
 
 	if (window) {
-		char *result = my_wnck_get_string_property_latin1(wnck_window_get_xid(window), my_wnck_atom_get(value));
+		gboolean utf8;
+		char *result = my_wnck_get_string_property(wnck_window_get_xid(window), my_wnck_atom_get(value), &utf8);
 
-		lua_pushstring(lua, result ? result : "");
+		if (report & 1) {
+			lua_pushstring(lua, result ? result : "");
+			ret++;
+		}
+		if (report & 2) {
+			lua_pushboolean(lua, utf8);
+			ret++;
+		}
 		g_free (result);
 	} else {
+		//lua_pushstring(lua, "NO RESULT");
 		lua_pushnil(lua);
+		ret++;
 	}
 
-	return 1;
+	return ret;
+}
+
+int c_get_window_property(lua_State *lua)
+{
+	return c_get_window_property_internal(lua, "get_window_property", 1);
+}
+
+int c_window_property_is_utf8(lua_State *lua)
+{
+	return c_get_window_property_internal(lua, "window_property_is_utf8", 2);
+}
+
+int c_get_window_property_full(lua_State *lua)
+{
+	return c_get_window_property_internal(lua, "get_window_property_full", 3);
 }
 
 
@@ -1770,8 +1825,8 @@ int c_set_window_property(lua_State *lua)
 {
 	int top = lua_gettop(lua);
 
-	if (top != 2) {
-		luaL_error(lua, "set_window_property: %s", two_indata_expected_error);
+	if (top < 2 || top > 3) {
+		luaL_error(lua, "set_window_property: %s", two_or_three_indata_expected_error);
 		return 0;
 	}
 
@@ -1790,9 +1845,18 @@ int c_set_window_property(lua_State *lua)
 
 	switch (type) {
 	case LUA_TSTRING:
+		gboolean use_utf8 = default_use_utf8;
+		if (top > 2) {
+			type = lua_type(lua, 3);
+			if (type != LUA_TBOOLEAN) {
+				luaL_error(lua, "set_window_property: %s", boolean_expected_as_indata_error);
+				return 0;
+			}
+			use_utf8 = lua_toboolean(lua, 3);
+		}
 		if (!devilspie2_emulate && window)
-			my_wnck_set_string_property_latin1(wnck_window_get_xid(window), my_wnck_atom_get(property),
-			                                   lua_tostring(lua, 2));
+			my_wnck_set_string_property(wnck_window_get_xid(window), my_wnck_atom_get(property),
+						    lua_tostring(lua, 2), use_utf8);
 		break;
 
 	case LUA_TNUMBER:
@@ -1858,7 +1922,7 @@ int c_get_window_role(lua_State *lua)
 	WnckWindow *window = get_current_window();
 
 	if (window) {
-		char *result = my_wnck_get_string_property_latin1(wnck_window_get_xid(window), my_wnck_atom_get("WM_WINDOW_ROLE"));
+		char *result = my_wnck_get_string_property(wnck_window_get_xid(window), my_wnck_atom_get("WM_WINDOW_ROLE"), NULL);
 
 		lua_pushstring(lua, result ? result : "");
 		g_free (result);

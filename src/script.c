@@ -75,6 +75,8 @@ init_script()
 void
 register_cfunctions(lua_State *lua)
 {
+	DP2_REGISTER(lua, use_utf8);
+
 	DP2_REGISTER(lua, get_window_name);
 	DP2_REGISTER(lua, get_window_has_name);
 
@@ -157,6 +159,8 @@ register_cfunctions(lua_State *lua)
 	DP2_REGISTER(lua, get_window_type);
 
 	DP2_REGISTER(lua, get_window_property);
+	DP2_REGISTER(lua, window_property_is_utf8);
+	DP2_REGISTER(lua, get_window_property_full);
 	DP2_REGISTER(lua, get_window_role);
 	DP2_REGISTER(lua, get_window_xid);
 

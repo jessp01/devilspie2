@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devilspie2 0.45\n"
 "Report-Msgid-Bugs-To: devspam@moreofthesa.me.uk\n"
-"POT-Creation-Date: 2024-10-18 20:52+0100\n"
+"POT-Creation-Date: 2024-10-18 22:13+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -128,57 +128,57 @@ msgid "Couldn't allocate error string!"
 msgstr ""
 
 #: error_strings.c:63
-msgid "No indata expected"
+msgid "No parameters expected"
 msgstr ""
 
 #: error_strings.c:64
-msgid "One indata expected"
+msgid "One parameter expected"
 msgstr ""
 
 #: error_strings.c:65
-msgid "Two indata expected"
+msgid "Two parameters expected"
 msgstr ""
 
 #: error_strings.c:66
-msgid "Three indata expected"
+msgid "Three parameters expected"
 msgstr ""
 
 #: error_strings.c:67
-msgid "Four indata expected"
+msgid "Four parameters expected"
 msgstr ""
 
 #: error_strings.c:69
 #, c-format
-msgid "%d or %d indata expected"
+msgid "%d or %d parameters expected"
 msgstr ""
 
 #: error_strings.c:70
 #, c-format
-msgid "%d to %d indata expected"
+msgid "%d to %d parameters expected"
 msgstr ""
 
 #: error_strings.c:72
-msgid "At least four indata expected"
+msgid "At least four parameters expected"
 msgstr ""
 
 #: error_strings.c:74
-msgid "Number expected as indata"
+msgid "Number expected as parameter"
 msgstr ""
 
 #: error_strings.c:75
-msgid "Boolean expected as indata"
+msgid "Boolean expected as parameter"
 msgstr ""
 
 #: error_strings.c:76
-msgid "String expected as indata"
+msgid "String expected as parameter"
 msgstr ""
 
 #: error_strings.c:78
-msgid "Number or string expected as indata"
+msgid "Number or string expected as parameter"
 msgstr ""
 
 #: error_strings.c:79
-msgid "Number or string or boolean expected as indata"
+msgid "Number or string or boolean expected as parameter"
 msgstr ""
 
 #: error_strings.c:81

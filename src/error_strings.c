@@ -60,23 +60,23 @@ gchar *failed_string = NULL;
 	}
 int init_script_error_messages()
 {
-	INIT_ERRMSG(num_indata_expected_errors[0],              _("No indata expected"));
-	INIT_ERRMSG(num_indata_expected_errors[1],              _("One indata expected"));
-	INIT_ERRMSG(num_indata_expected_errors[2],              _("Two indata expected"));
-	INIT_ERRMSG(num_indata_expected_errors[3],              _("Three indata expected"));
-	INIT_ERRMSG(num_indata_expected_errors[4],              _("Four indata expected"));
+	INIT_ERRMSG(num_indata_expected_errors[0],              _("No parameters expected"));
+	INIT_ERRMSG(num_indata_expected_errors[1],              _("One parameter expected"));
+	INIT_ERRMSG(num_indata_expected_errors[2],              _("Two parameters expected"));
+	INIT_ERRMSG(num_indata_expected_errors[3],              _("Three parameters expected"));
+	INIT_ERRMSG(num_indata_expected_errors[4],              _("Four parameters expected"));
 
-	INIT_ERRMSG(n_or_m_indata_expected_error,               _("%d or %d indata expected"));
-	INIT_ERRMSG(n_to_m_indata_expected_error,               _("%d to %d indata expected"));
+	INIT_ERRMSG(n_or_m_indata_expected_error,               _("%d or %d parameters expected"));
+	INIT_ERRMSG(n_to_m_indata_expected_error,               _("%d to %d parameters expected"));
 
-	INIT_ERRMSG(at_least_four_indata_expected_error,        _("At least four indata expected"));
+	INIT_ERRMSG(at_least_four_indata_expected_error,        _("At least four parameters expected"));
 
-	INIT_ERRMSG(number_expected_as_indata_error,            _("Number expected as indata"));
-	INIT_ERRMSG(boolean_expected_as_indata_error,           _("Boolean expected as indata"));
-	INIT_ERRMSG(string_expected_as_indata_error,            _("String expected as indata"));
+	INIT_ERRMSG(number_expected_as_indata_error,            _("Number expected as parameter"));
+	INIT_ERRMSG(boolean_expected_as_indata_error,           _("Boolean expected as parameter"));
+	INIT_ERRMSG(string_expected_as_indata_error,            _("String expected as parameter"));
 
-	INIT_ERRMSG(number_or_string_expected_as_indata_error,  _("Number or string expected as indata"));
-	INIT_ERRMSG(number_or_string_or_boolean_expected_as_indata_error,  _("Number or string or boolean expected as indata"));
+	INIT_ERRMSG(number_or_string_expected_as_indata_error,  _("Number or string expected as parameter"));
+	INIT_ERRMSG(number_or_string_or_boolean_expected_as_indata_error,  _("Number or string or boolean expected as parameter"));
 
 	INIT_ERRMSG(integer_greater_than_zero_expected_error,   _("Integer greater than zero expected"));
 	INIT_ERRMSG(could_not_find_current_viewport_error,      _("Could not find current viewport"));

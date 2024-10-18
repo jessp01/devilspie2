@@ -576,8 +576,8 @@ set_window_fullscreen(fullscreen)
 
 set_viewport(viewport)
 
-   Using one indata, moves the window to the requested viewport. Counting
-   starts at number 1.
+   Using one parameter, moves the window to the requested viewport. 
+   Counting starts at number 1.
 
    Also see the alternative usage of this function below.
 
@@ -585,8 +585,8 @@ set_viewport(viewport)
 
 set_viewport(x, y)
 
-   If you are using two indata to the set_viewport function, you can decide
-   where in the viewport the window will be placed.
+   If you are using two parameters to the set_viewport function, you can
+   decide where in the viewport the window will be placed.
 
    (Available from version 0.40)
 

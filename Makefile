@@ -162,7 +162,7 @@ TARPREFIX = $(NAME)-$(VERSION)/
 .PRECIOUS: $(TARBALL)
 release: $(TARBALL)
 $(TARBALL): .FORCE po/devilspie2.pot
-	git archive --format=$(TARFORMAT) --prefix=$(TARPREFIX) -o $@ $(VERSION)
+	git archive --format=$(TARFORMAT) --prefix=$(TARPREFIX) -o $@ v$(VERSION)
 
 po/devilspie2.pot:
 	make -C po update-pot

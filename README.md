@@ -765,7 +765,6 @@ See [AUTHORS](AUTHORS).
 
 ## Contact
 
-* Author: Darren Salt
 * Homepage: http://www.nongnu.org/devilspie2
 * Contact / Mailing list: devilspie2-discuss@nongnu.org,
   https://lists.nongnu.org/mailman/listinfo/devilspie2-discuss

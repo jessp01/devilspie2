@@ -1,6 +1,5 @@
 #
-# Copyright © 2011-2015 Andreas Rönnquist.
-# Copyright © 2021 Darren Salt.
+# Copyright © 2011-2024 devilspie2 developers
 # This file is distributed under the same license
 # as the devilspie2 package, see COPYING file.
 #
@@ -45,15 +44,18 @@ You can build without xrandr:
 	make NO_XRANDR=yes
 
 This will in the end create the devilspie2 binary in the bin/ folder.
-To build the same executable, but with debugging enabled, run
+To build the same executable with debugging enabled, run
 
 	make DEBUG=1
+
+Note that this may not do a full build – if you've been compiling without
+DEBUG=1, you should run “make clean” first..
 
 (Any value works for GTK2, NO_XRANDR and DEBUG; it only matters whether
 they're defined.)
 
 
-To install Devilspie2 system-wide - simply run make install as superuser:
+To install Devilspie2 system-wide, run make install as superuser:
 
 	su -c "make install"
 
@@ -61,9 +63,9 @@ or on systems using sudo:
 
 	sudo make install
 
-depending on your system setup. This will default to /usr/local, installing the
-binary to /usr/local/bin - this can be changed using PREFIX variable, and need
-to applied all through the build system.
+This will default to /usr/local, installing the binary to /usr/local/bin -
+this can be changed using PREFIX variable, and need to applied all through
+the build system.
 
 	make PREFIX=/usr
 	sudo make PREFIX=/usr install

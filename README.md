@@ -757,7 +757,7 @@ end
 ## Translations
 
 `devilspie2` is translatable using `gettext` - see
-[README.translators](README.translators) for more information.
+[README.translators.md](README.translators.md) for more information.
 
 ## Authors
 

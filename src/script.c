@@ -236,29 +236,92 @@ load_script(lua_State *lua,char *filename)
 /**
  *
  */
+static gboolean timedout = FALSE;
+
+static void timeout_script(int sig)
+{
+	timedout = TRUE;
+}
+
+static void check_timeout_script(lua_State *lua, lua_Debug *state)
+{
+	if (!timedout)
+		return;
+
+	const char *msg = _("Script timed out");
+
+	// could do debug.traceback(msg, 1) if we wanted a long backtrace
+	// call debug.getinfo(1)
+	lua_pushglobaltable(lua);
+	lua_getfield(lua, -1, "debug");
+	if (!lua_istable(lua, -1)) {
+		lua_pop(lua, 1);
+		goto basic_error;
+	}
+	lua_getfield(lua, -1, "getinfo");
+	if (!lua_isfunction(lua, -1)) {
+		lua_pop(lua, 2);
+		goto basic_error;
+	}
+	lua_pushinteger(lua, 1);
+	lua_call(lua, 1, 1);
+	// want a table as output
+	if (!lua_istable(lua, -1)) {
+		lua_pop(lua, 3);
+		goto basic_error;
+	}
+	// look up <table>.short_src
+	lua_getfield(lua, -1, "short_src");
+	if (!lua_isstring(lua, -1)) {
+		lua_pop(lua, 4);
+		goto basic_error;
+	}
+	const char *source = lua_tostring(lua, -1);
+	lua_pop(lua, 1); // result not needed now; discard
+	// look up <table>.currentline
+	lua_getfield(lua, -1, "currentline");
+	if (!lua_isinteger(lua, -1)) {
+		lua_pop(lua, 4);
+		goto basic_error;
+	}
+	int lineno = lua_tointeger(lua, -1);
+	lua_pop(lua, 4); // stack restored to size on entry
+	// create & stack the error string with file and line info
+	char *fullmsg = g_strdup_printf("%s:%d: %s", source, lineno, msg);
+	lua_pushstring(lua, fullmsg);
+	g_free(fullmsg);
+	lua_error(lua); // doesn't return
+	return; // hint to the compiler
+
+basic_error:
+	lua_pushstring(lua, msg);
+	lua_error(lua);
+}
+
+
+/**
+ *
+ */
 void
 run_script(lua_State *lua)
 {
-	int s = lua_pcall( lua, 0, LUA_MULTRET, 0 );
+#define SCRIPT_TIMEOUT_SECONDS 5
+
+	struct sigaction newact, oldact;
+	newact.sa_handler = timeout_script;
+	sigemptyset(&newact.sa_mask);
+	newact.sa_flags = 0;
+
+	timedout = FALSE;
+	lua_sethook(lua, check_timeout_script, LUA_MASKCOUNT, 1);
+	sigaction(SIGALRM, &newact, &oldact);
+	alarm(SCRIPT_TIMEOUT_SECONDS);
+	int s = lua_pcall(lua, 0, LUA_MULTRET, 0);
+	alarm(0);
+	sigaction(SIGALRM, &oldact, NULL);
 
 	if (s) {
-
-		char *error_msg;
-
-		error_msg = (char*)lua_tostring( lua, -1 );
-
-		//std::string luaErrorString=getLuaErrorString(s);
-
-		/*
-		mssOut.str( "" );
-		mssOut << "Script::runScript : Error caught running script "
-			<< sScriptName << "\n"
-			<< "    Error code is " << luaErrorString << ".\n"
-			<< "    Error msg is: " << errorMsg;
-		throw( ScriptException( mssOut.str().c_str(), errorMsg ) );
-		*/
-
-		printf(_("Error: %s\n"), error_msg);
+		printf(_("Error: %s\n"), lua_tostring(lua, -1));
 		lua_pop(lua, 1); // else we leak it
 	}
 }

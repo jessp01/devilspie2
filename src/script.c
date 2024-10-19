@@ -259,6 +259,7 @@ run_script(lua_State *lua)
 		*/
 
 		printf(_("Error: %s\n"), error_msg);
+		lua_pop(lua, 1); // else we leak it
 	}
 }
 

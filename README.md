@@ -73,6 +73,9 @@ scripts_window_close = {
 With this, both `file1.lua` and `file2.lua` will be called whenever a window
 is closed.
 
+As of v0.46, each script has 5 seconds to do its job ane exit or it will be
+unceremoniously interrupted.
+
 ## Scripting
 
 The scripting language used is [Lua](https://www.lua.org/).

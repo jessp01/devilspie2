@@ -2,6 +2,11 @@
 ChangeLog:
 ----------
 
+0.46
+	* Converted README files to Markdown.
+	* Added a time-out for scripts.
+	* Improved parameter checking (and better error messages).
+
 0.45
 	* Fixes related to Lua version handling
 	* Misc build fixes

@@ -434,10 +434,12 @@ int main(int argc, char *argv[])
 
 #if (GTK_MAJOR_VERSION >= 3)
 	if (!GDK_IS_X11_DISPLAY(gdk_display_get_default())) {
-		printf("%s\n\n", _("An X11 display is required for devilspie2."));
+		puts(_("An X11 display is required for devilspie2."));
+		if (getenv("WAYLAND_DISPLAY"))
+			puts(_("Wayland & XWayland are not supported.\nSee https://github.com/dsalt/devilspie2/issues/7"));
+		puts("");
 		return EXIT_FAILURE;
 	}
-
 #endif
 
 	if (init_script_error_messages()!=0) {

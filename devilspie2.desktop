@@ -7,4 +7,5 @@ Exec=devilspie2
 Terminal=false
 Type=Application
 StartupNotify=false
-Categories=Utility;GTK;X11
+Categories=Utility;GTK
+Keywords=X11

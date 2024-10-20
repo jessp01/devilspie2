@@ -1,41 +1,54 @@
 .\"
 .\" Copyright © 2011-2017 Andreas Rönnquist.
-.\" Copyright © 2021 Darren Salt.
+.\" Copyright © 2021-2024 Darren Salt.
 .\" This file is distributed under the same license
 .\" as the devilspie2 package, see COPYING file.
 .\"
 .TH devilspie2 1 "" ""
 .SH NAME
-Devilspie2 - perform scripted actions on windows as they are created
+Devilspie2 \- perform scripted actions on windows when certain events occur
 .SH Description
+.P
 .B Devilspie2
-is a program that detects windows as they are created and performs scripted
-actions on them. The scripts are written in Lua, allowing a great deal of
-customisation.
-
-More details in /usr/share/doc/devilspie2/README.
+is a program that detects windows as they are created, gain or lose focus or
+have their titles changed, and performs scripted actions on them. The
+scripts are written in \fILua\fR, allowing a great deal of customisation.
 
 .SH Options
-.IP "\-\-version"
+.TP
+\fB\-v\fR, \fB\-\-version
 Displays the version of Devilspie2.
-.IP "\-\-folder folder"
+.TP
+\fB\-f \fIfolder\fR, \fB\-\-folder \fIfolder
 Sets the folder where the Lua scripts are loaded from.
-.IP "\-\-debug"
+.TP
+\fB\-d\fR, \fB\-\-debug
 Shows debug information from the Lua scripts. If debug_print is used in the Lua
 scripts, that output will only be printed to stdout if this option is used.
-.IP "\-\-emulate"
+.TP
+\fB\-e\fR, \fB\-\-emulate
 Emulation mode. This prevents windows from being affected by the scripts,
 but window positions etc. can still be read.
-.IP "\-\-wnck\-version"
-Show the version of libwnck in use. (Only available on GTK3 or later.)
-.SH Script Commands
-
 .TP
-See the README for a detailed description of the commands recognised by the
-Lua script.
+\fB\-w\fR, \fB\-\-wnck\-version
+Show the version of libwnck in use. (Only available on GTK3 or later.)
+.TP
+\fB\-l\fR, \fB\-\-lua\-version
+Show the version of Lua in use.
+.SH Script Commands
+.P
+See
+.I /usr/share/doc/devilspie2/README.md
+for a detailed description of the commands recognised in Lua scripts.
 
 .SH Author
+.P
 .B Devilspie2
-is maintained by Darren Salt <devspam@moreofthesa.me.uk>. It was written by
-Andreas Rönnquist <andreas@ronnquist.net>, and is based on Devilspie by Ross
+is maintained by 
+.MT devspam@moreofthesa.me.uk
+Darren Salt
+.ME . It was written by
+.MT andreas@ronnquist.net
+Andreas Rönnquist
+.ME , and is based on Devilspie by Ross
 Burton.

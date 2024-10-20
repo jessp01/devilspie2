@@ -757,7 +757,6 @@ debug_print("Application name: " .. get_application_name())
 -- I want my Xfce4 terminal to the right on the second screen (1080p) of my
 -- two-monitor setup.
 -- Note that this rule will only work with the window's initial title.
-)
 if (get_window_name() == "Terminal") then
    set_window_position(1300, 200, 2)
    set_window_size(600, 800)

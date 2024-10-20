@@ -693,6 +693,8 @@ And the rest of the commands are used to modify the properties of the windows:
 
   Without, returns the position and size of a window.
 
+### Utilities
+
 * `use_utf8([bool])`
   <a name="user-content-use-utf8" />
 
@@ -703,6 +705,16 @@ And the rest of the commands are used to modify the properties of the windows:
   This is initially `false`.
 
   *(Available from version 0.45)*
+
+* `millisleep(int time)`
+  <a name="user-content-millisleep" />
+
+  Sleep for a number of milliseconds, between 1 and 1000 (1 second).
+
+  This is a convenience function so that you don't have to use `os.execute`
+  (to run `sleep`) or `posix.nanosleep`.
+
+  *(Available from version 0.46)*
 
 ### Function aliases
 

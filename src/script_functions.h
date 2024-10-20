@@ -143,4 +143,6 @@ int c_on_geometry_changed(lua_State *lua);
 
 int c_get_process_name(lua_State *lua);
 
+int c_millisleep(lua_State *lua);
+
 #endif /*__HEADER_SCRIPT_FUNCTIONS_*/

@@ -2635,6 +2635,42 @@ static gchar *c_get_process_name_INT_ps(lua_State *lua, pid_t pid)
 }
 
 
+/**
+ *
+ */
+int c_millisleep(lua_State *lua)
+{
+	if (!check_param_count(lua, "millisleep", 1)) {
+		return 0;
+	}
+	if (lua_type(lua, 1) != LUA_TNUMBER) {
+		luaL_error(lua, "millisleep: %s",
+		           number_expected_as_indata_error);
+		return 0;
+	}
+
+	int time = lua_tonumber(lua, 1);
+	if (time < 1 || time > 1000) {
+		luaL_error(lua, _("millisleep: time %d out of range (1..1000)"), time);
+		return 0;
+	}
+
+	struct timespec tv;
+	struct timespec left;
+	if (time == 1000) {
+		tv.tv_sec = 1;
+		tv.tv_nsec = 0;
+	} else {
+		tv.tv_sec = 0;
+		tv.tv_nsec = time * 1000000;
+	}
+	while (nanosleep(&tv, &left) && errno == EINTR)
+		tv = left;
+
+	return 0;
+}
+
+
 /*
  * Devilspie:
 

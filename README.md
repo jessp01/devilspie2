@@ -746,7 +746,9 @@ And the rest of the commands are used to modify the properties of the windows:
   <a name="focus" />
 
 
-### Simple script example
+### Simple script examples
+
+**Showing debug output and resizing and maximisation of specific windows:**
 
 ```lua
 -- the debug_print command only prints to stdout
@@ -766,6 +768,30 @@ end
 if (get_application_name() == "Firefox") then
    maximise()
 end
+```
+
+**Showing handling of conflict between `devilspie2` and other programs (in this case,
+`emacs`):**
+
+This example uses [millisleep](#user-content-millisleep) to enforce a short
+delay.
+
+```lua
+-- Make Emacs (emacs or emacs-gtk) always start maximised.
+win_class = get_class_instance_name()
+
+debug_print("Window class: " .. win_class)
+
+if win_class == "emacs" or win_class == "Emacs" then
+  millisleep(100)
+  -- Emacs applies default window size etc. after a brief delay,
+  -- potentially overriding devilspie2.
+  --
+  -- A brief pause (here, of 0.1s) ensures that devilspie2's actions on the
+  -- window take effect after Emacs completes its initialisation.
+  maximise()
+end
+
 ```
 
 ## Translations

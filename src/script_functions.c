@@ -59,6 +59,7 @@
 
 #include "error_strings.h"
 
+#define DEPRECATED() fprintf(stderr, "warning: deprecated function %s called\n", __func__ + 2);
 
 /**
  *
@@ -1177,7 +1178,7 @@ int c_maximize_horizontally(lua_State *lua)
 
 int c_maximize_horisontally(lua_State *lua)
 {
-	fprintf(stderr, "warning: deprecated function %s called\n", __func__ + 2);
+	DEPRECATED();
 	return c_maximize_horizontally(lua);
 }
 
@@ -1486,7 +1487,7 @@ int c_get_window_is_maximized_horizontally(lua_State *lua)
 
 int c_get_window_is_maximized_horisontally(lua_State *lua)
 {
-	fprintf(stderr, "warning: deprecated function %s called\n", __func__ + 2);
+	DEPRECATED();
 	return c_get_window_is_maximized_horizontally(lua);
 }
 

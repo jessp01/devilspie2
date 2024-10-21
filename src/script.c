@@ -236,6 +236,21 @@ load_script(lua_State *lua,char *filename)
 /**
  *
  */
+static gchar *error_add_location(lua_State* lua, const char *msg)
+{
+	lua_Debug state;
+
+	// not thread-safe, but we're single-threaded here
+	int r = lua_getstack(lua, 1, &state);
+	if (r == 0)
+		return g_strdup(msg);
+	lua_getinfo(lua, "Sln", &state);
+
+	return state.name
+	     ? g_strdup_printf("%s:%d: (%s %s) %s", state.short_src, state.currentline, state.namewhat, state.name, msg)
+	     : g_strdup_printf("%s:%d: %s", state.short_src, state.currentline, msg);
+}
+
 static gboolean timedout = FALSE;
 
 static void timeout_script(int sig)
@@ -245,56 +260,12 @@ static void timeout_script(int sig)
 
 static void check_timeout_script(lua_State *lua, lua_Debug *state)
 {
+	// state is invalid?
 	if (!timedout)
 		return;
-
-	const char *msg = _("Script timed out");
-
-	// could do debug.traceback(msg, 1) if we wanted a long backtrace
-	// call debug.getinfo(1)
-	lua_pushglobaltable(lua);
-	lua_getfield(lua, -1, "debug");
-	if (!lua_istable(lua, -1)) {
-		lua_pop(lua, 1);
-		goto basic_error;
-	}
-	lua_getfield(lua, -1, "getinfo");
-	if (!lua_isfunction(lua, -1)) {
-		lua_pop(lua, 2);
-		goto basic_error;
-	}
-	lua_pushinteger(lua, 1);
-	lua_call(lua, 1, 1);
-	// want a table as output
-	if (!lua_istable(lua, -1)) {
-		lua_pop(lua, 3);
-		goto basic_error;
-	}
-	// look up <table>.short_src
-	lua_getfield(lua, -1, "short_src");
-	if (!lua_isstring(lua, -1)) {
-		lua_pop(lua, 4);
-		goto basic_error;
-	}
-	const char *source = lua_tostring(lua, -1);
-	lua_pop(lua, 1); // result not needed now; discard
-	// look up <table>.currentline
-	lua_getfield(lua, -1, "currentline");
-	if (!lua_isinteger(lua, -1)) {
-		lua_pop(lua, 4);
-		goto basic_error;
-	}
-	int lineno = lua_tointeger(lua, -1);
-	lua_pop(lua, 4); // stack restored to size on entry
-	// create & stack the error string with file and line info
-	char *fullmsg = g_strdup_printf("%s:%d: %s", source, lineno, msg);
+	gchar *fullmsg = error_add_location(lua, _("script timed out"));
 	lua_pushstring(lua, fullmsg);
 	g_free(fullmsg);
-	lua_error(lua); // doesn't return
-	return; // hint to the compiler
-
-basic_error:
-	lua_pushstring(lua, msg);
 	lua_error(lua);
 }
 

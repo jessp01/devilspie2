@@ -32,6 +32,7 @@
 
 #include <locale.h>
 
+#include "compat.h"
 #include "intl.h"
 #include "script.h"
 
@@ -236,7 +237,7 @@ load_script(lua_State *lua,char *filename)
 /**
  *
  */
-static gchar *error_add_location(lua_State* lua, const char *msg)
+static ATTR_MALLOC gchar *error_add_location(lua_State* lua, const char *msg)
 {
 	lua_Debug state;
 

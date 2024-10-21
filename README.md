@@ -712,7 +712,7 @@ And the rest of the commands are used to modify the properties of the windows:
   Sleep for a number of milliseconds, between 1 and 1000 (1 second).
 
   This is a convenience function so that you don't have to use `os.execute`
-  (to run `sleep`) or `posix.nanosleep`.
+  (to run `sleep`) or (from LuaPosix) `posix.nanosleep`.
 
   *(Available from version 0.46)*
 
@@ -796,6 +796,13 @@ if win_class == "emacs" or win_class == "Emacs" then
   -- normally faster (and avoids a possible visual effect), or init.el –
   -- using this LISP statement:
   --   (push '(fullscreen .  maximized) default-frame-alist)
+  --
+  -- 'millisleep' is new to 0.46. The 0.1s delay for older versions:
+  --   option 1:
+  --     os.execute("sleep 0.1")
+  --   option 2 (needs luaposix):
+  --     posix = require "posix"
+  --     posix.nanosleep(0, 100e6)
   millisleep(100)
   maximise()
 end

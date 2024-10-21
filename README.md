@@ -783,12 +783,20 @@ win_class = get_class_instance_name()
 debug_print("Window class: " .. win_class)
 
 if win_class == "emacs" or win_class == "Emacs" then
-  millisleep(100)
   -- Emacs applies default window size etc. after a brief delay,
   -- potentially overriding devilspie2.
   --
   -- A brief pause (here, of 0.1s) ensures that devilspie2's actions on the
-  -- window take effect after Emacs completes its initialisation.
+  -- window take effect after Emacs completes its initialisation. A shorter
+  -- pause may work, or a longer one may be needed. Experiment; in this
+  -- case, 'millisleep(10)' (0.01s) seems fine for most modern PCs.
+  --
+  -- If you prefer, you can have Emacs maximise its window (as in this
+  -- example) via one of its configuration files - early-init.el, which is
+  -- normally faster (and avoids a possible visual effect), or init.el –
+  -- using this LISP statement:
+  --   (push '(fullscreen .  maximized) default-frame-alist)
+  millisleep(100)
   maximise()
 end
 

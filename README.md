@@ -788,8 +788,8 @@ if win_class == "emacs" or win_class == "Emacs" then
   --
   -- A brief pause (here, of 0.1s) ensures that devilspie2's actions on the
   -- window take effect after Emacs completes its initialisation. A shorter
-  -- pause may work, or a longer one may be needed. Experiment; in this
-  -- case, 'millisleep(10)' (0.01s) seems fine for most modern PCs.
+  -- pause may work, or a longer one may be needed. Experiment! Could be
+  -- that 'millisleep(10)' (0.01s) works well on one PC…?
   --
   -- If you prefer, you can have Emacs maximise its window (as in this
   -- example) via one of its configuration files - early-init.el, which is

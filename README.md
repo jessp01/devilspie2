@@ -801,8 +801,8 @@ if win_class == "emacs" or win_class == "Emacs" then
   --   option 1:
   --     os.execute("sleep 0.1")
   --   option 2 (needs luaposix):
-  --     posix = require "posix"
-  --     posix.nanosleep(0, 100e6)
+  --     nanosleep = require "posix.time".nanosleep
+  --     nanosleep{tv_nsec=100e6}
   millisleep(100)
   maximise()
 end

@@ -712,7 +712,7 @@ And the rest of the commands are used to modify the properties of the windows:
   Sleep for a number of milliseconds, between 1 and 1000 (1 second).
 
   This is a convenience function so that you don't have to use `os.execute`
-  (to run `sleep`) or (from LuaPosix) `posix.nanosleep`.
+  (to run `sleep`) or (from LuaPosix `posix.time`) `nanosleep`.
 
   *(Available from version 0.46)*
 

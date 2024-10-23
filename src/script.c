@@ -303,7 +303,7 @@ run_script(lua_State *lua, const char *filename)
 
 	if (result) {
 		// We got an error, print it
-		puts(lua_tostring(lua, -1));
+		printf(_("Error: %s\n"), lua_tostring(lua, -1));
 		lua_remove(lua, errpos); // unstack the error handler
 		lua_pop(lua, 1);
 		return -1;

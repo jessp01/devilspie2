@@ -123,7 +123,7 @@ $(OBJ)/%.o: $(SRC)/%.c
 	@mkdir -p $(OBJ)
 	$(CC) $(LOCAL_CFLAGS) $(LOCAL_CPPFLAGS) -c $< -o $@
 
-$(BIN)/$(NAME): $(BIN) $(OBJECTS)
+$(BIN)/$(NAME): $(OBJECTS)
 	@mkdir -p -- $(BIN)
 	$(CC) $(LOCAL_CFLAGS) $(LOCAL_LDFLAGS) $(OBJECTS) -o $(PROG) $(LIBS)
 

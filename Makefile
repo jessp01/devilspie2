@@ -129,7 +129,8 @@ $(BIN)/$(NAME): $(OBJECTS)
 
 .PHONY: clean
 clean:
-	rm -rf $(OBJECTS) $(PROG) $(DEPEND)
+	rm -rf -- $(OBJECTS) $(PROG) $(DEPEND)
+	rmdir -- $(BIN) $(OBJ)
 	${MAKE} -C po clean
 
 install:

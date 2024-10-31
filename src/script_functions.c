@@ -121,7 +121,7 @@ static guint32 current_time(void)
  * Failure will log a lua error and return False.
  * Success returns True.
  */
-static Bool check_param_count(lua_State *lua, char *funcname, int expected)
+static Bool check_param_count(lua_State *lua, const char *funcname, int expected)
 {
 	int top = lua_gettop(lua);
 	gchar* error_message;
@@ -142,7 +142,7 @@ static Bool check_param_count(lua_State *lua, char *funcname, int expected)
  * Failure will log a lua error and return False.
  * Success returns True.
  */
-static Bool check_param_counts(lua_State *lua, char *funcname, int expected1, int expected2)
+static Bool check_param_counts(lua_State *lua, const char *funcname, int expected1, int expected2)
 {
 	int top = lua_gettop(lua);
 	gchar* error_message;

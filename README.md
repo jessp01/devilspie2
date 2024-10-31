@@ -370,16 +370,18 @@ And the rest of the commands are used to modify the properties of the windows:
   If `index` = `-1` then all monitors are treated as one large virtual
   monitor.
 
-* `set_window_position2(int xpos, int ypos)`
+  *(`index` parameter available from 0.46)*
+
+* `set_window_position2(int xpos, int ypos, [int index])`
   <a name="user-content-set-window-position2" />
 
-  Set the position of a window.
+  Set the position of a window. Parameters are as for
+  [`set_window_position`](#user-content-set_window_position).
 
-  Unlike [`set_window_position`](#user-content-set_window_position), this
-  function uses `XMoveWindow` instead of `wnck_window_set_geometry`; this
+  This function uses `XMoveWindow` instead of `wnck_window_set_geometry`; this
   gives a slightly different result.
 
-  *(Available from version 0.21)*
+  *(Available from version 0.21, `index` from 0.46)*
 
 * `set_window_property(string property, int-or-string value, [bool utf8])`
   <a name="user-content-set-window-property" />
@@ -405,22 +407,27 @@ And the rest of the commands are used to modify the properties of the windows:
 
   Set the size of a window.
 
-* `set_window_geometry(xpos, ypos, width, height)`
+* `set_window_geometry(int xpos, int ypos, int width, int height, [int index])`
   <a name="user-content-set-window-geometry" />
 
-  Sets both size and position of a window in one command.
+  Set both size and position of a window in one command.
 
-* `set_window_geometry2(xpos, ypos, width, height)`
+  The `index` parameter works exactly as for
+  [`set_window_position()`](#user-content-set-window-position) and affects
+  the given coordinates in the same way.
+
+  *(`index` parameter available from 0.46)*
+
+* `set_window_geometry2(int xpos, int ypos, int width, int height, [int index])`
   <a name="user-content-set-window-geometry2 " />
 
-  Set the window geometry as for set_window_geometry, but using
-  `XMoveResizeWindow` instead of its libwnck alternative.
-  This results in different coordinates than the
-  [`set_window_geometry`](#user-content-set-window-geometry) function, and
-  results are more similar to the results of the original devilspie geometry
+  Set the window geometry as for
+  [`set_window_geometry()`](#user-content-set-window-geometry), but using
+  `XMoveResizeWindow` instead of its libwnck alternative.  This may result
+  in different coordinates, more like the original devilspie geometry
   function.
 
-  *(Available from version 0.21)*
+  *(Available from version 0.21; `index` from 0.46)*
 
 * `shade()`
   <a name="user-content-shade" />

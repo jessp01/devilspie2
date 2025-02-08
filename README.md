@@ -138,6 +138,13 @@ information:
 
   *(Available from version 0.44)*
 
+* `get_process_owner()`
+  <a name="user-content-get-process-owner" />
+    
+    Returns the username who owns the process owning the current window.
+    This is done by getting the owner (UID) of `/proc/<pid>/comm` with `stat()` 
+    and mapping it to a username with `getpwuid()`.
+
 * `get_window_geometry()`
   <a name="user-content-get-window-geometry" />
 

@@ -29,6 +29,7 @@ typedef enum {
 	W_OPEN,
 	W_CLOSE,
 	W_FOCUS,
+	W_TITLE_CHANGE,
 	W_BLUR,
 	W_NAME_CHANGED,
 	W_NUM_EVENTS /* keep this at the end */

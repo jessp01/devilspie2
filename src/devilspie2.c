@@ -71,9 +71,17 @@ gchar *config_filename = NULL;
 
 WnckHandle *my_wnck_handle = NULL;
 
-/**
+/*
  *
- */
+ * load_list_of_scripts:
+ * @screen: pointer to WnckScreen.
+ * @window: pointer to WnckWindow.
+ * @file_list: list of hook files.
+ * 
+ * Runs list of Lua hooks
+ * Returns: null 
+*/
+
 static void load_list_of_scripts(WnckScreen *screen G_GNUC_UNUSED, WnckWindow *window,
                                  GSList *file_list)
 {
@@ -124,9 +132,16 @@ static void window_name_changed_cb(WnckWindow *window)
 	load_list_of_scripts(screen, window, event_lists[W_NAME_CHANGED]);
 }
 
-/**
+/*
+ * window_opened_cb:
+ * @screen: pointer to WnckScreen.
+ * @window: pointer to WnckWindow.
  *
- */
+ * `window-opened` event callback function.
+ *
+ * Returns: null
+*/
+
 static void window_opened_cb(WnckScreen *screen, WnckWindow *window)
 {
 	load_list_of_scripts(screen, window, event_lists[W_OPEN]);
@@ -138,12 +153,45 @@ static void window_opened_cb(WnckScreen *screen, WnckWindow *window)
 }
 
 
-/**
- *
- */
+/*
+ * window_closed_cb:
+ * @screen: pointer to WnckScreen.
+ * @window: pointer to WnckWindow.
+ * 
+ * `window-closed` event callback function. 
+ * 
+*/
 static void window_closed_cb(WnckScreen *screen, WnckWindow *window)
 {
 	load_list_of_scripts(screen, window, event_lists[W_CLOSE]);
+}
+
+/*
+ * active_window_name_changed_cb:
+ * @window: pointer to WnckWindow.
+ * 
+ * `name-changed` event callback function. Connected in window_changed_cb()
+ * 
+ * Returns: null 
+*/
+static void active_window_name_changed_cb(WnckWindow *window)
+{
+	WnckScreen * screen = wnck_window_get_screen(window);
+	if(screen == NULL) return;
+
+	// Handle duplicate name-change events
+	// Simple method: just track the most recent event regardless of window
+	static WnckWindow *previous = NULL;
+	static char *prevname = NULL;
+
+	const char *newname = wnck_window_get_name(window);
+	if (window == previous && prevname && !strcmp (prevname, newname))
+		return;
+	// Store the info for the next event
+	free(prevname);
+	prevname = strdup(newname);
+	previous = window;
+	load_list_of_scripts(NULL, window, event_lists[W_TITLE_CHANGE]);
 }
 
 
@@ -157,6 +205,9 @@ static void window_changed_cb(WnckScreen *screen, WnckWindow *window)
 	load_list_of_scripts(screen, window, event_lists[W_BLUR]);
 	cur = wnck_screen_get_active_window(screen);
 	load_list_of_scripts(screen, cur, event_lists[W_FOCUS]);
+	if (cur && g_signal_handler_find(cur,G_SIGNAL_MATCH_FUNC, 0, 0, NULL, (GFunc) active_window_name_changed_cb, NULL) == 0){
+	    g_signal_connect(cur, "name-changed", (GCallback)active_window_name_changed_cb, NULL);
+	}
 }
 
 

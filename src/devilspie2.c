@@ -146,6 +146,23 @@ static void window_closed_cb(WnckScreen *screen, WnckWindow *window)
  */
 static void active_window_name_changed_cb(WnckWindow *window)
 {
+        WnckScreen * screen = wnck_window_get_screen(window);
+        if(screen == NULL) return;
+
+        // Handle duplicate name-change events
+        // Simple method: just track the most recent event regardless of window
+        static WnckWindow *previous = NULL;
+        static char *prevname = NULL;
+
+        const char *newname = wnck_window_get_name(window);
+        if (window == previous && prevname && !strcmp (prevname, newname)){
+            return;
+	}
+        // Store the info for the next event
+        free(prevname);
+        prevname = strdup(newname);
+        previous = window;
+
 	load_list_of_scripts(NULL, window, event_lists[W_TITLE_CHANGE]);
 }
 

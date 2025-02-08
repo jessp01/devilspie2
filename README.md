@@ -53,6 +53,7 @@ via the following variables:
 * `scripts_window_focus`
 * `scripts_window_blur`
 * `scripts_window_name_change`
+* `scripts_window_title_change`
 
 It is expected that these variables are tables containing strings. The
 files named in these tables are expected to be in the scripts folder and
@@ -72,6 +73,15 @@ scripts_window_close = {
 
 With this, both `file1.lua` and `file2.lua` will be called whenever a window
 is closed.
+
+```lua
+scripts_window_title_change = {
+    "window_title_change.lua"
+}
+```
+
+This will invoke `window_title_change.lua` when the window's title changes.
+
 
 As of v0.46, each script has 5 seconds to do its job ane exit or it will be
 unceremoniously interrupted.

@@ -1,4 +1,4 @@
-Copyright © 2011-2024 devilspie2 developers
+Copyright © 2011-2025 devilspie2 developers
 
 This file is distributed under the same licence as the devilspie2 package
 (see [COPYING](COPYING)).

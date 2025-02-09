@@ -24,6 +24,7 @@
 #include <gdk/gdkx.h>
 #include <X11/Xlib.h>
 #include <string.h>
+#include <sys/types.h>
 
 // FIXME: retrieve screen position via wnck
 #include <X11/extensions/Xinerama.h>
@@ -534,7 +535,7 @@ void my_window_set_opacity(Window xid, double value)
 {
 	Display *display = gdk_x11_get_default_xdisplay();
 
-	unsigned int opacity = (unsigned int)(0xffffffff * value);
+	unsigned int opacity = (uint)(0xffffffff * value);
 	Atom atom_net_wm_opacity = XInternAtom(display, "_NET_WM_WINDOW_OPACITY", False);
 
 

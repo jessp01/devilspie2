@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        compiler: [gcc-12, gcc-13, clang-17, clang-18]
+        compiler: [gcc-12, gcc-13]
     env:
       PREFIX: /usr/local/bin
       CC: ${{ matrix.compiler }}
@@ -27,8 +27,6 @@ jobs:
             libxrandr-dev \
             build-essential \
             gettext \
-            clang-17 \
-            clang-18 \
             gcc-12 \
             gcc-13
       - name: CC ver

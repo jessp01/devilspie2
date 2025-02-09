@@ -34,7 +34,7 @@ endif
 
 # Some hardening by default.
 # Set default optimisation; override CFLAGS if DEBUG is set.
-STD_CFLAGS=-MM -Wall -Wformat -Wno-format-extra-args -Wformat-security -Wformat-nonliteral -Wformat=2 -std=c99
+STD_CFLAGS=-Wall -Wformat -Wno-format-extra-args -Wformat-security -Wformat-nonliteral -Wformat=2 -std=c99
 ifdef DEBUG
 	STD_CFLAGS += -D_DEBUG
 	CFLAGS = -Og -g3 -ggdb

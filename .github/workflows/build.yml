@@ -39,5 +39,9 @@ jobs:
         run: sudo make install
       - name: ldd
         run: ldd $PREFIX/devilspie2
-      - name: version
+      - name: check version
         run: $PREFIX/devilspie2 -v
+      - name: check libwnck version
+        run: $PREFIX/devilspie2 -w
+      - name: check Lua version
+        run: $PREFIX/devilspie2 -l

@@ -16,7 +16,6 @@
  *	along with devilspie2.
  *	If not, see <http://www.gnu.org/licenses/>.
  */
-
 #include <string.h>
 
 #include <stdlib.h>

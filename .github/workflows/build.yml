@@ -43,4 +43,4 @@ jobs:
       - name: check libwnck version
         run: $PREFIX/devilspie2 -w
       - name: check Lua version
-        run: $PREFIX/devilspie2 -l
+        run: test "$($PREFIX/devilspie2 -l)" = "Lua ${{ matrix.luaver }}"
